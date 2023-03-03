@@ -27,9 +27,9 @@ from validsrc import condensationcurves
 ############### INPUTS ##################
 # path and filenames for creating SD
 # initial conditions and for running model
-binpath = abspath+"validations/arabas_shima_2017/bin/"
-constsfile = abspath+"superdroplet_model/src/include/claras_SDconstants.hpp"
-configfile = abspath+"validations/arabas_shima_2017/arabasconfig.txt"
+binpath = apath+"validations/arabas_shima_2017/bin/"
+constsfile = path2CLEO+"src/include/claras_SDconstants.hpp"
+configfile = apath+"validations/arabas_shima_2017/arabasconfig.txt"
 initSDsfile = binpath+"arabas_dimlessSDinit.dat"
 gridfile = binpath+"arabas_dimlessGBxbounds.dat"
 
@@ -83,9 +83,13 @@ def displacement(time, w_avg, thalf):
     return z
 
 # ### 1. compile model
-os.chdir(abspath+"superdroplet_model/build")
+os.chdir(path2CLEO+"/build")
 os.system("pwd")
 os.system("make clean && make")
+os.chdir(binpath)
+for run_num in range(len(monors)*len(paramslist)):
+    dataset = binpath+"arabassol"+str(run_num)+".zarr"
+    os.system("rm -rf "+dataset)
 
 # 2a. create file with gridbox boundaries
 create_gbxboundaries.write_gridboxboundaries_binary(gridfile, zgrid, xgrid, 
@@ -126,7 +130,7 @@ for i in range(len(monors)):
 
         # 4. run model
         os.chdir(binpath)
-        os.system(abspath+'superdroplet_model/build/src/coupledmodel ' +
+        os.system(path2CLEO+'/build/src/coupledmodel ' +
                   configfile+' '+constsfile)
 
         # 5. load results
