@@ -48,33 +48,33 @@ coord3gen = initattributes.SampleCoord3Gen(coord3span, randomcoord3)
 
 ## ----------- PREPARE EXPERIMENT ----------- ###
 
-# create initial SD conditions to use in all experiments
-for j in run_nums:
-  initSDsfile = binpath+"dimlessSDsinit_run"+str(j)+".dat"
+# # create initial SD conditions to use in all experiments
+# for j in run_nums:
+#   initSDsfile = binpath+"dimlessSDsinit_run"+str(j)+".dat"
   
-  samplevol = read_gbxboundaries.calc_domainvol(np.asarray(coord3span), xgrid, ygrid)
-  print("sample VOL:", samplevol)
-  initattrs = initattributes.InitAttributes(radiigen, radiiprobdist, 
-                                            coord3gen, numconc, samplevol)
-  create_initsuperdrops.write_initsuperdrops_binary(initSDsfile, initattrs, 
-                                                    configfile, constsfile)
+#   samplevol = read_gbxboundaries.calc_domainvol(np.asarray(coord3span), xgrid, ygrid)
+#   print("sample VOL:", samplevol)
+#   initattrs = initattributes.InitAttributes(radiigen, radiiprobdist, 
+#                                             coord3gen, numconc, samplevol)
+#   create_initsuperdrops.write_initsuperdrops_binary(initSDsfile, initattrs, 
+#                                                     configfile, constsfile)
 
-  if isfigures[0]:
-    read_initsuperdrops.plot_initdistribs(configfile, constsfile, initSDsfile,
-                                          samplevol, binpath, isfigures[1])
+#   if isfigures[0]:
+#     read_initsuperdrops.plot_initdistribs(configfile, constsfile, initSDsfile,
+#                                           samplevol, binpath, isfigures[1])
     
-# create gridbox files to use in all experiments
-for i, res in enumerate(resolutions):
-  zgrid = zgridlimits+[res] # input settings for zgrid for given experiment
-  gridfile = binpath+"resexp"+str(i)+"_dimlessGBxbounds.dat"
+# # create gridbox files to use in all experiments
+# for i, res in enumerate(resolutions):
+#   zgrid = zgridlimits+[res] # input settings for zgrid for given experiment
+#   gridfile = binpath+"resexp"+str(i)+"_dimlessGBxbounds.dat"
  
-  create_gbxboundaries.write_gridboxboundaries_binary(gridfile, zgrid, xgrid, 
-                                                       ygrid, constsfile)
-  read_gbxboundaries.print_domain_info(constsfile, gridfile)
+#   create_gbxboundaries.write_gridboxboundaries_binary(gridfile, zgrid, xgrid, 
+#                                                        ygrid, constsfile)
+#   read_gbxboundaries.print_domain_info(constsfile, gridfile)
   
-  if isfigures[0]:
-      read_gbxboundaries.plot_gridboxboundaries(constsfile, gridfile, 
-                                                binpath, isfigures[1])
+#   if isfigures[0]:
+#       read_gbxboundaries.plot_gridboxboundaries(constsfile, gridfile, 
+#                                                 binpath, isfigures[1])
 
 ## ------------------------------------------ ###
 

@@ -29,7 +29,7 @@ COLL_TSTEP = 1                          # time between SD collision events [s]
 SEDI_TSTEP = 1                          # time between SD sedimentation events [s]
 XCHANGE_TSTEP = 1                       # time between SD exchange between gridboxes [s]
 OUT_TSTEP = 15                          # time between outputting data (and coupling) [s]
-TEND = 2400                             # time span of integration [s]
+TEND = 3600                             # time span of integration [s]
 
 ### superdroplet params ###
 NSUPERS = 1024                          # initial total no. superdrops
