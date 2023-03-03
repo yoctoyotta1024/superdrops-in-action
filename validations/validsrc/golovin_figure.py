@@ -3,10 +3,10 @@ import numpy as np
 import matplotlib.pyplot as plt
 from scipy.special import iv
 
-abspath = "/Users/yoctoyotta1024/Documents/autumnwinter2022_23/" +\
-    "clara-bayley-superdroplets/"
+abspath = "\/Users/yoctoyotta1024/Documents/b1_springsummer2023/"+\
+            "superdrops_in_action/sdmplotting"
 sys.path.append(abspath+"plottingscripts/")
-from src.handlesrc import histos, pyzarr
+from datsrc import histos, pyzarr
 
 def golovin_validation_figure(witherr, time, sddata, tplt, domainvol,
                               SDprops, n_a, r_a, smoothsig):

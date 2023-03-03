@@ -22,7 +22,7 @@ from validsrc.golovin_figure import golovin_validation_figure
 # path and filenames for creating SD
 # initial conditions and for running model
 binpath = apath+"validations/shima_2009/bin/"
-constsfile = path2CLEO+"src/include/claras_SDconstants.hpp"
+constsfile = path2CLEO+"src/claras_SDconstants.hpp"
 configfile = apath+"validations/shima_2009/golovinconfig.txt"
 initSDsfile = binpath+"golovin_dimlessSDsinit.dat"
 gridfile = binpath+"golovin_dimlessGBxboundaries.dat"

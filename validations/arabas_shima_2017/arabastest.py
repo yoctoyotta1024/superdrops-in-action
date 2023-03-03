@@ -28,7 +28,7 @@ from validsrc import condensationcurves
 # path and filenames for creating SD
 # initial conditions and for running model
 binpath = apath+"validations/arabas_shima_2017/bin/"
-constsfile = path2CLEO+"src/include/claras_SDconstants.hpp"
+constsfile = path2CLEO+"src/claras_SDconstants.hpp"
 configfile = apath+"validations/arabas_shima_2017/arabasconfig.txt"
 initSDsfile = binpath+"arabas_dimlessSDinit.dat"
 gridfile = binpath+"arabas_dimlessGBxbounds.dat"

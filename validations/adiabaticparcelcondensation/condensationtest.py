@@ -21,7 +21,7 @@ from validsrc import individSDs, condensationcurves
 ############### INPUTS ##################
 # path and filenames for creating SD initial conditions and for running model
 binpath = apath+"validations/adiabaticparcelcondensation/bin/"
-constsfile = path2CLEO+"src/include/claras_SDconstants.hpp"
+constsfile = path2CLEO+"src/claras_SDconstants.hpp"
 configfile = apath+"validations/adiabaticparcelcondensation/condconfig.txt"
 initSDsfile = binpath+"cond_dimlessSDsinit.dat"
 gridfile = binpath+"cond_dimlessGBxboundaries.dat"
