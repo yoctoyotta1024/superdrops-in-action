@@ -11,16 +11,18 @@ import matplotlib.pyplot as plt
 
 #### DON'T FORGET TO CHANGE SDM PROCESS IN main.cpp TO JUST CONDENSATION ####
 
-abspath = "/Users/yoctoyotta1024/Documents/autumnwinter2022_23/" +\
-    "clara-bayley-superdroplets/"
-sys.path.append(abspath+"/superdroplet_model/")
-sys.path.append(abspath+"plottingscripts/")
-sys.path.append(abspath+"validations/")
+path2CLEO = "/Users/yoctoyotta1024/Documents/b1_springsummer2023/CLEO/"
+sys.path.append(path2CLEO) # for imports from pySD package
+
+apath = "/Users/yoctoyotta1024/Documents/b1_springsummer2023/superdrops_in_action/"
+sys.path.append(apath+"sdmplotting")
+sys.path.append(apath+"validations/")
+
 from pySD.gbxboundariesbinary_src import create_gbxboundaries, read_gbxboundaries
 from pySD.initsuperdropsbinary_src import *
 from pySD import editconfigfile 
-from src.handlesrc import *
-from src_validationplots import individSDs, condensationcurves
+from datsrc import *
+from validsrc import condensationcurves
 
 ############### INPUTS ##################
 # path and filenames for creating SD

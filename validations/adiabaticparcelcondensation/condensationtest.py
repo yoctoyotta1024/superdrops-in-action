@@ -6,20 +6,23 @@ import matplotlib.pyplot as plt
 #### DON'T FORGET TO CHANGE SDM PROCESS IN main.cpp TO
 # JUST CONDENSATION ####
 
-abspath = "/Users/yoctoyotta1024/Documents/autumnwinter2022_23/" +\
-    "clara-bayley-superdroplets/"
-sys.path.append(abspath+"superdroplet_model/")
-sys.path.append(abspath+"plottingscripts/")
+path2CLEO = "/Users/yoctoyotta1024/Documents/b1_springsummer2023/CLEO/"
+sys.path.append(path2CLEO) # for imports from pySD package
+
+apath = "/Users/yoctoyotta1024/Documents/b1_springsummer2023/superdrops_in_action/"
+sys.path.append(apath+"sdmplotting")
+sys.path.append(apath+"validations/")
+
 from pySD.gbxboundariesbinary_src import create_gbxboundaries, read_gbxboundaries
 from pySD.initsuperdropsbinary_src import *
-from src.handlesrc import *
-from src_validationplots import individSDs, condensationcurves
+from datsrc import *
+from validsrc import individSDs, condensationcurves
 
 ############### INPUTS ##################
 # path and filenames for creating SD initial conditions and for running model
-binpath = abspath+"validations/bin/"
-constsfile = abspath+"superdroplet_model/src/include/claras_SDconstants.hpp"
-configfile = abspath+"validations/condconfig.txt"
+binpath = apath+"validations/adiabaticparcelcondensation/bin/"
+constsfile = path2CLEO+"src/include/claras_SDconstants.hpp"
+configfile = apath+"validations/adiabaticparcelcondensation/condconfig.txt"
 initSDsfile = binpath+"cond_dimlessSDsinit.dat"
 gridfile = binpath+"cond_dimlessGBxboundaries.dat"
 
@@ -71,12 +74,12 @@ if isfigures[0]:
 plt.close()
 
 ### 2. compile and run model
-os.chdir(abspath+"superdroplet_model/build")
+os.chdir(path2CLEO+"/build")
 os.system("pwd")
 os.system("make clean && make")
 os.chdir(binpath)
 os.system("rm -rf "+dataset)
-os.system(abspath+'superdroplet_model/build/src/coupledmodel ' +
+os.system(path2CLEO+'/build/src/coupledmodel ' +
           configfile+' '+constsfile)
 
 # 3. load and plot results

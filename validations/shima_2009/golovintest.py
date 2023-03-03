@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 # JUST COLLISIONS USING GOLVINS KERNEL ####
 
 path2CLEO = "/Users/yoctoyotta1024/Documents/b1_springsummer2023/CLEO/"
-sys.path.append(path2CLEO)
+sys.path.append(path2CLEO) # for imports from pySD package
 
 apath = "/Users/yoctoyotta1024/Documents/b1_springsummer2023/superdrops_in_action/"
 sys.path.append(apath+"sdmplotting")
