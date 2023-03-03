@@ -1,8 +1,7 @@
 import numpy as np
 import sys
 
-path_in2pySD = "/Users/yoctoyotta1024/Documents/b1_springsummer2023/"+\
-                "CLEO/clara-bayley-superdroplets"
+path_in2pySD = "/Users/yoctoyotta1024/Documents/b1_springsummer2023/CLEO/"
 sys.path.append(path_in2pySD)
 
 from pySD.gbxboundariesbinary_src.read_gbxboundaries import read_dimless_gbxboundaries_binary, calc_domaininfo

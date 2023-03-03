@@ -5,7 +5,7 @@ import numpy as np
 import xarray as xr
 import awkward as ak
 import random
-from . import pysetuptxt, thermoeqns
+from . import thermoeqns
 from sys import maxsize
 
 class Sddata:

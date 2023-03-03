@@ -2,7 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from scipy.special import iv
 
-from ..handlesrc import histos, pyzarr
+from ..datsrc import histos, pyzarr
 
 def setup_golovin_figure(witherr):
 

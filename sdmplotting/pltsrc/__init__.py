@@ -1,2 +1,2 @@
-__all__ = ["plot_kinetics", "pltfuncs", "plot_individSDs", 
+__all__ = ["pltfuncs", "plot_kinetics", "plot_individSDs", 
 "plot_distribs", "plot_golovin"]

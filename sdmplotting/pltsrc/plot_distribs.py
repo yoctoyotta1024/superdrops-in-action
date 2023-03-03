@@ -2,8 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib import colors
 
-from ..handlesrc import histos, pyzarr
-from ..handlesrc.pyzarr import select_from_attr
+from ..datsrc import histos, pyzarr
 
 plt.rcParams.update({'font.size': 14})
 
@@ -86,7 +85,7 @@ def plot_domain_superdroplets_distrib(fig, ax, tplt, rspan, nbins, times,
     for all the superdroplets in the domain at each time in tplt list '''
 
     weights = None
-    radius = select_from_attr(sddata["radius"], times, tplt)
+    radius = pyzarr.select_from_attr(sddata["radius"], times, tplt)
   
     lines = calc_distrib_plotonaxis(ax, tplt, rspan, nbins, times,
                         radius, weights, perlogR=False, smooth=False,
