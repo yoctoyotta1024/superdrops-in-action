@@ -12,4 +12,5 @@
 __pycache__
 build
 bin
+bin*
 docs/source/_autosummary

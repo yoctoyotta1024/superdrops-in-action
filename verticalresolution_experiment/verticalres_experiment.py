@@ -2,9 +2,9 @@ import os
 import sys
 import numpy as np
 
-abspath = "/Users/yoctoyotta1024/Documents/autumnwinter2022_23/" +\
-    "clara-bayley-superdroplets/"
-sys.path.append(abspath+"/superdroplet_model/")
+path2CLEO = "/Users/yoctoyotta1024/Documents/b1_springsummer2023/CLEO/"
+sys.path.append(path2CLEO) # for imports from pySD package
+
 from pySD.gbxboundariesbinary_src import create_gbxboundaries, read_gbxboundaries
 from pySD.initsuperdropsbinary_src import *
 from pySD.editconfigfile import edit_config_params
@@ -13,9 +13,11 @@ from pySD import cxx2py
 ### ----------------- INPUTS ----------------- ###
 # path and filenames for creating SD 
 # initial conditions and for running model
-binpath = abspath+"verticalresolution_experiment/bin/"
-constsfile = abspath+"superdroplet_model/src/include/claras_SDconstants.hpp"
-configfile = abspath+"verticalresolution_experiment/verticalresexp_config.txt"
+apath = "/Users/yoctoyotta1024/Documents/b1_springsummer2023/"+\
+        "superdrops_in_action/verticalresolution_experiment/"
+binpath = apath+"bin1024/"
+constsfile = path2CLEO+"src/include/claras_SDconstants.hpp"
+configfile = apath+"verticalresexp_config.txt"
 
 # [plot, save] figures of initial conditions
 isfigures = [True, True] 
@@ -26,7 +28,7 @@ ygrid = np.asarray([0, 1000])
 zgridlimits = [0, 1000] # [minz, maxz] [m] of domain
 #resolutions = [1000, 500, 250, 125, 62.5, 31.25] # deltaz [m] of domain gridboxes
 resolutions = [1000, 500, 250, 125] # deltaz [m] of domain gridboxes
-run_nums = range(0, 15, 1) # experiment numbers to run
+run_nums = range(0, 3, 1) # experiment numbers to run
 outputlabel = sys.argv[1] # label for output e.g. "condcoll" or "golovin"
 
 # settings for sampling radii from exponential in volume distirbution
@@ -44,41 +46,41 @@ randomcoord3         = True                        # sample coord3 range randoml
 coord3gen = initattributes.SampleCoord3Gen(coord3span, randomcoord3)
 ### ------------------------------------------ ###
 
-### ----------- PREPARE EXPERIMENT ----------- ###
+## ----------- PREPARE EXPERIMENT ----------- ###
 
-# # create initial SD conditions to use in all experiments
-# for j in run_nums:
-#   initSDsfile = binpath+"dimlessSDsinit_run"+str(j)+".dat"
+# create initial SD conditions to use in all experiments
+for j in run_nums:
+  initSDsfile = binpath+"dimlessSDsinit_run"+str(j)+".dat"
   
-#   samplevol = read_gbxboundaries.calc_domainvol(np.asarray(coord3span), xgrid, ygrid)
-#   print("sample VOL:", samplevol)
-#   initattrs = initattributes.InitAttributes(radiigen, radiiprobdist, 
-#                                             coord3gen, numconc, samplevol)
-#   create_initsuperdrops.write_initsuperdrops_binary(initSDsfile, initattrs, 
-#                                                     configfile, constsfile)
+  samplevol = read_gbxboundaries.calc_domainvol(np.asarray(coord3span), xgrid, ygrid)
+  print("sample VOL:", samplevol)
+  initattrs = initattributes.InitAttributes(radiigen, radiiprobdist, 
+                                            coord3gen, numconc, samplevol)
+  create_initsuperdrops.write_initsuperdrops_binary(initSDsfile, initattrs, 
+                                                    configfile, constsfile)
 
-#   if isfigures[0]:
-#     read_initsuperdrops.plot_initdistribs(configfile, constsfile, initSDsfile,
-#                                           samplevol, binpath, isfigures[1])
+  if isfigures[0]:
+    read_initsuperdrops.plot_initdistribs(configfile, constsfile, initSDsfile,
+                                          samplevol, binpath, isfigures[1])
     
-# # create gridbox files to use in all experiments
-# for i, res in enumerate(resolutions):
-#   zgrid = zgridlimits+[res] # input settings for zgrid for given experiment
-#   gridfile = binpath+"resexp"+str(i)+"_dimlessGBxbounds.dat"
+# create gridbox files to use in all experiments
+for i, res in enumerate(resolutions):
+  zgrid = zgridlimits+[res] # input settings for zgrid for given experiment
+  gridfile = binpath+"resexp"+str(i)+"_dimlessGBxbounds.dat"
  
-#   create_gbxboundaries.write_gridboxboundaries_binary(gridfile, zgrid, xgrid, 
-#                                                        ygrid, constsfile)
-#   read_gbxboundaries.print_domain_info(constsfile, gridfile)
+  create_gbxboundaries.write_gridboxboundaries_binary(gridfile, zgrid, xgrid, 
+                                                       ygrid, constsfile)
+  read_gbxboundaries.print_domain_info(constsfile, gridfile)
   
-#   if isfigures[0]:
-#       read_gbxboundaries.plot_gridboxboundaries(constsfile, gridfile, 
-#                                                 binpath, isfigures[1])
+  if isfigures[0]:
+      read_gbxboundaries.plot_gridboxboundaries(constsfile, gridfile, 
+                                                binpath, isfigures[1])
 
-### ------------------------------------------ ###
+## ------------------------------------------ ###
 
 # ## -------------- COMPILE MODEL ------------- ###
 
-os.chdir(abspath+"superdroplet_model/build")
+os.chdir(path2CLEO+"build")
 os.system("pwd")
 os.system("make clean && make")
 
@@ -107,7 +109,7 @@ for j in run_nums:
 
     # run model
     os.chdir(binpath)
-    os.system(abspath+'superdroplet_model/build/src/coupledmodel ' +
+    os.system(path2CLEO+'build/src/coupledmodel ' +
                     configfile+' '+constsfile)
 
 ### ------------------------------------------ ###

@@ -12,12 +12,12 @@
 #  created using python "create_gbxboundariesbinary_script" script.
 
 ### input file parameters ###
-initSDs_filename = dimlessSDsinit_run14.dat# binary filename for initialisation of superdrops
+initSDs_filename = dimlessSDsinit_run2.dat# binary filename for initialisation of superdrops
 grid_filename = resexp3_dimlessGBxbounds.dat# binary filename for gridbox boundaries
 
 ### output data parameters ###
 setuptxt = resexp3_setup.txt            # .txt filename to copy inital setup to as output
-zarrbasedir = collsediwetup_8192/resexp3/collsediwetup_8192_run14.zarr# zarr store base directory
+zarrbasedir = golovin1024/resexp3/golovin1024_run2.zarr# zarr store base directory
 maxcsize = 8192                          # size of array chunks for SD attributes data if outputing to zarr store
 
 ### SDM parameters ###
@@ -32,13 +32,13 @@ OUT_TSTEP = 15                          # time between outputting data (and coup
 TEND = 2400                             # time span of integration [s]
 
 ### superdroplet params ###
-NSUPERS = 8192                          # initial total no. superdrops
+NSUPERS = 1024                          # initial total no. superdrops
 SDnspace = 1                            # no. of spatial coordinates of superdroplets ( = dimension of model)
 
 ### initial thermodynamic conditions ###
-P_INIT = 100000.0                        # initial pressure [Pa]
+P_INIT = 100000.0                       # initial pressure [Pa]
 TEMP_INIT = 298.15                      # initial parcel temperature [T]
-relh_init = 40.0                        # initial relative humidity (%)
+relh_init = -1000.0                     # initial relative humidity (%)
 qc_init = 0.0                           # initial liquid water content []
 
 ### CVODE ODE solver paramters ###
