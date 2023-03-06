@@ -74,3 +74,13 @@ class CommonSuperdropProperties():
         v_w += -m_sol/self.RHO_SOL
 
         return self.RHO_L*v_w * 1000 #[g]
+
+    def masstimeseries(self, radii, m_sols):
+        ''' call mass function for each r, m_sol pair '''
+
+        masses = []
+        for r,m_sol in zip(radii, m_sols):
+            ms = self.mass(np.asarray(r), np.asarray(m_sol))
+            masses.append(ms)
+        
+        return masses # [g]

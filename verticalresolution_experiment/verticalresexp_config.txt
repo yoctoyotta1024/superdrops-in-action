@@ -12,12 +12,12 @@
 #  created using python "create_gbxboundariesbinary_script" script.
 
 ### input file parameters ###
-initSDs_filename = dimlessSDsinit_run4.dat# binary filename for initialisation of superdrops
+initSDs_filename = dimlessSDsinit_run14.dat# binary filename for initialisation of superdrops
 grid_filename = resexpu200_dimlessGBxbounds.dat# binary filename for gridbox boundaries
 
 ### output data parameters ###
 setuptxt = resexpu200_setup.txt         # .txt filename to copy inital setup to as output
-zarrbasedir = collsediUNIgrid_8192/resexpu200/collsediUNIgrid_8192_run4.zarr# zarr store base directory
+zarrbasedir = collsediUNIgrid_8192/resexpu200/collsediUNIgrid_8192_run14.zarr# zarr store base directory
 maxcsize = 8192                          # size of array chunks for SD attributes data if outputing to zarr store
 
 ### SDM parameters ###
