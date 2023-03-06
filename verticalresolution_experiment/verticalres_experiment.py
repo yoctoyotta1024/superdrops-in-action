@@ -16,7 +16,7 @@ from pySD import cxx2py
 # initial conditions and for running model
 apath = "/Users/yoctoyotta1024/Documents/b1_springsummer2023/"+\
         "superdrops_in_action/verticalresolution_experiment/"
-binpath = apath+"bin/"
+binpath = apath+"binUNIgrid/"
 constsfile = path2CLEO+"src/claras_SDconstants.hpp"
 configfile = apath+"verticalresexp_config.txt"
 
@@ -24,15 +24,17 @@ configfile = apath+"verticalresexp_config.txt"
 isfigures = [True, True] 
 
 # domain / gridbox and outputlabel settings
-run_nums = range(0, 3, 1) # experiment numbers to run
+run_nums = range(0, 15, 1) # experiment numbers to run
 outputlabel = sys.argv[1] # label for output e.g. "condcoll" or "golovin"
 xgrid = np.asarray([0, 1000]) 
 ygrid = np.asarray([0, 1000])
 
-#zgridlimits = [0, 1500] # [minz, maxz] [m] of domain
-#resolutions = [1000, 500, 250, 125, 62.5, 31.25] # deltaz [m] of domain gridboxes
-useICONgridspacing = True
-resolutions = [2] # use ICON zgrid and these scale factors for the grid resolution
+gridspacing = "UNI" # "UNI" (uniform) or "ICON" (non-uniform) grid spacing
+resolutions = [25, 50, 100, 200] # deltaz [m] of domain gridboxes for uniform grid spacing
+resexplabs = ["u25", "u50", "u100", "u200"]
+# gridspacing = "ICON" # "UNI" (uniform) or "ICON" (non-uniform) grid spacing
+# resolutions = [0.25, 0.5, 1, 2] # scale factors for ICON grid resolution
+# resexplabs = ["x"+str(res).replace(".", "p") for res in resolutions]
 
 # settings for sampling radii from exponential in volume distirbution
 volexpr0             = 30.531e-6                   # peak of volume exponential distribution [m]
@@ -122,14 +124,18 @@ def icon191levels_zgrid(scale_resolution, show_plot=False):
 #     read_initsuperdrops.plot_initdistribs(configfile, constsfile, initSDsfile,
 #                                           samplevol, binpath, isfigures[1])
     
-# # create gridbox files to use in all experiments
-# for i, res in enumerate(resolutions):
-#   if useICONgridspacing:
-#     zgrid = icon191levels_zgrid(res, True)
-#   else:
-#     zgrid = zgridlimits+[res] # input settings for zgrid for given experiment
+# # # # create gridbox files to use in all experiments
+# for i, resexp in enumerate(resexplabs):
   
-#   gridfile = binpath+"resexp"+str(i)+"_dimlessGBxbounds.dat"
+#   if gridspacing == "ICON":
+#     zgrid = icon191levels_zgrid(resolutions[i], True)
+#   elif gridspacing == "UNI":
+#     zgridlimits = [0, 1500] # [zmin, zmax] of domain
+#     zgrid = zgridlimits+[resolutions[i]] # input settings for zgrid for given experiment
+#   else:
+#     raise ValueError("gridspacing can be either 'UNI' or 'ICON'")
+  
+#   gridfile = binpath+"resexp"+resexp+"_dimlessGBxbounds.dat"
  
 #   create_gbxboundaries.write_gridboxboundaries_binary(gridfile, zgrid, xgrid, 
 #                                                        ygrid, constsfile)
@@ -139,7 +145,7 @@ def icon191levels_zgrid(scale_resolution, show_plot=False):
 #       read_gbxboundaries.plot_gridboxboundaries(constsfile, gridfile, 
 #                                                 binpath, isfigures[1])
 
-# # ------------------------------------------ ###
+# # # ------------------------------------------ ###
 
 # ## -------------- COMPILE MODEL ------------- ###
 
@@ -157,15 +163,15 @@ for j in run_nums:
   
   initSDsfile = "dimlessSDsinit_run"+str(j)+".dat"
     
-  for i, res in enumerate(resolutions):
-    gridfile = "resexp"+str(i)+"_dimlessGBxbounds.dat"
+  for i, resexp in enumerate(resexplabs):
+    gridfile = "resexp"+resexp+"_dimlessGBxbounds.dat"
 
     # modify where zarr file saves (relative to binpath)
     params2edit = {
     "initSDs_filename" : initSDsfile,
     "grid_filename" : gridfile,
-    "setuptxt" : "resexp"+str(i)+"_setup.txt",
-    "zarrbasedir" : outputlabel+"/resexp"+str(i)+"/"+\
+    "setuptxt" : "resexp"+resexp+"_setup.txt",
+    "zarrbasedir" : outputlabel+"/resexp"+resexp+"/"+\
                     outputlabel+"_run"+str(j)+".zarr",
     }
     edit_config_params(configfile, params2edit)

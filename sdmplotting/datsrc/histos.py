@@ -22,7 +22,7 @@ def logr_distribution(rspan, nbins, radius, wghts,
   ''' get distribution of data with weights 'wghts' against 
   logr. Uses np.histogram to get frequency of a particular
   value of data that falls in each log(r) -> log(r) + dlog(r) bin.
-  Apply guassian kernel smoothing if wanted '''
+  Apply gaussian kernel smoothing if wanted '''
 
   # create lnr bins (linearly spaced in lnr)
   hedgs = np.linspace(np.log(rspan[0]), np.log(rspan[1]), nbins+1)  # edges to lnr bins
@@ -40,6 +40,30 @@ def logr_distribution(rspan, nbins, radius, wghts,
     hist, hcens = gaussian_kernel_smoothing(hist, hcens, smooth)
 
   return hist, np.exp(hedgs), np.exp(hcens) # units of hedgs and hcens [microns]
+
+def radius_distribution(radius, rspan, nbins, wghts,
+                        perR=False, smooth=False):
+  ''' get distribution of data with weights 'wghts' against radius.
+  Uses np.histogram to get frequency of a particular
+  value of data that falls in each r -> r + dr bin.
+  Apply gaussian kernel smoothing if wanted '''
+
+  # create r bins linearly spaced in log10(r)
+  hedgs = np.logspace(np.log10(rspan[0]), np.log10(rspan[1]), nbins+1)  # edges to lnr bins
+  hwdths = hedgs[1:]- hedgs[:-1]                               # lnr bin widths
+  hcens = (hedgs[1:]+hedgs[:-1])/2                             # lnr bin centres
+
+  # get number frequency in each bin
+  hist, hedgs = np.histogram(radius, bins=hedgs, 
+                             weights=wghts, density=None)
+  
+  if perR == True: # get frequency / bin width
+      hist = hist/hwdths
+
+  if smooth:
+    hist, hcens = gaussian_kernel_smoothing(hist, hcens, smooth)
+
+  return hist, hedgs, hcens # units of hedgs and hcens [microns]
 
 def domain_mtotdens_distrib(radius, m_sol, eps, rspan, nbins, domainvol,
                             SDprops, smooth=False):
