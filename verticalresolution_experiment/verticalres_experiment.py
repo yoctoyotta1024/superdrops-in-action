@@ -30,8 +30,8 @@ xgrid = np.asarray([0, 1000])
 ygrid = np.asarray([0, 1000])
 
 gridspacing = "UNI" # "UNI" (uniform) or "ICON" (non-uniform) grid spacing
-resolutions = [25, 50, 100, 200] # deltaz [m] of domain gridboxes for uniform grid spacing
-resexplabs = ["u25", "u50", "u100", "u200"]
+resolutions = [25, 50, 100, 250] # deltaz [m] of domain gridboxes for uniform grid spacing
+resexplabs = ["u25", "u50", "u100", "u250"]
 # gridspacing = "ICON" # "UNI" (uniform) or "ICON" (non-uniform) grid spacing
 # resolutions = [0.25, 0.5, 1, 2] # scale factors for ICON grid resolution
 # resexplabs = ["x"+str(res).replace(".", "p") for res in resolutions]
@@ -124,7 +124,7 @@ def icon191levels_zgrid(scale_resolution, show_plot=False):
 #     read_initsuperdrops.plot_initdistribs(configfile, constsfile, initSDsfile,
 #                                           samplevol, binpath, isfigures[1])
     
-# # # # create gridbox files to use in all experiments
+# # create gridbox files to use in all experiments
 # for i, resexp in enumerate(resexplabs):
   
 #   if gridspacing == "ICON":

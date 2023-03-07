@@ -2,8 +2,6 @@ import sys
 import numpy as np
 import matplotlib.pyplot as plt
 
-plt.rcParams.update({'font.size': 40})
-
 apath = "/Users/yoctoyotta1024/Documents/b1_springsummer2023"+\
         "/superdrops_in_action/"
 sys.path.append(apath)

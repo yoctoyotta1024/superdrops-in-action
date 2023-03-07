@@ -4,8 +4,6 @@ from matplotlib import colors
 
 from ..datsrc import histos, pyzarr
 
-plt.rcParams.update({'font.size': 14})
-
 def timelabel(times, t):
   
   ind = np.argmin(abs(times-t))
