@@ -16,8 +16,8 @@ from pySD import cxx2py
 # initial conditions and for running model
 apath = "/Users/yoctoyotta1024/Documents/b1_springsummer2023/"+\
         "superdrops_in_action/verticalresolution_experiment/"
-binpath = apath+"binUNIgrid/"
-constsfile = path2CLEO+"src/claras_SDconstants.hpp"
+binpath = apath+"binMANYSDs/"
+constsfile = path2CLEO+"libs/claras_SDconstants.hpp"
 configfile = apath+"verticalresexp_config.txt"
 
 # [plot, save] figures of initial conditions
@@ -29,17 +29,19 @@ outputlabel = sys.argv[1] # label for output e.g. "condcoll" or "golovin"
 xgrid = np.asarray([0, 1000]) 
 ygrid = np.asarray([0, 1000])
 
-gridspacing = "UNI" # "UNI" (uniform) or "ICON" (non-uniform) grid spacing
-resolutions = [25, 50, 100, 250] # deltaz [m] of domain gridboxes for uniform grid spacing
-resexplabs = ["u25", "u50", "u100", "u250"]
-# gridspacing = "ICON" # "UNI" (uniform) or "ICON" (non-uniform) grid spacing
-# resolutions = [0.25, 0.5, 1, 2] # scale factors for ICON grid resolution
-# resexplabs = ["x"+str(res).replace(".", "p") for res in resolutions]
+# gridspacing = "UNI" # "UNI" (uniform) or "ICON" (non-uniform) grid spacing
+# resolutions = [25, 50, 100, 250] # deltaz [m] of domain gridboxes for uniform grid spacing
+# resexplabs = ["u25", "u50", "u100", "u250"]
+gridspacing = "ICON" # "UNI" (uniform) or "ICON" (non-uniform) grid spacing
+#resolutions = [0.25, 0.5, 1, 2] # scale factors for ICON grid resolution
+resolutions = [4] # scale factors for ICON grid resolution
+resexplabs = [str(res).replace(".", "p") for res in resolutions]
 
 # settings for sampling radii from exponential in volume distirbution
 volexpr0             = 30.531e-6                   # peak of volume exponential distribution [m]
 numconc              = 2**(23)                     # total no. conc of real droplets [m^-3]
-rspan                = [1e-8, 9e-5]                # max and min range of radii to sample [m]
+#rspan                = [1e-8, 9e-5]                # max and min range of radii to sample [m]
+rspan                = [2e-9, 9.8e-5]                # max and min range of radii to sample [m]
 randomr              = True                        # sample radii range randomly or not
 
 radiiprobdist = radiiprobdistribs.VolExponential(volexpr0, rspan)
@@ -107,7 +109,7 @@ def icon191levels_zgrid(scale_resolution, show_plot=False):
   return zgrid
 
 
-# # ----------- PREPARE EXPERIMENT ----------- ###
+# ----------- PREPARE EXPERIMENT ----------- ###
 
 # # create initial SD conditions to use in all experiments
 # for j in run_nums:
@@ -145,7 +147,7 @@ def icon191levels_zgrid(scale_resolution, show_plot=False):
 #       read_gbxboundaries.plot_gridboxboundaries(constsfile, gridfile, 
 #                                                 binpath, isfigures[1])
 
-# # # ------------------------------------------ ###
+# # ------------------------------------------ ###
 
 # ## -------------- COMPILE MODEL ------------- ###
 
@@ -178,7 +180,6 @@ for j in run_nums:
 
     # run model
     os.chdir(binpath)
-    os.system(path2CLEO+'build/src/coupledmodel ' +
-                    configfile+' '+constsfile)
-
+    os.system(path2CLEO+'/build/src/coupledCVODECLEO ' +
+               configfile+' '+constsfile)
 ### ------------------------------------------ ###

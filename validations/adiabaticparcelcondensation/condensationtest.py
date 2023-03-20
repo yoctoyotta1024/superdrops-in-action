@@ -21,7 +21,7 @@ from validsrc import individSDs, condensationcurves
 ############### INPUTS ##################
 # path and filenames for creating SD initial conditions and for running model
 binpath = apath+"validations/adiabaticparcelcondensation/bin/"
-constsfile = path2CLEO+"src/claras_SDconstants.hpp"
+constsfile = path2CLEO+"libs/claras_SDconstants.hpp"
 configfile = apath+"validations/adiabaticparcelcondensation/condconfig.txt"
 initSDsfile = binpath+"cond_dimlessSDsinit.dat"
 gridfile = binpath+"cond_dimlessGBxboundaries.dat"
@@ -79,8 +79,7 @@ os.system("pwd")
 os.system("make clean && make")
 os.chdir(binpath)
 os.system("rm -rf "+dataset)
-os.system(path2CLEO+'/build/src/coupledmodel ' +
-          configfile+' '+constsfile)
+os.system(path2CLEO+'/build/src/coupledCVODECLEO ' + configfile+' '+constsfile)
 
 # 3. load and plot results
 # read in constants and intial setup from setup .txt file

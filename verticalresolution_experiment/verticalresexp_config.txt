@@ -13,11 +13,11 @@
 
 ### input file parameters ###
 initSDs_filename = dimlessSDsinit_run14.dat# binary filename for initialisation of superdrops
-grid_filename = resexpu250_dimlessGBxbounds.dat# binary filename for gridbox boundaries
+grid_filename = resexp4_dimlessGBxbounds.dat# binary filename for gridbox boundaries
 
 ### output data parameters ###
-setuptxt = resexpu250_setup.txt         # .txt filename to copy inital setup to as output
-zarrbasedir = collsediUNIgrid_8192/resexpu250/collsediUNIgrid_8192_run14.zarr# zarr store base directory
+setuptxt = resexp4_setup.txt            # .txt filename to copy inital setup to as output
+zarrbasedir = collsediICONgrid_65536SDs/resexp4/collsediICONgrid_65536SDs_run14.zarr# zarr store base directory
 maxcsize = 8192                          # size of array chunks for SD attributes data if outputing to zarr store
 
 ### SDM parameters ###
@@ -28,11 +28,11 @@ COND_TSTEP = 1                          # time between SD condensation events [s
 COLL_TSTEP = 1                          # time between SD collision events [s]
 SEDI_TSTEP = 1                          # time between SD sedimentation events [s]
 XCHANGE_TSTEP = 1                       # time between SD exchange between gridboxes [s]
-OUT_TSTEP = 15                          # time between outputting data (and coupling) [s]
-TEND = 3600                             # time span of integration [s]
+OUT_TSTEP = 30                          # time between outputting data (and coupling) [s]
+TEND = 1800                             # time span of integration [s]
 
 ### superdroplet params ###
-NSUPERS = 8192                          # initial total no. superdrops
+NSUPERS = 65536                         # initial total no. superdrops
 SDnspace = 1                            # no. of spatial coordinates of superdroplets ( = dimension of model)
 
 ### initial thermodynamic conditions ###

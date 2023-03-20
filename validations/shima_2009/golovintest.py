@@ -22,7 +22,7 @@ from validsrc.golovin_figure import golovin_validation_figure
 # path and filenames for creating SD
 # initial conditions and for running model
 binpath = apath+"validations/shima_2009/bin/"
-constsfile = path2CLEO+"src/claras_SDconstants.hpp"
+constsfile = path2CLEO+"libs/claras_SDconstants.hpp"
 configfile = apath+"validations/shima_2009/golovinconfig.txt"
 initSDsfile = binpath+"golovin_dimlessSDsinit.dat"
 gridfile = binpath+"golovin_dimlessGBxboundaries.dat"
@@ -74,8 +74,7 @@ os.system("pwd")
 os.system("make clean && make")
 os.chdir(binpath)
 os.system("rm -rf "+dataset)
-os.system(path2CLEO+'/build/src/coupledmodel ' +
-          configfile+' '+constsfile)
+os.system(path2CLEO+'/build/src/coupledCVODECLEO ' + configfile+' '+constsfile)
 
 # 3. load results
 # read in constants and intial setup from setup .txt file
