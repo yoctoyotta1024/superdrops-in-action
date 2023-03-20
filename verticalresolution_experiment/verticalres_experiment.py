@@ -16,7 +16,7 @@ from pySD import cxx2py
 # initial conditions and for running model
 apath = "/Users/yoctoyotta1024/Documents/b1_springsummer2023/"+\
         "superdrops_in_action/verticalresolution_experiment/"
-binpath = apath+"binMANYSDs/"
+binpath = apath+"bintest/"
 constsfile = path2CLEO+"libs/claras_SDconstants.hpp"
 configfile = apath+"verticalresexp_config.txt"
 
