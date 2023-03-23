@@ -2,8 +2,9 @@ import sys
 import numpy as np
 import matplotlib.pyplot as plt
 
-apath = "/Users/yoctoyotta1024/Documents/b1_springsummer2023"+\
-        "/superdrops_in_action/"
+# apath = "/Users/yoctoyotta1024/Documents/b1_springsummer2023"+\
+#         "/superdrops_in_action/"
+apath = "/home/m/m300950/superdrops_in_action/"
 sys.path.append(apath)
 
 from sdmplotting.datsrc import *

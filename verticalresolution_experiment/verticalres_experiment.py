@@ -4,6 +4,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 path2CLEO = "/Users/yoctoyotta1024/Documents/b1_springsummer2023/CLEO/"
+path2CLEO = "/home/m/m300950/CLEO/"
 sys.path.append(path2CLEO) # for imports from pySD package
 
 from pySD.gbxboundariesbinary_src import create_gbxboundaries, read_gbxboundaries
@@ -14,9 +15,10 @@ from pySD import cxx2py
 ### ----------------- INPUTS ----------------- ###
 # path and filenames for creating SD 
 # initial conditions and for running model
-apath = "/Users/yoctoyotta1024/Documents/b1_springsummer2023/"+\
-        "superdrops_in_action/verticalresolution_experiment/"
-binpath = apath+"bintest/"
+# apath = "/Users/yoctoyotta1024/Documents/b1_springsummer2023/"+\
+#         "superdrops_in_action/verticalresolution_experiment/"
+apath = "/home/m/m300950/superdrops_in_action/verticalresolution_experiment/"
+binpath = apath+"binhighres/"
 constsfile = path2CLEO+"libs/claras_SDconstants.hpp"
 configfile = apath+"verticalresexp_config.txt"
 
@@ -111,41 +113,41 @@ def icon191levels_zgrid(scale_resolution, show_plot=False):
 
 # ----------- PREPARE EXPERIMENT ----------- ###
 
-# # create initial SD conditions to use in all experiments
-# for j in run_nums:
-#   initSDsfile = binpath+"dimlessSDsinit_run"+str(j)+".dat"
+# create initial SD conditions to use in all experiments
+for j in run_nums:
+  initSDsfile = binpath+"dimlessSDsinit_run"+str(j)+".dat"
   
-#   samplevol = read_gbxboundaries.calc_domainvol(np.asarray(coord3span), xgrid, ygrid)
-#   print("sample VOL:", samplevol)
-#   initattrs = initattributes.InitAttributes(radiigen, radiiprobdist, 
-#                                             coord3gen, numconc, samplevol)
-#   create_initsuperdrops.write_initsuperdrops_binary(initSDsfile, initattrs, 
-#                                                     configfile, constsfile)
+  samplevol = read_gbxboundaries.calc_domainvol(np.asarray(coord3span), xgrid, ygrid)
+  print("sample VOL:", samplevol)
+  initattrs = initattributes.InitAttributes(radiigen, radiiprobdist, 
+                                            coord3gen, numconc, samplevol)
+  create_initsuperdrops.write_initsuperdrops_binary(initSDsfile, initattrs, 
+                                                    configfile, constsfile)
 
-#   if isfigures[0]:
-#     read_initsuperdrops.plot_initdistribs(configfile, constsfile, initSDsfile,
-#                                           samplevol, binpath, isfigures[1])
+  if isfigures[0]:
+    read_initsuperdrops.plot_initdistribs(configfile, constsfile, initSDsfile,
+                                          samplevol, binpath, isfigures[1])
     
-# # create gridbox files to use in all experiments
-# for i, resexp in enumerate(resexplabs):
+# create gridbox files to use in all experiments
+for i, resexp in enumerate(resexplabs):
   
-#   if gridspacing == "ICON":
-#     zgrid = icon191levels_zgrid(resolutions[i], True)
-#   elif gridspacing == "UNI":
-#     zgridlimits = [0, 1500] # [zmin, zmax] of domain
-#     zgrid = zgridlimits+[resolutions[i]] # input settings for zgrid for given experiment
-#   else:
-#     raise ValueError("gridspacing can be either 'UNI' or 'ICON'")
+  if gridspacing == "ICON":
+    zgrid = icon191levels_zgrid(resolutions[i], True)
+  elif gridspacing == "UNI":
+    zgridlimits = [0, 1500] # [zmin, zmax] of domain
+    zgrid = zgridlimits+[resolutions[i]] # input settings for zgrid for given experiment
+  else:
+    raise ValueError("gridspacing can be either 'UNI' or 'ICON'")
   
-#   gridfile = binpath+"resexp"+resexp+"_dimlessGBxbounds.dat"
+  gridfile = binpath+"resexp"+resexp+"_dimlessGBxbounds.dat"
  
-#   create_gbxboundaries.write_gridboxboundaries_binary(gridfile, zgrid, xgrid, 
-#                                                        ygrid, constsfile)
-#   read_gbxboundaries.print_domain_info(constsfile, gridfile)
+  create_gbxboundaries.write_gridboxboundaries_binary(gridfile, zgrid, xgrid, 
+                                                       ygrid, constsfile)
+  read_gbxboundaries.print_domain_info(constsfile, gridfile)
   
-#   if isfigures[0]:
-#       read_gbxboundaries.plot_gridboxboundaries(constsfile, gridfile, 
-#                                                 binpath, isfigures[1])
+  if isfigures[0]:
+      read_gbxboundaries.plot_gridboxboundaries(constsfile, gridfile, 
+                                                binpath, isfigures[1])
 
 # # ------------------------------------------ ###
 
