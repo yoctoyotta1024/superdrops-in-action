@@ -6,11 +6,13 @@ import matplotlib.pyplot as plt
 #### DON'T FORGET TO CHANGE SDM PROCESS IN main.cpp TO 
 # JUST COLLISIONS USING GOLVINS KERNEL ####
 
-path2CLEO = "/Users/yoctoyotta1024/Documents/b1_springsummer2023/CLEO/"
+#path2CLEO = "/Users/yoctoyotta1024/Documents/b1_springsummer2023/CLEO/"
+path2CLEO = "/home/m/m300950/CLEO/"
 sys.path.append(path2CLEO) # for imports from pySD package
 
-apath = "/Users/yoctoyotta1024/Documents/b1_springsummer2023/superdrops_in_action/"
-sys.path.append(apath+"sdmplotting")
+#apath = "/Users/yoctoyotta1024/Documents/b1_springsummer2023/superdrops_in_action/"
+apath = "/home/m/m300950/superdrops_in_action/"
+sys.path.append(apath+"sdmplotting/")
 sys.path.append(apath+"validations/")
 
 from pySD.gbxboundariesbinary_src import create_gbxboundaries, read_gbxboundaries
@@ -69,12 +71,13 @@ if isfigures[0]:
 plt.close()
 
 # 2. run model
-os.chdir(path2CLEO+"/build")
+os.chdir(path2CLEO+"build")
 os.system("pwd")
-os.system("make clean && make")
+#os.system("make clean && make")
+os.system("make")
 os.chdir(binpath)
 os.system("rm -rf "+dataset)
-os.system(path2CLEO+'/build/src/coupledCVODECLEO ' + configfile+' '+constsfile)
+os.system(path2CLEO+'build/src/coupledCVODECLEO ' + configfile+' '+constsfile)
 
 # 3. load results
 # read in constants and intial setup from setup .txt file
@@ -93,7 +96,7 @@ fig, ax = golovin_validation_figure(plotwitherr, time,
                          sddata, tplt, grid["domainvol"], SDprops,
                             numconc, volexpr0, smoothsig)
 
-savename = "/golovin_validation.png"
+savename = "golovin_validation.png"
 fig.savefig(binpath+savename, dpi=400, 
             bbox_inches="tight", facecolor='w', format="png")
 print("Figure .png saved as: "+binpath+savename)

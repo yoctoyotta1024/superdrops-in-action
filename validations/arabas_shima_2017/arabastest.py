@@ -11,11 +11,13 @@ import matplotlib.pyplot as plt
 
 #### DON'T FORGET TO CHANGE SDM PROCESS IN main.cpp TO JUST CONDENSATION ####
 
-path2CLEO = "/Users/yoctoyotta1024/Documents/b1_springsummer2023/CLEO/"
+#path2CLEO = "/Users/yoctoyotta1024/Documents/b1_springsummer2023/CLEO/"
+path2CLEO = "/home/m/m300950/CLEO/"
 sys.path.append(path2CLEO) # for imports from pySD package
 
-apath = "/Users/yoctoyotta1024/Documents/b1_springsummer2023/superdrops_in_action/"
-sys.path.append(apath+"sdmplotting")
+#apath = "/Users/yoctoyotta1024/Documents/b1_springsummer2023/superdrops_in_action/"
+apath = "/home/m/m300950/superdrops_in_action/"
+sys.path.append(apath+"sdmplotting/")
 sys.path.append(apath+"validations/")
 
 from pySD.gbxboundariesbinary_src import create_gbxboundaries, read_gbxboundaries
@@ -83,7 +85,7 @@ def displacement(time, w_avg, thalf):
     return z
 
 # ### 1. compile model
-os.chdir(path2CLEO+"/build")
+os.chdir(path2CLEO+"build")
 os.system("pwd")
 os.system("make clean && make")
 os.chdir(binpath)
@@ -130,7 +132,7 @@ for i in range(len(monors)):
 
         # 4. run model
         os.chdir(binpath)
-        os.system(path2CLEO+'/build/src/coupledCVODECLEO ' +
+        os.system(path2CLEO+'build/src/coupledCVODECLEO ' +
                    configfile+' '+constsfile)
 
         # 5. load results
@@ -185,7 +187,7 @@ for i in range(len(monors)):
 
     fig.tight_layout()
 
-    savename = "/arabas_shima_condensation_"+str(i)+".png"
+    savename = "arabas_shima_condensation_"+str(i)+".png"
     fig.savefig(binpath+savename, dpi=400, 
                 bbox_inches="tight", facecolor='w', format="png")
     print("Figure .png saved as: "+binpath+savename)

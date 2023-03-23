@@ -6,11 +6,13 @@ import matplotlib.pyplot as plt
 #### DON'T FORGET TO CHANGE SDM PROCESS IN main.cpp TO
 # JUST CONDENSATION ####
 
-path2CLEO = "/Users/yoctoyotta1024/Documents/b1_springsummer2023/CLEO/"
+#path2CLEO = "/Users/yoctoyotta1024/Documents/b1_springsummer2023/CLEO/"
+path2CLEO = "/home/m/m300950/CLEO/"
 sys.path.append(path2CLEO) # for imports from pySD package
 
-apath = "/Users/yoctoyotta1024/Documents/b1_springsummer2023/superdrops_in_action/"
-sys.path.append(apath+"sdmplotting")
+#apath = "/Users/yoctoyotta1024/Documents/b1_springsummer2023/superdrops_in_action/"
+apath = "/home/m/m300950/superdrops_in_action/"
+sys.path.append(apath+"sdmplotting/")
 sys.path.append(apath+"validations/")
 
 from pySD.gbxboundariesbinary_src import create_gbxboundaries, read_gbxboundaries
@@ -74,12 +76,12 @@ if isfigures[0]:
 plt.close()
 
 ### 2. compile and run model
-os.chdir(path2CLEO+"/build")
+os.chdir(path2CLEO+"build")
 os.system("pwd")
 os.system("make clean && make")
 os.chdir(binpath)
 os.system("rm -rf "+dataset)
-os.system(path2CLEO+'/build/src/coupledCVODECLEO ' + configfile+' '+constsfile)
+os.system(path2CLEO+'build/src/coupledCVODECLEO ' + configfile+' '+constsfile)
 
 # 3. load and plot results
 # read in constants and intial setup from setup .txt file
@@ -100,7 +102,7 @@ minid, maxid = 0, setup["nsupers"] # sample drops to plot from whole range of SD
 ndrops2plot = setup["nsupers"]
 radii = pyzarr.superdroplet_attr_for_ndrops(sddata, "radius", ndrops2plot, minid, maxid) 
 fig, ax = individSDs.individ_radiusgrowths_figure(time, radii)
-savename = "/cond_SDsradiigrowth.png"
+savename = "cond_SDsradiigrowth.png"
 fig.savefig(binpath+savename, dpi=400, 
             bbox_inches="tight", facecolor='w', format="png")
 print("Figure .png saved as: "+binpath+savename)
@@ -115,7 +117,7 @@ numconc = np.sum(sddata["eps"][0])/grid["domainvol"]/1e6 # [/cm^3]
 fig, axs = condensationcurves.condensation_validation_figure(time, eps, radius, m_sol,
                                                             thermo.temp, supersat, zprof, SDprops,
                                                             setup, numconc)
-savename = "/cond_validation.png"
+savename = "cond_validation.png"
 fig.savefig(binpath+savename, dpi=400, 
             bbox_inches="tight", facecolor='w', format="png")
 print("Figure .png saved as: "+binpath+savename)
