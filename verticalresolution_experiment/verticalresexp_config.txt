@@ -12,27 +12,27 @@
 #  created using python "create_gbxboundariesbinary_script" script.
 
 ### input file parameters ###
-initSDs_filename = dimlessSDsinit_run14.dat# binary filename for initialisation of superdrops
+initSDs_filename = dimlessSDsinit_run0.dat# binary filename for initialisation of superdrops
 grid_filename = resexp4_dimlessGBxbounds.dat# binary filename for gridbox boundaries
 
 ### output data parameters ###
 setuptxt = resexp4_setup.txt            # .txt filename to copy inital setup to as output
-zarrbasedir = testit/resexp4/testit_run14.zarr# zarr store base directory
-maxcsize = 8192                          # size of array chunks for SD attributes data if outputing to zarr store
+zarrbasedir = collsedi_highres/resexp4/collsedi_highres_run0.zarr# zarr store base directory
+maxcsize = 32768                          # size of array chunks for SD attributes data if outputing to zarr store
 
 ### SDM parameters ###
 cond_maxiters = 100                     # maximum no. iterations of Newton Raphson Method
 cond_rtol = 1e-6                        # relative tolerance for implicit euler integration
 cond_atol = 1e-6                        # abolute tolerance for implicit euler integration
-COND_TSTEP = 1                          # time between SD condensation events [s]
-COLL_TSTEP = 1                          # time between SD collision events [s]
-SEDI_TSTEP = 1                          # time between SD sedimentation events [s]
-XCHANGE_TSTEP = 1                       # time between SD exchange between gridboxes [s]
+COND_TSTEP = 0.1                        # time between SD condensation events [s]
+COLL_TSTEP = 0.1                        # time between SD collision events [s]
+SEDI_TSTEP = 0.1                        # time between SD sedimentation events [s]
+XCHANGE_TSTEP = 0.1                     # time between SD exchange between gridboxes [s]
 OUT_TSTEP = 30                          # time between outputting data (and coupling) [s]
-TEND = 3600                             # time span of integration [s]
+TEND = 2400                             # time span of integration [s]
 
 ### superdroplet params ###
-NSUPERS = 256                           # initial total no. superdrops
+NSUPERS = 262144                        # initial total no. superdrops
 SDnspace = 1                            # no. of spatial coordinates of superdroplets ( = dimension of model)
 
 ### initial thermodynamic conditions ###

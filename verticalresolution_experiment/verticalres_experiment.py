@@ -26,7 +26,7 @@ configfile = apath+"verticalresexp_config.txt"
 isfigures = [True, True] 
 
 # domain / gridbox and outputlabel settings
-run_nums = range(0, 15, 1) # experiment numbers to run
+run_nums = range(0, 5, 1) # experiment numbers to run
 outputlabel = sys.argv[1] # label for output e.g. "condcoll" or "golovin"
 xgrid = np.asarray([0, 1000]) 
 ygrid = np.asarray([0, 1000])
@@ -42,8 +42,8 @@ resexplabs = [str(res).replace(".", "p") for res in resolutions]
 # settings for sampling radii from exponential in volume distirbution
 volexpr0             = 30.531e-6                   # peak of volume exponential distribution [m]
 numconc              = 2**(23)                     # total no. conc of real droplets [m^-3]
-#rspan                = [1e-8, 9e-5]                # max and min range of radii to sample [m]
-rspan                = [2e-9, 9.8e-5]                # max and min range of radii to sample [m]
+rspan                = [5e-9, 9e-5]                # max and min range of radii to sample [m]
+#rspan                = [2e-9, 9.8e-5]                # max and min range of radii to sample [m]
 randomr              = True                        # sample radii range randomly or not
 
 radiiprobdist = radiiprobdistribs.VolExponential(volexpr0, rspan)
