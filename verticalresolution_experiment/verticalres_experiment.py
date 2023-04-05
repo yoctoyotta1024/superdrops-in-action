@@ -18,7 +18,7 @@ from pySD import cxx2py
 # apath = "/Users/yoctoyotta1024/Documents/b1_springsummer2023/"+\
 #         "superdrops_in_action/verticalresolution_experiment/"
 apath = "/home/m/m300950/superdrops_in_action/verticalresolution_experiment/"
-binpath = apath+"binhighres/"
+binpath = apath+"binHIGHres/"
 constsfile = path2CLEO+"libs/claras_SDconstants.hpp"
 configfile = apath+"verticalresexp_config.txt"
 
@@ -26,7 +26,7 @@ configfile = apath+"verticalresexp_config.txt"
 isfigures = [True, True] 
 
 # domain / gridbox and outputlabel settings
-run_nums = range(0, 5, 1) # experiment numbers to run
+run_nums = range(0, 1, 1) # experiment numbers to run
 outputlabel = sys.argv[1] # label for output e.g. "condcoll" or "golovin"
 xgrid = np.asarray([0, 1000]) 
 ygrid = np.asarray([0, 1000])
@@ -36,7 +36,7 @@ ygrid = np.asarray([0, 1000])
 # resexplabs = ["u25", "u50", "u100", "u250"]
 gridspacing = "ICON" # "UNI" (uniform) or "ICON" (non-uniform) grid spacing
 #resolutions = [0.25, 0.5, 1, 2] # scale factors for ICON grid resolution
-resolutions = [4] # scale factors for ICON grid resolution
+resolutions = [10] # scale factors for ICON grid resolution
 resexplabs = [str(res).replace(".", "p") for res in resolutions]
 
 # settings for sampling radii from exponential in volume distirbution

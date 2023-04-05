@@ -5,8 +5,8 @@
 #SBATCH --ntasks-per-node=1
 #SBATCH --cpus-per-task=1
 #SBATCH --mem=64G
-#SBATCH --time=04:00:00
+#SBATCH --time=08:00:00
 #SBATCH --mail-user=clara.bayley@mpimet.mpg.de
-#SBATCH --job-name=resexphigh
+#SBATCH --job-name=resexpcntrl
 
-/work/mh1126/m300950/superdropsV2/bin/python verticalres_experiment.py collsedi_highres
+/work/mh1126/m300950/superdropsV2/bin/python verticalres_experiment.py collsediICONgrid_1048576

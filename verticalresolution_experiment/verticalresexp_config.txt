@@ -13,12 +13,12 @@
 
 ### input file parameters ###
 initSDs_filename = dimlessSDsinit_run0.dat# binary filename for initialisation of superdrops
-grid_filename = resexp4_dimlessGBxbounds.dat# binary filename for gridbox boundaries
+grid_filename = resexp10_dimlessGBxbounds.dat# binary filename for gridbox boundaries
 
 ### output data parameters ###
-setuptxt = resexp4_setup.txt            # .txt filename to copy inital setup to as output
-zarrbasedir = collsedi_highres/resexp4/collsedi_highres_run0.zarr# zarr store base directory
-maxcsize = 32768                          # size of array chunks for SD attributes data if outputing to zarr store
+setuptxt = resexp10_setup.txt           # .txt filename to copy inital setup to as output
+zarrbasedir = collsediICONgrid_1048576/resexp10/collsediICONgrid_1048576_run0.zarr# zarr store base directory
+maxcsize = 1048576                      # size of array chunks for SD attributes data if outputing to zarr store
 
 ### SDM parameters ###
 cond_maxiters = 100                     # maximum no. iterations of Newton Raphson Method
@@ -29,10 +29,10 @@ COLL_TSTEP = 0.1                        # time between SD collision events [s]
 SEDI_TSTEP = 0.1                        # time between SD sedimentation events [s]
 XCHANGE_TSTEP = 0.1                     # time between SD exchange between gridboxes [s]
 OUT_TSTEP = 30                          # time between outputting data (and coupling) [s]
-TEND = 2400                             # time span of integration [s]
+TEND = 1440                             # time span of integration [s]
 
 ### superdroplet params ###
-NSUPERS = 262144                        # initial total no. superdrops
+NSUPERS = 1048576                       # initial total no. superdrops
 SDnspace = 1                            # no. of spatial coordinates of superdroplets ( = dimension of model)
 
 ### initial thermodynamic conditions ###
