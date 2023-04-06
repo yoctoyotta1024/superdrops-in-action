@@ -6,12 +6,12 @@ import matplotlib.pyplot as plt
 #### DON'T FORGET TO CHANGE SDM PROCESS IN main.cpp TO
 # JUST CONDENSATION ####
 
-#path2CLEO = "/Users/yoctoyotta1024/Documents/b1_springsummer2023/CLEO/"
-path2CLEO = "/home/m/m300950/CLEO/"
-sys.path.append(path2CLEO) # for imports from pySD package
+path2CLEO = "/Users/yoctoyotta1024/Documents/b1_springsummer2023/CLEO/"
+apath = "/Users/yoctoyotta1024/Documents/b1_springsummer2023/superdrops_in_action/"
+#path2CLEO = "/home/m/m300950/CLEO/"
+#apath = "/home/m/m300950/superdrops_in_action/"
 
-#apath = "/Users/yoctoyotta1024/Documents/b1_springsummer2023/superdrops_in_action/"
-apath = "/home/m/m300950/superdrops_in_action/"
+sys.path.append(path2CLEO) # for imports from pySD package
 sys.path.append(apath+"sdmplotting/")
 sys.path.append(apath+"validations/")
 
@@ -33,7 +33,7 @@ isfigures = [True, False]
 
 # settings for 0D Model (no superdroplet or grid coordinates)
 coord_params = ["false"]
-zgrid = np.asarray([100, 0])
+zgrid = np.asarray([0, 100])
 xgrid = np.asarray([0, 100]) 
 ygrid = np.asarray([0, 100])
 
