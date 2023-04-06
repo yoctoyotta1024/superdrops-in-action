@@ -4,7 +4,7 @@ import sys
 path_in2pySD = "/home/m/m300950/CLEO/"
 sys.path.append(path_in2pySD)
 
-from pySD.gbxboundariesbinary_src.read_gbxboundaries import read_dimless_gbxboundaries_binary, calc_domaininfo
+from pySD.gbxboundariesbinary_src.read_gbxboundaries import get_gridboxboundaries, calc_domaininfo
 
 def print_dict_statement(filename, dict):
 
@@ -162,7 +162,7 @@ def get_grid(gridfile, SDnspace, COORD0):
   if SDnspace > 1:
       raise ValueError("SDnspace > 1 but no Python function to read in griddata")
 
-  zhalf, xhalf, yhalf = read_dimless_gbxboundaries_binary(gridfile, COORD0)
+  zhalf, xhalf, yhalf = get_gridboxboundaries(gridfile, COORD0)
   domainvol, gbxvols, ngrid = calc_domaininfo(zhalf, xhalf, yhalf)[0:3]
  
   if SDnspace == 0:
