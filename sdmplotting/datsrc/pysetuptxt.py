@@ -134,7 +134,7 @@ def read_configparams_into_floats(filename):
         notfloats[name] = value
 
   try:
-    floats["nsupers"] = int(floats["NSUPERS"])                # no. of distinct superdrops 
+    floats["totnsupers0"] = int(floats["nSDsvec"])            # initial total no. of superdrops 
   except:
     pass
   try:

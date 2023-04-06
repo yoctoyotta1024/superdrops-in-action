@@ -32,7 +32,7 @@ OUT_TSTEP = 30                          # time between outputting data (and coup
 TEND = 1440                             # time span of integration [s]
 
 ### superdroplet params ###
-NSUPERS = 1048576                       # initial total no. superdrops
+nSDsvec = 1048576                       # initial total no. superdrops
 SDnspace = 1                            # no. of spatial coordinates of superdroplets ( = dimension of model)
 
 ### initial thermodynamic conditions ###

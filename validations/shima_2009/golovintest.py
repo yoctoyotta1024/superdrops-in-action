@@ -89,7 +89,7 @@ time = pyzarr.get_time(dataset)
 
 # 3. plot results
 tplt = [0, 1200, 2400, 3600]
-smoothsig = 0.62*(setup["nsupers"]**(-1/5)) # 0.2 factor for guassian smoothing
+smoothsig = 0.62*(setup["totnsupers0"]**(-1/5)) # 0.2 factor for guassian smoothing
 plotwitherr = True
 
 fig, ax = golovin_validation_figure(plotwitherr, time,
