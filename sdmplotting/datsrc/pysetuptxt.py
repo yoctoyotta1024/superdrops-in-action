@@ -5,7 +5,8 @@ path_in2pySD = "/Users/yoctoyotta1024/Documents/b1_springsummer2023/CLEO/"
 #path_in2pySD = "/home/m/m300950/CLEO/"
 sys.path.append(path_in2pySD)
 
-from pySD.gbxboundariesbinary_src.read_gbxboundaries import get_gridboxboundaries, calc_domaininfo
+from pySD.gbxboundariesbinary_src.read_gbxboundaries import read_dimless_gbxboundaries_binary
+from pySD.gbxboundariesbinary_src.read_gbxboundaries import halfcoords_from_gbxbounds, domaininfo
 
 def print_dict_statement(filename, dict):
 
@@ -163,8 +164,9 @@ def get_grid(gridfile, SDnspace, COORD0):
   if SDnspace > 1:
       raise ValueError("SDnspace > 1 but no Python function to read in griddata")
 
-  zhalf, xhalf, yhalf = get_gridboxboundaries(gridfile, COORD0)
-  domainvol, gbxvols, ngrid = calc_domaininfo(zhalf, xhalf, yhalf)[0:3]
+  gbxbounds =  read_dimless_gbxboundaries_binary(gridfile, COORD0) 
+  zhalf, xhalf, yhalf = halfcoords_from_gbxbounds(gbxbounds)
+  domainvol, gbxvols, ngrid = domaininfo(gbxbounds)
  
   if SDnspace == 0:
     zhalf = np.array([0, 0])

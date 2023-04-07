@@ -32,6 +32,7 @@ gridfile = binpath+"cond_dimlessGBxboundaries.dat"
 isfigures = [True, False]
 
 # settings for 0D Model (no superdroplet or grid coordinates)
+nsupers = {0: 5}
 coord_params = ["false"]
 zgrid = np.asarray([0, 100])
 xgrid = np.asarray([0, 100]) 
@@ -59,10 +60,11 @@ def displacement(time, w_avg, thalf):
     return z
 
 # ### 1. create files with initial SDs conditions and gridbox boundaries
-initattrs = initattributes.InitAttributes(radiigen, radiiprobdist, 
-                                          coord3gen, numconc, samplevol)
-create_initsuperdrops.write_initsuperdrops_binary(initSDsfile, initattrs, 
-                                                  configfile, constsfile)
+initattrsgen = initattributes.InitManyAttrsGen(radiigen, 
+                                            radiiprobdist, coord3gen)
+create_initsuperdrops.write_initsuperdrops_binary(initSDsfile, initattrsgen, 
+                                                  configfile, constsfile,
+                                                  gridfile, nsupers, numconc)
 
 create_gbxboundaries.write_gridboxboundaries_binary(gridfile, zgrid, xgrid, 
                                                      ygrid, constsfile)
@@ -72,7 +74,7 @@ if isfigures[0]:
     read_gbxboundaries.plot_gridboxboundaries(constsfile, gridfile, 
                                               binpath, isfigures[1])
     read_initsuperdrops.plot_initdistribs(configfile, constsfile, initSDsfile,
-                                          samplevol, binpath, isfigures[1])
+                                          gridfile, binpath, isfigures[1])
 plt.close()
 
 ### 2. compile and run model
