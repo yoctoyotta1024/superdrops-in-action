@@ -48,7 +48,9 @@ ygrid = np.asarray([0, 100])
 # settings for monodisperse droplet radii
 numconcs              = [50e6, 500e6, 500e6]                        # [m^-3] total no. concentration of droplets
 monors                = [0.1e-6, 0.1e-6, 0.05e-6]                
-coord3gen             = None
+coord3gen            = None                        # do not generate superdroplet coords
+coord1gen            = None                        
+coord2gen            = None   
 samplevol = read_gbxboundaries.calc_domainvol(zgrid, xgrid, ygrid)  # volume SD sample occupies (entire domain) [m^3]
 
 # setup parameters
@@ -111,8 +113,8 @@ for i in range(len(monors)):
     radiigen  = initattributes.MonoAttrsGen(monor)       # all SDs have the same dryradius = monor [m]
     radiiprobdist = radiiprobdistribs.DiracDelta(monor)  # monodisperse droplet radii probability distribution
 
-    initattrsgen = initattributes.InitManyAttrsGen(radiigen,
-                                                   radiiprobdist, coord3gen)
+    initattrsgen = initattributes.InitManyAttrsGen(radiigen,radiiprobdist,
+                                                   coord3gen, coord1gen, coord2gen)
     create_initsuperdrops.write_initsuperdrops_binary(initSDsfile, initattrsgen, 
                                                       configfile, constsfile,
                                                       gridfile, nsupers, numconc)
