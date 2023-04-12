@@ -48,21 +48,24 @@ randomr              = True                        # sample radii range randomly
 samplevol = read_gbxboundaries.calc_domainvol(zgrid, xgrid, ygrid)
 radiiprobdist = radiiprobdistribs.VolExponential(volexpr0, rspan)
 radiigen = initattributes.SampleDryradiiGen(rspan, randomr) # radii are sampled from rspan [m]
-coord3gen            = None                        # do not generate superdroplet coord3s
+coord3gen            = None                        # do not generate superdroplet coords
+coord1gen            = None                        
+coord2gen            = None                        
 
 # path and file names for plotting results
 setupfile = binpath+"golovinsetup.txt"
 dataset = binpath+"golovinsol.zarr"
 
 # ### 1. create files with initial SDs conditions and gridbox boundaries            
-initattrsgen = initattributes.InitManyAttrsGen(radiigen, radiiprobdist, coord3gen)
-create_initsuperdrops.write_initsuperdrops_binary(initSDsfile, initattrsgen, 
-                                                  configfile, constsfile,
-                                                  gridfile, nsupers, numconc)
-
 create_gbxboundaries.write_gridboxboundaries_binary(gridfile, zgrid, xgrid, 
                                                     ygrid, constsfile)
 read_gbxboundaries.print_domain_info(constsfile, gridfile)
+
+initattrsgen = initattributes.InitManyAttrsGen(radiigen, radiiprobdist,
+                                               coord3gen, coord1gen, coord2gen)
+create_initsuperdrops.write_initsuperdrops_binary(initSDsfile, initattrsgen, 
+                                                  configfile, constsfile,
+                                                  gridfile, nsupers, numconc)
 
 if isfigures[0]:
     read_gbxboundaries.plot_gridboxboundaries(constsfile, gridfile, 

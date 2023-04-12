@@ -32,8 +32,9 @@ OUT_TSTEP = 4                           # time between outputting data [s]
 TEND = 4000                             # time span of integration [s]
 
 ### superdroplet params ###
-nSDsvec = 2048                          # initial total no. superdrops
+nSDsvec = 2048                          # initial no. elements in superdroplets' vector ( = initial total no. of superdroplets)
 SDnspace = 0                            # no. of spatial coordinates of superdroplets ( = dimension of model)
+wetradiiinit = false                    # set initial SD radii to equilibrium wet radius
 
 ### initial kinetic conditions ###
 P_INIT = 100000.0                       # initial pressure [Pa]
