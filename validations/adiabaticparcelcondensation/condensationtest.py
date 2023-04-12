@@ -41,10 +41,12 @@ ygrid = np.asarray([0, 100])
 # settings for monodisperse droplet radii
 numconc              = 0.05e9                        # [m^-3] total no. concentration of droplets
 monor                = 0.1e-6                        
-coord3gen            = None
 radiigen  = initattributes.MonoAttrsGen(monor)       # all SDs have the same dryradius = monor [m]
 radiiprobdist = radiiprobdistribs.DiracDelta(monor)  # monodisperse droplet radii probability distribution
 samplevol = read_gbxboundaries.calc_domainvol(zgrid, xgrid, ygrid) # volume SD sample occupies (entire domain) [m^3]
+coord3gen            = None                        # do not generate superdroplet coords
+coord1gen            = None                        
+coord2gen            = None   
 
 # path and file names for plotting results
 setupfile = binpath+"condsetup.txt"
@@ -60,15 +62,16 @@ def displacement(time, w_avg, thalf):
     return z
 
 # ### 1. create files with initial SDs conditions and gridbox boundaries
-initattrsgen = initattributes.InitManyAttrsGen(radiigen, 
-                                            radiiprobdist, coord3gen)
+create_gbxboundaries.write_gridboxboundaries_binary(gridfile, zgrid, xgrid, 
+                                                     ygrid, constsfile)
+read_gbxboundaries.print_domain_info(constsfile, gridfile)
+
+initattrsgen = initattributes.InitManyAttrsGen(radiigen, radiiprobdist,
+                                               coord3gen, coord1gen, coord2gen)
 create_initsuperdrops.write_initsuperdrops_binary(initSDsfile, initattrsgen, 
                                                   configfile, constsfile,
                                                   gridfile, nsupers, numconc)
 
-create_gbxboundaries.write_gridboxboundaries_binary(gridfile, zgrid, xgrid, 
-                                                     ygrid, constsfile)
-read_gbxboundaries.print_domain_info(constsfile, gridfile)
 
 if isfigures[0]:
     read_gbxboundaries.plot_gridboxboundaries(constsfile, gridfile, 
