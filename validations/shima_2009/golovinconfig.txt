@@ -39,7 +39,7 @@ wetradiiinit = false                    # set initial SD radii to equilibrium we
 ### initial kinetic conditions ###
 P_INIT = 100000.0                       # initial pressure [Pa]
 TEMP_INIT = 273.15                      # initial parcel temperature [T]
-relh_init = -1000.0                        # initial relative humidity (%) unphyical < 0.0 in this setup to prevent wetradius initialisation
+relh_init = 99.0                        # initial relative humidity (%) unphyical < 0.0 in this setup to prevent wetradius initialisation
 qc_init = 0.0                           # initial liquid water content []
 
 ### CVODE ODE solver paramters ###
