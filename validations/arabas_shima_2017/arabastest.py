@@ -36,7 +36,7 @@ initSDsfile = binpath+"arabas_dimlessSDinit.dat"
 gridfile = binpath+"arabas_dimlessGBxbounds.dat"
 
 # booleans for [making, showing] initialisation figures
-isfigures = [False, False]
+isfigures = [True, False]
 
 # settings for 0D Model (no superdroplet or grid coordinates)
 nsupers = {0: 32}
