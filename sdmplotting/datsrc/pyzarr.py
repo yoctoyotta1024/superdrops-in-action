@@ -18,11 +18,16 @@ class Sddata:
     self.eps = ak.unflatten(ds["eps"].values, self.totnsupers)
     self.radius = ak.unflatten(ds["radius"].values, self.totnsupers)
     self.m_sol = ak.unflatten(ds["m_sol"].values, self.totnsupers)
+    
     self.coord3 = ak.unflatten(ds["coord3"].values, self.totnsupers)
+    self.coord1 = ak.unflatten(ds["coord1"].values, self.totnsupers)
+    self.coord2 = ak.unflatten(ds["coord2"].values, self.totnsupers)
 
     self.radius_units = ds["radius"].units # probably microns ie. 'micro m'
     self.m_sol_units = ds["m_sol"].units # probably gramms
     self.coord3_units = ds["coord3"].units # probably meters
+    self.coord1_units = ds["coord1"].units # probably meters
+    self.coord2_units = ds["coord2"].units # probably meters
 
   def __getitem__(self, key):
     if key == "sdindex":
@@ -35,6 +40,10 @@ class Sddata:
       return self.m_sol
     elif key == "coord3":
       return self.coord3
+    elif key == "coord1":
+      return self.coord1
+    elif key == "coord2":
+      return self.coord2
     else:
       err = "no known return provided for "+key+" key"
       raise ValueError(err)

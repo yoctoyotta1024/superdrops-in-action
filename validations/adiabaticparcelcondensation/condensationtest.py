@@ -113,9 +113,9 @@ fig.savefig(binpath+savename, dpi=400,
 print("Figure .png saved as: "+binpath+savename)
 plt.show()    
 
-radius = pyzarr.extract_superdroplet_attr(sddata, 0, "radius")
-eps = pyzarr.extract_superdroplet_attr(sddata, 0, "eps")
-m_sol = pyzarr.extract_superdroplet_attr(sddata, 0, "m_sol")
+radius = pyzarr.extract_1superdroplet_attr_timeseries(sddata, 0, "radius")
+eps = pyzarr.extract_1superdroplet_attr_timeseries(sddata, 0, "eps")
+m_sol = pyzarr.extract_1superdroplet_attr_timeseries(sddata, 0, "m_sol")
 
 numconc = np.sum(sddata["eps"][0])/grid["domainvol"]/1e6 # [/cm^3]
 
