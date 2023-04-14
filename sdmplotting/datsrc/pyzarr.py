@@ -98,16 +98,6 @@ def dims_from_setup(var, setup):
   
   return dims[var]
 
-def remove_undefined_values(data, dtype):
-
-  if dtype == "uint64":
-    data = data[data != maxsize*2+1]
-  
-  elif dtype == "float64":
-    data = data[True != np.isnan(data)]
-
-  return data
-
 def get_rawdataset(dataset):
 
   return xr.open_dataset(dataset, engine="zarr", consolidated=False)
@@ -133,38 +123,53 @@ def get_thermodata(dataset, setup):
 
   return thermo
 
-
 def get_time(dataset):
 
   ds = xr.open_dataset(dataset, engine="zarr", consolidated=False)
   
   return ds["time"].values
 
-
-def extract_superdroplet_attr(sddata, id, attr):
+def extract_1superdroplet_attr_timeseries(sddata, id, attr):
   '''selects attribute from sddata belonging
   to superdroplet with identitiy 'sdindex'
   at every output time '''
 
-  idx = np.where(sddata.sdindex==id) # index of superdrop in data lists
+  bools = ak.Array(sddata.sdindex==id) # True/False id is found in sdindex at each time
+  
+  attr_timeseries = sddata[attr][bools]
+  num = ak.num(attr_timeseries) # at each time, number of positions where id is found (should be 0 or 1)
+  
+  if any(num[num!=1]):
+    errmsg = "attr_timeseries has times when more"+\
+      " than one position in sddata has sdindex==id. num should be"+\
+    " list of either 1 or 0 (id found in sdindex at given time or not)"
+    raise ValueError(errmsg)
+    
+  attr_timeseries = np.where(num!=0, attr_timeseries, ak.Array([[np.nan]])) # replace empty positions with nan
+  
+  return ak.flatten(attr_timeseries, axis=1)
 
-  return sddata[attr][idx]
-
-def superdroplet_attr_for_ndrops(sddata, attr, ndrops2sample, minid, maxid):
+def attr_timeseries_for_nsuperdrops_sample(sddata, attr,
+                                           ndrops2sample=0,
+                                           minid=0, maxid=0,
+                                           ids=[]):
   ''' returns 2D array with dimensions [time, SD]
   containing attribute data over time for 'ndrops'
   randomly selected from superdrops with id in
   range [minid, maxid] '''
 
-  population = list(range(minid, maxid, 1))
-  sampled_ids = random.sample(population, ndrops2sample)
-  
-  attrs = []
-  for id in sampled_ids: 
-    attrs.append(extract_superdroplet_attr(sddata, id, attr))
-  
-  return np.asarray(attrs).T
+  if ids == []:
+    population = list(range(minid, maxid, 1))
+    sampled_ids = random.sample(population, ndrops2sample)
+  else:
+    sampled_ids = ids
 
+  ndrops_attr = []
+  for id in sampled_ids: 
+    attr_timeseries = extract_1superdroplet_attr_timeseries(sddata, id, attr)
+    ndrops_attr.append(attr_timeseries)
+  
+  return np.asarray(ndrops_attr).T
 
 def select_from_attr(attrdata, time, times2sel):
   '''selects attribute at given times

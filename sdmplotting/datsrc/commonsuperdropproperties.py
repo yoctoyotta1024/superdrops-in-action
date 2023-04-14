@@ -1,4 +1,5 @@
 import numpy as np
+import awkward as ak
 
 ######## common functions for accessing superdroplet attributes  ########
 
@@ -59,8 +60,8 @@ class CommonSuperdropProperties():
         m_sol = m_sol/1000 # convert from grams to Kg
         r = r/1e6 # convert microns to m
 
-        m = m_sol*(1-self.RHO_L/self.RHO_SOL)
-        m += 4/3.0*np.pi*(r**3)*self.RHO_L
+        msoleff = m_sol*(1-self.RHO_L/self.RHO_SOL) # effect of solute on mass
+        m = msoleff + 4/3.0*np.pi*(r**3)*self.RHO_L
 
         return m * 1000 # [g]
 
@@ -70,8 +71,8 @@ class CommonSuperdropProperties():
         m_sol = m_sol/1000 # convert m_sol from grams to Kg
         r = r/1e6 # convert microns to m
 
-        v_w = 4/3.0*np.pi*(r**3)
-        v_w += -m_sol/self.RHO_SOL
+        v_sol = m_sol/self.RHO_SOL
+        v_w = 4/3.0*np.pi*(r**3) - v_sol
 
         return self.RHO_L*v_w * 1000 #[g]
 
