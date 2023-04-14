@@ -36,7 +36,7 @@ initSDsfile = binpath+"arabas_dimlessSDinit.dat"
 gridfile = binpath+"arabas_dimlessGBxbounds.dat"
 
 # booleans for [making, showing] initialisation figures
-isfigures = [True, False]
+isfigures = [False, False]
 
 # settings for 0D Model (no superdroplet or grid coordinates)
 nsupers = {0: 32}
@@ -46,8 +46,8 @@ xgrid = np.asarray([0, 100])
 ygrid = np.asarray([0, 100])
 
 # settings for monodisperse droplet radii
-numconcs              = [50e6, 500e6, 500e6]                        # [m^-3] total no. concentration of droplets
-monors                = [0.1e-6, 0.1e-6, 0.05e-6]                
+numconcs              = [500e6, 500e6, 50e6]                        # [m^-3] total no. concentration of droplets
+monors                = [0.05e-6, 0.1e-6, 0.1e-6]                
 coord3gen            = None                        # do not generate superdroplet coords
 coord1gen            = None                        
 coord2gen            = None   
@@ -57,22 +57,23 @@ samplevol = read_gbxboundaries.calc_domainvol(zgrid, xgrid, ygrid)  # volume SD 
 params1 = {
     "W_AVG": 1,
     "T_HALF": 150,
-    "TEND": 300,
-    "OUT_TSTEP": 1,
+    "T_END": 300,
+    "COUPLTSTEP": 1,
     "lwdth": 2,
 }
+
 params2 = {
     "W_AVG": 0.5,
     "T_HALF": 300,
-    "TEND": 600,
-    "OUT_TSTEP": 1,
+    "T_END": 600,
+    "COUPLTSTEP": 1,
     "lwdth": 1,
 }
 params3 = {
     "W_AVG": 0.002,
     "T_HALF": 75000,
-    "TEND": 150000,
-    "OUT_TSTEP": 3,
+    "T_END": 150000,
+    "COUPLTSTEP": 3,
     "lwdth": 0.5,
 }
 
