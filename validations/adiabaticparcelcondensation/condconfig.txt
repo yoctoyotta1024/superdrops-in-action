@@ -20,16 +20,15 @@ setuptxt = condsetup.txt                # .txt filename to copy inital setup to 
 zarrbasedir = condsol.zarr             # zarr store base directory
 maxcsize = 8192                          # maximum size of chunks of output data put into a zarr store array
 
-### model timestep parameters ###
-cond_maxiters = 100                    # maximum no. iterations of Newton Raphson Method
-cond_rtol = 1e-6                       # relative tolerance for implicit euler integration
-cond_atol = 1e-6                       # abolute tolerance for implicit euler integration
-COND_TSTEP = 1                         # time between SD condensation events  = ceil(coll/cond)*min(coll,cond) [s]
-COLL_TSTEP = 1                         # time between SD collision events = ceil(coll/cond)*min(coll,cond) [s]
-SEDI_TSTEP = 1                         # time between SD sedimentation events [s]
-XCHANGE_TSTEP = 2                      # time between SD exchange between gridboxes [s]
-OUT_TSTEP = 2                          # time between outputting data [s]
-TEND = 600                             # time span of integration [s]
+### SDM parameters ###
+cond_maxiters = 100                     # maximum no. iterations of Newton Raphson Method
+cond_rtol = 1e-1                        # relative tolerance for implicit euler integration
+cond_atol = 100                         # abolute tolerance for implicit euler integration
+CONDTSTEP = 1                         # time between SD condensation events [s]
+COLLTSTEP = 2                           # time between SD collision events [s]
+MOTIONTSTEP = 2                         # time between SD coordinate position updates [s]
+COUPLTSTEP = 2                         # time between SDM data output and thermodynamic coupling [s]
+T_END = 600                             # time span of integration [s]
 
 ### superdroplet params ###
 nSDsvec = 5                             # initial no. elements in superdroplets' vector ( = initial total no. of superdroplets)
