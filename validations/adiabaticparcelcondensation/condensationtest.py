@@ -2,9 +2,11 @@ import os
 import sys
 import numpy as np
 import matplotlib.pyplot as plt
+from pathlib import Path
 
-#### DON'T FORGET TO CHANGE SDM PROCESS IN main.cpp TO
-# JUST CONDENSATION ####
+# To create build dir:
+# CXX=/opt/homebrew/bin/g++-12 cmake -S [path2CLEO] -B ./build 
+# e.g. CXX=/opt/homebrew/bin/g++-12 cmake -S ../../../CLEO/ -B ./build
 
 path2CLEO = "/Users/yoctoyotta1024/Documents/b1_springsummer2023/CLEO/"
 apath = "/Users/yoctoyotta1024/Documents/b1_springsummer2023/superdrops_in_action/"
@@ -22,7 +24,8 @@ from validsrc import individSDs, condensationcurves
 
 ############### INPUTS ##################
 # path and filenames for creating SD initial conditions and for running model
-binpath = apath+"validations/adiabaticparcelcondensation/bin/"
+buildpath = apath+"validations/adiabaticparcelcondensation/build/"
+binpath = buildpath+"bin/"
 constsfile = path2CLEO+"libs/claras_SDconstants.hpp"
 configfile = apath+"validations/adiabaticparcelcondensation/condconfig.txt"
 initSDsfile = binpath+"cond_dimlessSDsinit.dat"
@@ -62,6 +65,7 @@ def displacement(time, w_avg, thalf):
     return z
 
 # ### 1. create files with initial SDs conditions and gridbox boundaries
+Path(binpath).mkdir(parents=True, exist_ok=True)             
 create_gbxboundaries.write_gridboxboundaries_binary(gridfile, zgrid, xgrid, 
                                                      ygrid, constsfile)
 read_gbxboundaries.print_domain_info(constsfile, gridfile)
@@ -81,12 +85,12 @@ if isfigures[0]:
 plt.close()
 
 ### 2. compile and run model
-os.chdir(path2CLEO+"build")
-os.system("pwd")
-os.system("make clean && make")
-os.chdir(binpath)
-os.system("rm -rf "+dataset)
-os.system(path2CLEO+'build/src/coupledCVODECLEO ' + configfile+' '+constsfile)
+Path(buildpath).mkdir(exist_ok=True) 
+os.chdir(buildpath)
+os.system('pwd')
+os.system("make clean && make cond0D")
+os.system('rm -rf '+dataset)
+os.system('./src/cond0D ' + configfile+' '+constsfile)
 
 # 3. load and plot results
 # read in constants and intial setup from setup .txt file

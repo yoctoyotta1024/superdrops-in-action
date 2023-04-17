@@ -78,7 +78,7 @@ if isfigures[0]:
                                           gridfile, binpath, isfigures[1])
 plt.close()
 
-# # 2. run model
+### 2. compile and the run model
 Path(buildpath).mkdir(exist_ok=True) 
 os.chdir(buildpath)
 os.system('pwd')
