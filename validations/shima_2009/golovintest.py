@@ -2,9 +2,11 @@ import os
 import sys
 import numpy as np
 import matplotlib.pyplot as plt
+from pathlib import Path
 
-#### DON'T FORGET TO CHANGE SDM PROCESS IN main.cpp TO 
-# JUST COLLISIONS USING GOLVINS KERNEL ####
+# To create build dir:
+# CXX=/opt/homebrew/bin/g++-12 cmake -S [path2CLEO] -B ./build 
+# e.g. CXX=/opt/homebrew/bin/g++-12 cmake -S ../../../CLEO/ -B ./build
 
 path2CLEO = "/Users/yoctoyotta1024/Documents/b1_springsummer2023/CLEO/"
 apath = "/Users/yoctoyotta1024/Documents/b1_springsummer2023/superdrops_in_action/"
@@ -23,7 +25,8 @@ from validsrc.golovin_figure import golovin_validation_figure
 ############### INPUTS ##################
 # path and filenames for creating SD
 # initial conditions and for running model
-binpath = apath+"validations/shima_2009/bin/"
+buildpath = apath+"validations/shima_2009/build/"
+binpath = buildpath+"bin/"
 constsfile = path2CLEO+"libs/claras_SDconstants.hpp"
 configfile = apath+"validations/shima_2009/golovinconfig.txt"
 initSDsfile = binpath+"golovin_dimlessSDsinit.dat"
@@ -56,7 +59,8 @@ coord2gen            = None
 setupfile = binpath+"golovinsetup.txt"
 dataset = binpath+"golovinsol.zarr"
 
-# ### 1. create files with initial SDs conditions and gridbox boundaries            
+# ### 1. create files with initial SDs conditions and gridbox boundaries
+Path(binpath).mkdir(parents=True, exist_ok=True)             
 create_gbxboundaries.write_gridboxboundaries_binary(gridfile, zgrid, xgrid, 
                                                     ygrid, constsfile)
 read_gbxboundaries.print_domain_info(constsfile, gridfile)
@@ -74,14 +78,13 @@ if isfigures[0]:
                                           gridfile, binpath, isfigures[1])
 plt.close()
 
-# 2. run model
-os.chdir(path2CLEO+"build")
-os.system("pwd")
-#os.system("make clean && make")
-os.system("make")
-os.chdir(binpath)
-os.system("rm -rf "+dataset)
-os.system(path2CLEO+'build/src/coupledCVODECLEO ' + configfile+' '+constsfile)
+# # 2. run model
+Path(buildpath).mkdir(exist_ok=True) 
+os.chdir(buildpath)
+os.system('pwd')
+os.system("make clean && make golcolls0D")
+os.system('rm -rf '+dataset)
+os.system('./src/golcolls0D ' + configfile+' '+constsfile)
 
 # 3. load results
 # read in constants and intial setup from setup .txt file

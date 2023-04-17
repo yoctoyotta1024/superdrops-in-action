@@ -12,12 +12,12 @@
 #  created using python "create_gbxboundariesbinary_script" script.
 
 ### filenames ###
-initSDs_filename = golovin_dimlessSDsinit.dat  # binary filename for initialisation of superdrops
-grid_filename = golovin_dimlessGBxboundaries.dat # binary filename for gridbox boundaries
+initSDs_filename = ./bin/golovin_dimlessSDsinit.dat  # binary filename for initialisation of superdrops
+grid_filename = ./bin/golovin_dimlessGBxboundaries.dat # binary filename for gridbox boundaries
 
 ### output data parameters ###
-setuptxt = golovinsetup.txt              # .txt filename to copy inital setup to as output
-zarrbasedir = golovinsol.zarr            # zarr store base directory
+setuptxt = ./bin/golovinsetup.txt              # .txt filename to copy inital setup to as output
+zarrbasedir = ./bin/golovinsol.zarr            # zarr store base directory
 maxcsize = 8192                          # maximum size of chunks of output data put into a zarr store array
 
 ### SDM parameters ###
