@@ -8,8 +8,11 @@ import os
 import sys
 import numpy as np
 import matplotlib.pyplot as plt
+from pathlib import Path
 
-#### DON'T FORGET TO CHANGE SDM PROCESS IN main.cpp TO JUST CONDENSATION ####
+# To create build dir:
+# CXX=/opt/homebrew/bin/g++-12 cmake -S [path2CLEO] -B ./build 
+# e.g. CXX=/opt/homebrew/bin/g++-12 cmake -S ../../../CLEO/ -B ./build
 
 path2CLEO = "/Users/yoctoyotta1024/Documents/b1_springsummer2023/CLEO/"
 apath = "/Users/yoctoyotta1024/Documents/b1_springsummer2023/superdrops_in_action/"
@@ -29,7 +32,8 @@ from validsrc import condensationcurves
 ############### INPUTS ##################
 # path and filenames for creating SD
 # initial conditions and for running model
-binpath = apath+"validations/arabas_shima_2017/bin/"
+buildpath = apath+"validations/arabas_shima_2017/build/"
+binpath = buildpath+"bin/"
 constsfile = path2CLEO+"libs/claras_SDconstants.hpp"
 configfile = apath+"validations/arabas_shima_2017/arabasconfig.txt"
 initSDsfile = binpath+"arabas_dimlessSDinit.dat"
@@ -89,15 +93,16 @@ def displacement(time, w_avg, thalf):
     return z
 
 # ### 1. compile model
-os.chdir(path2CLEO+"build")
+Path(buildpath).mkdir(exist_ok=True) 
+os.chdir(buildpath)
 os.system("pwd")
-os.system("make clean && make")
-os.chdir(binpath)
+os.system("make clean && make cond0D")
 for run_num in range(len(monors)*len(paramslist)):
     dataset = binpath+"arabassol"+str(run_num)+".zarr"
     os.system("rm -rf "+dataset)
 
 # 2a. create file with gridbox boundaries
+Path(binpath).mkdir(parents=True, exist_ok=True)             
 create_gbxboundaries.write_gridboxboundaries_binary(gridfile, zgrid, xgrid, 
                                                      ygrid, constsfile)
 read_gbxboundaries.print_domain_info(constsfile, gridfile)
@@ -128,16 +133,15 @@ for i in range(len(monors)):
     fig, axs = plt.subplots(nrows=3, ncols=1, figsize=(5, 16))
     for params in paramslist:
 
-        zarrbasedir = "arabassol"+str(runnum)+".zarr"
+        zarrbasedir = binpath+"arabassol"+str(runnum)+".zarr"
         os.system("rm -rf "+binpath+zarrbasedir)
-        params["zarrbasedir"] = "arabassol"+str(runnum)+".zarr"
+        params["zarrbasedir"] = binpath+"arabassol"+str(runnum)+".zarr"
 
         # 3. edit relevant setup file parameters
         editconfigfile.edit_config_params(configfile, params)
 
         # 4. run model
-        os.chdir(binpath)
-        os.system(path2CLEO+'build/src/coupledCVODECLEO ' +
+        os.system(buildpath+'/src/cond0D ' +
                    configfile+' '+constsfile)
 
         # 5. load results

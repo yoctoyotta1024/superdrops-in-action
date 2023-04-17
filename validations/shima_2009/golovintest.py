@@ -84,7 +84,7 @@ os.chdir(buildpath)
 os.system('pwd')
 os.system("make clean && make golcolls0D")
 os.system('rm -rf '+dataset)
-os.system('./src/golcolls0D ' + configfile+' '+constsfile)
+os.system(buildpath+'/src/golcolls0D ' + configfile+' '+constsfile)
 
 # 3. load results
 # read in constants and intial setup from setup .txt file

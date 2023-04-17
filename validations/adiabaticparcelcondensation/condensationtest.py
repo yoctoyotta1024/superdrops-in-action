@@ -32,7 +32,7 @@ initSDsfile = binpath+"cond_dimlessSDsinit.dat"
 gridfile = binpath+"cond_dimlessGBxboundaries.dat"
 
 # booleans for [making, showing] initialisation figures
-isfigures = [True, False]
+isfigures = [True, True]
 
 # settings for 0D Model (no superdroplet or grid coordinates)
 nsupers = {0: 5}
@@ -90,7 +90,7 @@ os.chdir(buildpath)
 os.system('pwd')
 os.system("make clean && make cond0D")
 os.system('rm -rf '+dataset)
-os.system('./src/cond0D ' + configfile+' '+constsfile)
+os.system(buildpath+'src/cond0D ' + configfile+' '+constsfile)
 
 # 3. load and plot results
 # read in constants and intial setup from setup .txt file

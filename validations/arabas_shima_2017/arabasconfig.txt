@@ -12,12 +12,12 @@
 #  created using python "create_gbxboundariesbinary_script" script.
 
 ### filenames ###
-initSDs_filename = arabas_dimlessSDinit.dat  # binary filename for initialisation of superdrops
-grid_filename = arabas_dimlessGBxbounds.dat # binary filename for gridbox boundaries
+initSDs_filename = ./bin/arabas_dimlessSDinit.dat  # binary filename for initialisation of superdrops
+grid_filename = ./bin/arabas_dimlessGBxbounds.dat # binary filename for gridbox boundaries
 
 ### output data parameters ###
-setuptxt = arabassetup.txt              # .txt filename to copy inital setup to as output
-zarrbasedir = arabassol8.zarr           # zarr store base directory
+setuptxt = ./bin/arabassetup.txt              # .txt filename to copy inital setup to as output
+zarrbasedir = /Users/yoctoyotta1024/Documents/b1_springsummer2023/superdrops_in_action/validations/arabas_shima_2017/build/bin/arabassol8.zarr# zarr store base directory
 maxcsize = 8192                         # maximum size of chunks of output data put into a zarr store array
 
 ### model timestep parameters ###
