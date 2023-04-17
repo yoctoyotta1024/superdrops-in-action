@@ -8,26 +8,38 @@ import random
 from . import thermoeqns
 from sys import maxsize
 
+def tryopen(ds, totnsupers, var):
+  try:
+    return ak.unflatten(ds[var].values, totnsupers)
+  except:
+    return None
+
+def tryunits(ds, var):
+  try:
+    return ds[var].units
+  except:
+    return None
+
 class Sddata:
   
   def __init__(self, dataset):
     ds = get_rawdataset(dataset) 
     self.totnsupers = ds["raggedcount"].values
   
-    self.sdindex = ak.unflatten(ds["sdindex"].values, self.totnsupers)
-    self.eps = ak.unflatten(ds["eps"].values, self.totnsupers)
-    self.radius = ak.unflatten(ds["radius"].values, self.totnsupers)
-    self.m_sol = ak.unflatten(ds["m_sol"].values, self.totnsupers)
-    
-    self.coord3 = ak.unflatten(ds["coord3"].values, self.totnsupers)
-    self.coord1 = ak.unflatten(ds["coord1"].values, self.totnsupers)
-    self.coord2 = ak.unflatten(ds["coord2"].values, self.totnsupers)
+    self.sdindex = tryopen(ds, self.totnsupers, "sdindex")
+    self.eps = tryopen(ds, self.totnsupers, "eps")
+    self.radius = tryopen(ds, self.totnsupers, "radius")
+    self.m_sol = tryopen(ds, self.totnsupers, "m_sol")
 
-    self.radius_units = ds["radius"].units # probably microns ie. 'micro m'
-    self.m_sol_units = ds["m_sol"].units # probably gramms
-    self.coord3_units = ds["coord3"].units # probably meters
-    self.coord1_units = ds["coord1"].units # probably meters
-    self.coord2_units = ds["coord2"].units # probably meters
+    self.coord3 = tryopen(ds, self.totnsupers, "coord3")
+    self.coord1 = tryopen(ds, self.totnsupers, "coord1")
+    self.coord2 = tryopen(ds, self.totnsupers, "coord2")
+
+    self.radius_units = tryunits(ds, "radius") # probably microns ie. 'micro m'
+    self.m_sol_units = tryunits(ds, "m_sol") # probably gramms
+    self.coord3_units = tryunits(ds, "coord3") # probably meters
+    self.coord1_units = tryunits(ds, "coord1") # probably meters
+    self.coord2_units = tryunits(ds, "coord2") # probably meters
 
   def __getitem__(self, key):
     if key == "sdindex":
