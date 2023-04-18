@@ -36,7 +36,7 @@ buildpath = apath+"validations/arabas_shima_2017/build/"
 binpath = buildpath+"bin/"
 constsfile = path2CLEO+"libs/claras_SDconstants.hpp"
 configfile = apath+"validations/arabas_shima_2017/arabasconfig.txt"
-initSDsfile = binpath+"arabas_dimlessSDinit.dat"
+initSDsfile = binpath+"arabas_dimlessSDsinit.dat"
 gridfile = binpath+"arabas_dimlessGBxboundaries.dat"
 
 # booleans for [making, showing] initialisation figures
@@ -143,7 +143,7 @@ for i in range(len(monors)):
         editconfigfile.edit_config_params(configfile, params)
 
         # 4. run model
-        os.system(buildpath+'/src/cond0D ' +
+        os.system(buildpath+'src/cond0D ' +
                    configfile+' '+constsfile)
 
         # 5. load results
