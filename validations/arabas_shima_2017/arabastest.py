@@ -37,7 +37,7 @@ binpath = buildpath+"bin/"
 constsfile = path2CLEO+"libs/claras_SDconstants.hpp"
 configfile = apath+"validations/arabas_shima_2017/arabasconfig.txt"
 initSDsfile = binpath+"arabas_dimlessSDinit.dat"
-gridfile = binpath+"arabas_dimlessGBxbounds.dat"
+gridfile = binpath+"arabas_dimlessGBxboundaries.dat"
 
 # booleans for [making, showing] initialisation figures
 isfigures = [True, False]
@@ -103,6 +103,7 @@ for run_num in range(len(monors)*len(paramslist)):
 
 # 2a. create file with gridbox boundaries
 Path(binpath).mkdir(parents=True, exist_ok=True)             
+os.system("rm "+gridfile)
 create_gbxboundaries.write_gridboxboundaries_binary(gridfile, zgrid, xgrid, 
                                                      ygrid, constsfile)
 read_gbxboundaries.print_domain_info(constsfile, gridfile)
@@ -121,6 +122,7 @@ for i in range(len(monors)):
 
     initattrsgen = initattributes.InitManyAttrsGen(radiigen,radiiprobdist,
                                                    coord3gen, coord1gen, coord2gen)
+    os.system("rm "+initSDsfile)
     create_initsuperdrops.write_initsuperdrops_binary(initSDsfile, initattrsgen, 
                                                       configfile, constsfile,
                                                       gridfile, nsupers, numconc)

@@ -60,7 +60,10 @@ setupfile = binpath+"golovinsetup.txt"
 dataset = binpath+"golovinsol.zarr"
 
 # ### 1. create files with initial SDs conditions and gridbox boundaries
+
 Path(binpath).mkdir(parents=True, exist_ok=True)             
+os.system("rm "+gridfile)
+os.system("rm "+initSDsfile)
 create_gbxboundaries.write_gridboxboundaries_binary(gridfile, zgrid, xgrid, 
                                                     ygrid, constsfile)
 read_gbxboundaries.print_domain_info(constsfile, gridfile)
