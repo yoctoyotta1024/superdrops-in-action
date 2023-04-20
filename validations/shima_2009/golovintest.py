@@ -19,6 +19,10 @@ sys.path.append(apath+"validations/")
 
 from pySD.gbxboundariesbinary_src import create_gbxboundaries, read_gbxboundaries
 from pySD.initsuperdropsbinary_src import *
+from pySD.thermobinary_src.thermogen import ConstUniformThermo
+from pySD.thermobinary_src import create_thermodynamics as cthermo
+from pySD.thermobinary_src import read_thermodynamics as rthermo
+
 from datsrc import *
 from validsrc.golovin_figure import golovin_validation_figure
 
@@ -31,16 +35,23 @@ constsfile = path2CLEO+"libs/claras_SDconstants.hpp"
 configfile = apath+"validations/shima_2009/golovinconfig.txt"
 initSDsfile = binpath+"golovin_dimlessSDsinit.dat"
 gridfile = binpath+"golovin_dimlessGBxboundaries.dat"
+thermofile =  binpath+"dimlessthermodynamics.dat"
 
 # booleans for [making, showing] initialisation figures
 isfigures = [True, True]
 
-# settings for 0D Model (no superdroplet or grid coordinates)
+# settings for 0D Model (no superdroplet or grid coordinates 
+# and constant uniform thermodynamics)
 nsupers = {0: 2048}
 coord_params = ["false"]
 zgrid = np.asarray([0, 100])
 xgrid = np.asarray([0, 100]) 
 ygrid = np.asarray([0, 100])
+PRESS = 100000.0                        # initial pressure [Pa]
+TEMP = 273.15                           # initial parcel temperature [T]
+relh = 95.0                             # initial relative humidity (%)
+qcond = 0.0                             # initial liquid water content []
+WVEL, UVEL, VVEL = [False]*3            # don't create wind velocity files
 
 # settings for distirbution from exponential in droplet volume
 volexpr0             = 30.531e-6                   # peak of volume exponential distribution [m]
@@ -68,6 +79,11 @@ create_gbxboundaries.write_gridboxboundaries_binary(gridfile, zgrid, xgrid,
                                                     ygrid, constsfile)
 read_gbxboundaries.print_domain_info(constsfile, gridfile)
 
+thermogen = ConstUniformThermo(PRESS, TEMP, relh, qcond,
+                               WVEL, UVEL, VVEL, constsfile)
+cthermo.write_thermodynamics_binary(thermofile, thermogen, configfile,
+                                    constsfile, gridfile)
+
 initattrsgen = initattributes.InitManyAttrsGen(radiigen, radiiprobdist,
                                                coord3gen, coord1gen, coord2gen)
 create_initsuperdrops.write_initsuperdrops_binary(initSDsfile, initattrsgen, 
@@ -77,8 +93,13 @@ create_initsuperdrops.write_initsuperdrops_binary(initSDsfile, initattrsgen,
 if isfigures[0]:
     read_gbxboundaries.plot_gridboxboundaries(constsfile, gridfile, 
                                         binpath, isfigures[1])
+    rthermo.plot_thermodynamics_timeslice(constsfile, configfile, gridfile,
+                                          thermofile, 'all', binpath,
+                                          isfigures[1])
     read_initsuperdrops.plot_initdistribs(configfile, constsfile, initSDsfile,
                                           gridfile, binpath, isfigures[1])
+
+
 plt.close()
 
 ### 2. compile and the run model
