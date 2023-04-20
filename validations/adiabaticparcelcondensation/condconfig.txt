@@ -19,7 +19,7 @@ grid_filename = ./bin/cond_dimlessGBxboundaries.dat         # binary filename fo
 ### Output Data parameters ###
 setuptxt = ./bin/condsetup.txt              # name of .txt output file to copy setup to
 zarrbasedir = ./bin/condsol.zarr            # zarr store base directory
-maxchunk = 1250000                             # maximum no. of elements in chunks of zarr store array
+maxchunk = 1250000                          # maximum no. of elements in chunks of zarr store array
 
 ### SDM parameters ###
 # timestepping parameters #
@@ -30,13 +30,14 @@ CONDTSTEP = 1                           # time between SD condensation events [s
 COLLTSTEP = 2                           # time between SD collision events [s]
 MOTIONTSTEP = 2                         # time between SDM motion [s]
 COUPLTSTEP = 2                          # time between SDM observations and between thermodynamic couplings [s]
-T_END = 600                            # time span of integration [s]
+T_END = 600                             # time span of integration [s]
 
 # SDs parameters #
 nSDsvec = 5                          # initial no. elements in SDs' vector (=total initial no. of SDs)
-SDnspace = 0                            # no. of spatial coordinates of SDs (=dimension of model)
-wetradiiinit = true                    # set initial SD radii to equilibrium wet radius
-doAlterThermo = true                   # enable condensation to alter the thermodynamic state
+SDnspace = 0                         # no. of spatial coordinates of SDs (=dimension of model)
+wetradiiinit = true                  # set initial SD radii to equilibrium wet radius
+doAlterThermo = true                 # enable condensation to alter the thermodynamic state
+thermosolver = cvode                 # type of thermodynamic solver to configure
 
 ### CVODE ODE solver paramters ###
 # initial (uniform) thermodynamic conditions #
@@ -46,8 +47,8 @@ relh_init = 99.0                        # initial relative humidity (%) unphyica
 qc_init = 0.0                           # initial liquid water content []
 
 # ODE solver parameters #
-doThermo = true                        # enable ODEs for adiabatic expansion
-W_AVG = 0.5                               # average amplitude of sinusoidal vertical parcel speed [m/s] (dP/dt ~ w*dP/dz)
+doThermo = true                         # enable ODEs for adiabatic expansion
+W_AVG = 0.5                             # average amplitude of sinusoidal vertical parcel speed [m/s] (dP/dt ~ w*dP/dz)
 T_HALF = 300                            # timescale for w sinusoid, tau = THALF/pi [s]
 cvode_rtol = 1e-6                       # relative tolerance for [P, T, qv, qc] ODEs integration
 cvode_atol_p = 1e-6                     # absolute tolerance for [P, T, qv, qc] ODEs integration
