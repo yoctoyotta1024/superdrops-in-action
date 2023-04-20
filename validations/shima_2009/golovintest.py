@@ -51,7 +51,7 @@ PRESS = 100000.0                        # initial pressure [Pa]
 TEMP = 273.15                           # initial parcel temperature [T]
 relh = 95.0                             # initial relative humidity (%)
 qcond = 0.0                             # initial liquid water content []
-WVEL, UVEL, VVEL = [False]*3            # don't create wind velocity files
+WVEL, UVEL, VVEL = [None]*3            # don't create wind velocity files
 
 # settings for distirbution from exponential in droplet volume
 volexpr0             = 30.531e-6                   # peak of volume exponential distribution [m]

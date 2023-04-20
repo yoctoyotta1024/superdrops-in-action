@@ -5,8 +5,7 @@ path_in2pySD = "/Users/yoctoyotta1024/Documents/b1_springsummer2023/CLEO/"
 #path_in2pySD = "/home/m/m300950/CLEO/"
 sys.path.append(path_in2pySD)
 
-from pySD.gbxboundariesbinary_src.read_gbxboundaries import read_dimless_gbxboundaries_binary
-from pySD.gbxboundariesbinary_src.read_gbxboundaries import halfcoords_from_gbxbounds, domaininfo
+import pySD.gbxboundariesbinary_src.read_gbxboundaries as readgbx
 
 def print_dict_statement(filename, dict):
 
@@ -161,24 +160,30 @@ def setuptxt2dict(setuptxt, nattrs=3, ngrid=0, printinfo=True):
 
 def get_grid(gridfile, SDnspace, COORD0):
 
-  if SDnspace > 1:
-      raise ValueError("SDnspace > 1 but no Python function to read in griddata")
-
-  gbxbounds =  read_dimless_gbxboundaries_binary(gridfile, COORD0) 
-  zhalf, xhalf, yhalf = halfcoords_from_gbxbounds(gbxbounds)
-  domainvol, gbxvols, ngrid = domaininfo(gbxbounds)
+  gbxbounds =  readgbx.read_dimless_gbxboundaries_binary(gridfile, COORD0) 
+  zhalf, xhalf, yhalf = readgbx.halfcoords_from_gbxbounds(gbxbounds)
+  domainvol, gbxvols, ngrid = readgbx.domaininfo(gbxbounds)
  
-  if SDnspace == 0:
-    zhalf = np.array([0, 0])
-  
-  zfull = (zhalf[1:] + zhalf[:-1])/2
-  
+  zfull, deltaz = readgbx.get_fullcell_and_cellspacing(zhalf) 
+  xfull, deltax = readgbx.get_fullcell_and_cellspacing(xhalf) 
+  yfull, deltay = readgbx.get_fullcell_and_cellspacing(yhalf) 
+    
   grid = {
     "ngrid": ngrid, # number of gridboxes 
+    "domainvol": domainvol,
+    "gbxvols": gbxvols,
+    
     "zhalf": zhalf, # half cell coords (boundaries)
     "zfull": zfull, # full cell coords (centres)
-    "domainvol": domainvol,
-    "gbxvols": gbxvols
+    "deltaz": deltaz, # half cell spacing (widths)
+    
+    "xhalf": xhalf, # half cell coords (boundaries)
+    "xfull": xfull, # full cell coords (centres)
+    "deltax": deltax, # half cell spacing (widths)
+    
+    "yhalf": yhalf, # half cell coords (boundaries)
+    "yfull": yfull, # full cell coords (centres)
+    "deltay": deltay, # half cell spacing (widths)
   }
 
   return grid
