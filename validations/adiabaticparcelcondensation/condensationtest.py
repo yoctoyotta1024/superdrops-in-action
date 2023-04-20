@@ -133,4 +133,3 @@ fig.savefig(binpath+savename, dpi=400,
             bbox_inches="tight", facecolor='w', format="png")
 print("Figure .png saved as: "+binpath+savename)
 plt.show()            
-
