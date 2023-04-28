@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 from pathlib import Path
 
 # To create build dir:
-# CXX=/opt/homebrew/bin/g++-12 cmake -S [path2CLEO] -B ./build 
+# CXX=[compiler choice] cmake -S [path2CLEO] -B ./build 
 # e.g. CXX=/opt/homebrew/bin/g++-12 cmake -S ../../../CLEO/ -B ./build
 
 path2CLEO = "/Users/yoctoyotta1024/Documents/b1_springsummer2023/CLEO/"

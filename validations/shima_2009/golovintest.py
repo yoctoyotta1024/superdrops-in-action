@@ -5,13 +5,13 @@ import matplotlib.pyplot as plt
 from pathlib import Path
 
 # To create build dir:
-# CXX=/opt/homebrew/bin/g++-12 cmake -S [path2CLEO] -B ./build 
+# CXX=[compiler choice] cmake -S [path2CLEO] -B ./build 
 # e.g. CXX=/opt/homebrew/bin/g++-12 cmake -S ../../../CLEO/ -B ./build
 
-path2CLEO = "/Users/yoctoyotta1024/Documents/b1_springsummer2023/CLEO/"
-apath = "/Users/yoctoyotta1024/Documents/b1_springsummer2023/superdrops_in_action/"
-#path2CLEO = "/home/m/m300950/CLEO/"
-#apath = "/home/m/m300950/superdrops_in_action/"
+# path2CLEO = "/Users/yoctoyotta1024/Documents/b1_springsummer2023/CLEO/"
+# apath = "/Users/yoctoyotta1024/Documents/b1_springsummer2023/superdrops_in_action/"
+path2CLEO = "/home/m/m300950/CLEO/"
+apath = "/home/m/m300950/superdrops_in_action/"
 
 sys.path.append(path2CLEO) # for imports from pySD package
 sys.path.append(apath+"sdmplotting/")
@@ -79,8 +79,9 @@ create_gbxboundaries.write_gridboxboundaries_binary(gridfile, zgrid, xgrid,
                                                     ygrid, constsfile)
 read_gbxboundaries.print_domain_info(constsfile, gridfile)
 
-thermogen = ConstUniformThermo(PRESS, TEMP, relh, qcond,
-                               WVEL, UVEL, VVEL, constsfile)
+thermogen = ConstUniformThermo(PRESS, TEMP, None, qcond,
+                               WVEL, UVEL, VVEL, relh=relh, 
+                               constsfile=constsfile)
 cthermo.write_thermodynamics_binary(thermofile, thermogen, configfile,
                                     constsfile, gridfile)
 
@@ -93,13 +94,10 @@ create_initsuperdrops.write_initsuperdrops_binary(initSDsfile, initattrsgen,
 if isfigures[0]:
     read_gbxboundaries.plot_gridboxboundaries(constsfile, gridfile, 
                                         binpath, isfigures[1])
-    rthermo.plot_thermodynamics_timeslice(constsfile, configfile, gridfile,
-                                          thermofile, 'all', binpath,
-                                          isfigures[1])
+    rthermo.plot_thermodynamics(constsfile, configfile, gridfile,
+                                thermofile, binpath, isfigures[1])
     read_initsuperdrops.plot_initdistribs(configfile, constsfile, initSDsfile,
                                           gridfile, binpath, isfigures[1])
-
-
 plt.close()
 
 ### 2. compile and the run model
