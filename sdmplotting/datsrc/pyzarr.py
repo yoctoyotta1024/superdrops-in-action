@@ -60,19 +60,35 @@ class Sddata:
       err = "no known return provided for "+key+" key"
       raise ValueError(err)
 
-class Thermodata:
-
-  def __init__(self, dataset, setup):
+class MassMoments:
+  def __init__(self, dataset, setup, ndims):
     ds = get_rawdataset(dataset) 
     
-    self.press = ds["press"].values
-    self.temp = ds["temp"].values
-    self.qvap = ds["qvap"].values
-    self.qcond = ds["qcond"].values
+    reshape = [setup["ntime"]] + list(np.flip(ndims))
+    
+    self.mom0 = np.reshape(ds["massmoment0"].values, reshape) # number of droplets in gbxs over time
+    self.mom1 = np.reshape(ds["massmoment1"].values, reshape) # total mass of droplets in gbxs over time
+    self.mom2 = np.reshape(ds["massmoment2"].values, reshape) # 2nd mass moment of droplets (~reflectivity)
+
+    self.mom1_units = ds["massmoment1"].units # probably grams
+    self.mom2_units = ds["massmoment2"].units # probably grams^2
+
+
+class Thermodata:
+
+  def __init__(self, dataset, setup, ndims):
+    ds = get_rawdataset(dataset) 
+    
+    reshape = [setup["ntime"]] + list(np.flip(ndims))
+    
+    self.press = np.reshape(ds["press"].values, reshape)
+    self.temp = np.reshape(ds["temp"].values, reshape)
+    self.qvap = np.reshape(ds["qvap"].values, reshape)
+    self.qcond = np.reshape(ds["qcond"].values, reshape) #dims [t, y, x, z]
     
     self.theta = self.get_potential_temp(setup) 
 
-    self.press_units = ds["press"].units # probably hecta pascals
+    self.press_units = ds["press"].units # probably hecto pascals
     self.temp_units = ds["temp"].units # probably kelvin
     self.theta_units = ds["temp"].units # probably kelvin
 
@@ -97,7 +113,25 @@ class Thermodata:
     theta = thermoeqns.dry_pot_temp(self.temp, press, self.qvap, setup)        # parcel potential temp
   
     return theta
+  
+  def meanytime(self, var):
+    ''' mean of thermo variable over
+    time and y dimeensions '''      
+        
+    return np.mean(var, axis=(0,1))
 
+  def meanxyz(self, var):
+    ''' mean of thermo variable over
+    (x,y,z) dimensions '''      
+        
+    return np.mean(var, axis=(1,2,3))
+
+  def meanxytime(self, var):
+    ''' mean of thermo variable over
+    (x,y,z) dimensions '''      
+        
+    return np.mean(var, axis=(0,1,2))
+   
 def dims_from_setup(var, setup):
   """ return constant to multipy non-dimensional 
   data to convert to SI units """
@@ -133,14 +167,14 @@ def get_sddata(dataset):
 
   return sddata
 
-def get_thermodata(dataset, setup):
+def get_thermodata(dataset, setup, ndims):
   ''' returns a thermodynamic data in a dictionary. The value under 
   each key is the thermodynamics data in a 2D array 
   with dimensions [time, gridbox]. E.g. thermo["qvap"][:,0] gives the 
   timeseries of qvap for the 0th gridbox. thermo["qvap][0] gives 
   the qvap of all gridboxes at the 0th output time '''
 
-  thermo = Thermodata(dataset, setup)
+  thermo = Thermodata(dataset, setup, ndims)
 
   return thermo
 

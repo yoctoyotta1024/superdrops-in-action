@@ -1,8 +1,8 @@
 import numpy as np
 import sys
 
-path_in2pySD = "/Users/yoctoyotta1024/Documents/b1_springsummer2023/CLEO/"
-#path_in2pySD = "/home/m/m300950/CLEO/"
+# path_in2pySD = "/Users/yoctoyotta1024/Documents/b1_springsummer2023/CLEO/"
+path_in2pySD = "/home/m/m300950/CLEO/"
 sys.path.append(path_in2pySD)
 
 import pySD.gbxboundariesbinary_src.read_gbxboundaries as readgbx
@@ -152,6 +152,7 @@ def setuptxt2dict(setuptxt, nattrs=3, ngrid=0, printinfo=True):
  
   setup["numSDattrs"] = setup["SDnspace"] + nattrs         
   setup["ngrid"] = ngrid
+  setup["ntime"] = round(setup["T_END"]/setup["COUPLTSTEP"])+1
 
   if printinfo:
     print_dict_statement(setuptxt, setup)
@@ -160,7 +161,9 @@ def setuptxt2dict(setuptxt, nattrs=3, ngrid=0, printinfo=True):
 
 def get_grid(gridfile, SDnspace, COORD0):
 
-  gbxbounds =  readgbx.read_dimless_gbxboundaries_binary(gridfile, COORD0) 
+  gbxbounds, ndims =  readgbx.read_dimless_gbxboundaries_binary(gridfile,
+                                                                COORD0=COORD0,
+                                                                return_ndims=True) 
   zhalf, xhalf, yhalf = readgbx.halfcoords_from_gbxbounds(gbxbounds)
   domainvol, gbxvols, ngrid = readgbx.domaininfo(gbxbounds)
  
@@ -170,6 +173,7 @@ def get_grid(gridfile, SDnspace, COORD0):
     
   grid = {
     "ngrid": ngrid, # number of gridboxes 
+    "ndims": ndims, # dimensions (np gridboxes in [z,x,y] direction)
     "domainvol": domainvol,
     "gbxvols": gbxvols,
     
