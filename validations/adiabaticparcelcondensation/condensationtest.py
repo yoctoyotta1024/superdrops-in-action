@@ -8,10 +8,10 @@ from pathlib import Path
 # CXX=[compiler choice] cmake -S [path2CLEO] -B ./build 
 # e.g. CXX=/opt/homebrew/bin/g++-12 cmake -S ../../../CLEO/ -B ./build
 
-path2CLEO = "/Users/yoctoyotta1024/Documents/b1_springsummer2023/CLEO/"
-apath = "/Users/yoctoyotta1024/Documents/b1_springsummer2023/superdrops_in_action/"
-#path2CLEO = "/home/m/m300950/CLEO/"
-#apath = "/home/m/m300950/superdrops_in_action/"
+# path2CLEO = "/Users/yoctoyotta1024/Documents/b1_springsummer2023/CLEO/"
+# apath = "/Users/yoctoyotta1024/Documents/b1_springsummer2023/superdrops_in_action/"
+path2CLEO = "/home/m/m300950/CLEO/"
+apath = "/home/m/m300950/superdrops_in_action/"
 
 sys.path.append(path2CLEO) # for imports from pySD package
 sys.path.append(apath+"sdmplotting/")
@@ -20,7 +20,8 @@ sys.path.append(apath+"validations/")
 from pySD.gbxboundariesbinary_src import create_gbxboundaries, read_gbxboundaries
 from pySD.initsuperdropsbinary_src import *
 from datsrc import *
-from validsrc import individSDs, condensationcurves
+from validsrc import individSDs
+from validsrc import condensationcurves as ccs
 
 ############### INPUTS ##################
 # path and filenames for creating SD initial conditions and for running model
@@ -99,7 +100,7 @@ os.system(buildpath+'src/cond0D ' + configfile+' '+constsfile)
 setup, grid = pysetuptxt.get_setup_grid(setupfile, gridfile)
 SDprops = commonsuperdropproperties.CommonSuperdropProperties(setup["RHO_L"], setup["RHO_SOL"],
                                                               setup["MR_SOL"], setup["IONIC"])
-thermo = pyzarr.get_thermodata(dataset, setup)
+thermo = pyzarr.get_thermodata(dataset, setup, grid["ndims"])
 time = pyzarr.get_time(dataset)
 sddata = pyzarr.get_sddata(dataset)
 zprof = displacement(time, setup["W_AVG"], setup["T_HALF"])
@@ -125,9 +126,10 @@ m_sol = pyzarr.extract_1superdroplet_attr_timeseries(sddata, 0, "m_sol")
 
 numconc = np.sum(sddata["eps"][0])/grid["domainvol"]/1e6 # [/cm^3]
 
-fig, axs = condensationcurves.condensation_validation_figure(time, eps, radius, m_sol,
-                                                            thermo.temp, supersat, zprof, SDprops,
-                                                            setup, numconc)
+fig, axs = ccs.condensation_validation_figure(time, eps, radius, m_sol,
+                                                thermo.temp.flatten(),
+                                                supersat.flatten(), zprof, SDprops,
+                                                setup, numconc)
 savename = "cond_validation.png"
 fig.savefig(binpath+savename, dpi=400, 
             bbox_inches="tight", facecolor='w', format="png")
