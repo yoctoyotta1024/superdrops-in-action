@@ -3,9 +3,9 @@ import numpy as np
 import matplotlib.pyplot as plt
 from scipy.special import iv
 
-abspath = "\/Users/yoctoyotta1024/Documents/b1_springsummer2023/"+\
-            "superdrops_in_action/sdmplotting"
-sys.path.append(abspath+"plottingscripts/")
+# abspath = "\/Users/yoctoyotta1024/Documents/b1_springsummer2023/"+\
+#             "superdrops_in_action/sdmplotting"
+# sys.path.append(abspath+"plottingscripts/")
 from datsrc import histos, pyzarr
 
 def golovin_validation_figure(witherr, time, sddata, tplt, domainvol,

@@ -1,8 +1,8 @@
 import numpy as np
 import sys
 
-path_in2pySD = "/Users/yoctoyotta1024/Documents/b1_springsummer2023/CLEO/"
-# path_in2pySD = "/home/m/m300950/CLEO/"
+# path_in2pySD = "/Users/yoctoyotta1024/Documents/b1_springsummer2023/CLEO/"
+path_in2pySD = "/home/m/m300950/CLEO/"
 sys.path.append(path_in2pySD)
 
 import pySD.gbxboundariesbinary_src.read_gbxboundaries as readgbx

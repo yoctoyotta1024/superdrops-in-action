@@ -3,7 +3,7 @@ import sys
 import numpy as np
 import matplotlib.pyplot as plt
 
-path2CLEO = "/Users/yoctoyotta1024/Documents/b1_springsummer2023/CLEO/"
+# path2CLEO = "/Users/yoctoyotta1024/Documents/b1_springsummer2023/CLEO/"
 path2CLEO = "/home/m/m300950/CLEO/"
 sys.path.append(path2CLEO) # for imports from pySD package
 
