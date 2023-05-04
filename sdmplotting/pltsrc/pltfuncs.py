@@ -41,9 +41,5 @@ def remove_spines_set_fontsize(axs, labels, ticks, legend):
     yticks, yticklabels = ticks_withinlims(ax.get_yticks(),
                                            ax.get_yticklabels(), ylims) 
     
-    ax.set_xticks(xticks, xticklabels, fontsize=ticks)
-    ax.set_yticks(yticks, yticklabels, fontsize=ticks)
-
-
     if ax.get_legend():
       ax.legend(fontsize=legend)
