@@ -36,8 +36,9 @@ def plot_kohlercurve_with_criticalpoints(ax, r, solutemass,
     s_eq, rcrit, scrit = kohler_curve(rkoh, solutemass, temperature, IONIC,
                                       MR_SOL, criticalpoints=True)
     ax.plot(rkoh, s_eq*100, label="K\u00F6hler curve",
-            color="grey", linestyle="-", linewidth=3)
-    ax.scatter(rcrit, scrit*100, marker="x", color="darkred", s=100)
+            color="grey", linestyle="-", linewidth=3, zorder=-1)
+    ax.scatter(rcrit, scrit*100, marker="x",
+               color="darkred", s=100, zorder=-2)
 
 
 def condensation_validation_subplots(axs, time, radius, supersat, zprof,
@@ -89,7 +90,7 @@ def condensation_validation_figure(time, eps, radius, m_sol, temp, supersat,
     fig, axs = plt.subplots(nrows=1, ncols=3, figsize=(12, 5))
 
     plot_kohlercurve_with_criticalpoints(axs[1], radius, m_sol[0], temp[0],
-                                                  SDprops.IONIC, SDprops.MR_SOL)
+                                        SDprops.IONIC, SDprops.MR_SOL)
 
     axs = condensation_validation_subplots(axs, time, radius, supersat, zprof)
 

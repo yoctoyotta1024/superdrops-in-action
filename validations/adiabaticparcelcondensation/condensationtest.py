@@ -36,15 +36,15 @@ gridfile = binpath+"cond_dimlessGBxboundaries.dat"
 isfigures = [True, True]
 
 # settings for 0D Model (no superdroplet or grid coordinates)
-nsupers = {0: 5}
+nsupers = {0: 1}
 coord_params = ["false"]
 zgrid = np.asarray([0, 100])
 xgrid = np.asarray([0, 100]) 
 ygrid = np.asarray([0, 100])
 
 # settings for monodisperse droplet radii
-numconc              = 0.05e9                        # [m^-3] total no. concentration of droplets
-monor                = 0.1e-6                        
+numconc              = 0.5e9                        # [m^-3] total no. concentration of droplets
+monor                = 0.025e-6                        
 radiigen  = initattributes.MonoAttrsGen(monor)       # all SDs have the same dryradius = monor [m]
 radiiprobdist = radiiprobdistribs.DiracDelta(monor)  # monodisperse droplet radii probability distribution
 samplevol = read_gbxboundaries.calc_domainvol(zgrid, xgrid, ygrid) # volume SD sample occupies (entire domain) [m^3]
