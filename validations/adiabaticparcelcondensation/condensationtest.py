@@ -112,7 +112,7 @@ relh, supersat = thermoeqns.relative_humidity(press, thermo.temp,
                                               
 minid, maxid = 0, setup["totnsupers0"] # sample drops to plot from whole range of SD ids
 ndrops2plot = setup["totnsupers0"]
-radii = pyzarr.attr_timeseries_for_nsuperdrops_sample(sddata, "radius", ndrops2plot, minid, maxid) 
+radii = pyzarr.attrtimeseries_for_superdropssample(sddata, "radius", ndrops2plot, minid, maxid) 
 fig, ax = individSDs.individ_radiusgrowths_figure(time, radii)
 savename = "cond_SDsradiigrowth.png"
 fig.savefig(binpath+savename, dpi=400, 
@@ -120,9 +120,9 @@ fig.savefig(binpath+savename, dpi=400,
 print("Figure .png saved as: "+binpath+savename)
 plt.show()    
 
-radius = pyzarr.extract_1superdroplet_attr_timeseries(sddata, 0, "radius")
-eps = pyzarr.extract_1superdroplet_attr_timeseries(sddata, 0, "eps")
-m_sol = pyzarr.extract_1superdroplet_attr_timeseries(sddata, 0, "m_sol")
+radius = pyzarr.attrtimeseries_for_1superdrop(sddata, 0, "radius")
+eps = pyzarr.attrtimeseries_for_1superdrop(sddata, 0, "eps")
+m_sol = pyzarr.attrtimeseries_for_1superdrop(sddata, 0, "m_sol")
 
 numconc = np.sum(sddata["eps"][0])/grid["domainvol"]/1e6 # [/cm^3]
 

@@ -231,7 +231,7 @@ def get_time(dataset):
 
   return time
 
-def extract_1superdroplet_attr_timeseries(sddata, id, attr):
+def attrtimeseries_for_1superdrop(sddata, id, attr):
   '''selects attribute from sddata belonging
   to superdroplet with identitiy 'sdindex'
   at every output time '''
@@ -268,7 +268,7 @@ def attrtimeseries_for_superdropssample(sddata, attr,
 
   ndrops_attr = []
   for id in sampled_ids: 
-    attr_timeseries = extract_1superdroplet_attr_timeseries(sddata, id, attr)
+    attr_timeseries = attrtimeseries_for_1superdrop(sddata, id, attr)
     ndrops_attr.append(attr_timeseries)
   
   return np.asarray(ndrops_attr).T
