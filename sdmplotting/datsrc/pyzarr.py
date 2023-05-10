@@ -23,7 +23,8 @@ def tryunits(ds, var):
 class Sddata:
   
   def __init__(self, dataset):
-    ds = get_rawdataset(dataset) 
+    ds = get_rawdataset(dataset)
+     
     self.totnsupers = ds["raggedcount"].values
   
     self.sdindex = tryopen(ds, self.totnsupers, "sdindex")
@@ -42,7 +43,9 @@ class Sddata:
     self.coord2_units = tryunits(ds, "coord2") # probably meters
 
   def __getitem__(self, key):
-    if key == "sdindex":
+    if key == "totnsupers":
+      return self.totnsupers
+    elif key == "sdindex":
       return self.sdindex
     elif key == "eps":
       return self.eps
@@ -65,7 +68,8 @@ class MassMoments:
     ds = get_rawdataset(dataset) 
     
     reshape = [setup["ntime"]] + list(np.flip(ndims))
-    
+
+    self.nsupers =  np.reshape(ds["nsupers"].values, reshape) # number of superdroplets in gbxs over time
     self.mom0 = np.reshape(ds["massmoment0"].values, reshape) # number of droplets in gbxs over time
     self.mom1 = np.reshape(ds["massmoment1"].values, reshape) # total mass of droplets in gbxs over time
     self.mom2 = np.reshape(ds["massmoment2"].values, reshape) # 2nd mass moment of droplets (~reflectivity)
@@ -73,6 +77,18 @@ class MassMoments:
     self.mom1_units = ds["massmoment1"].units # probably grams
     self.mom2_units = ds["massmoment2"].units # probably grams^2
 
+  def __getitem__(self, key):
+    if key == "nsupers":
+      return self.nsupers
+    elif key == "mom0":
+      return self.mom0
+    elif key == "mom1":
+      return self.mom1
+    elif key == "mom2":
+      return self.mom2
+    else:
+      err = "no known return provided for "+key+" key"
+      raise ValueError(err)
 
 class Thermodata:
 
@@ -113,25 +129,28 @@ class Thermodata:
     theta = thermoeqns.dry_pot_temp(self.temp, press, self.qvap, setup)        # parcel potential temp
   
     return theta
+
+class Time:
   
-  def meanytime(self, var):
-    ''' mean of thermo variable over
-    time and y dimeensions '''      
-        
-    return np.mean(var, axis=(0,1))
+  def __init__(self, dataset):
+    
+    ds = get_rawdataset(dataset) 
+    
+    self.secs = ds["time"].values
+    self.mins = self.secs / 60
+    self.hrs = self.secs / 60 / 60
+  
+  def __getitem__(self, key):
+    if key == "secs":
+      return self.secs
+    elif key == "mins":
+      return self.mins
+    elif key == "hrs":
+      return self.hrs
+    else:
+      err = "no known return provided for "+key+" key"
+      raise ValueError(err)
 
-  def meanxyz(self, var):
-    ''' mean of thermo variable over
-    (x,y,z) dimensions '''      
-        
-    return np.mean(var, axis=(1,2,3))
-
-  def meanxytime(self, var):
-    ''' mean of thermo variable over
-    (x,y,z) dimensions '''      
-        
-    return np.mean(var, axis=(0,1,2))
-   
 def dims_from_setup(var, setup):
   """ return constant to multipy non-dimensional 
   data to convert to SI units """
@@ -155,6 +174,7 @@ def dims_from_setup(var, setup):
 
 def get_rawdataset(dataset):
 
+  print("opening: ", dataset)
   return xr.open_dataset(dataset, engine="zarr", consolidated=False)
 
 def get_sddata(dataset):
@@ -178,11 +198,12 @@ def get_thermodata(dataset, setup, ndims):
 
   return thermo
 
+
 def get_time(dataset):
 
-  ds = xr.open_dataset(dataset, engine="zarr", consolidated=False)
-  
-  return ds["time"].values
+  time = Time(dataset)
+
+  return time
 
 def extract_1superdroplet_attr_timeseries(sddata, id, attr):
   '''selects attribute from sddata belonging
