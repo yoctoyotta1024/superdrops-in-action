@@ -273,7 +273,7 @@ def attrtimeseries_for_superdropssample(sddata, attr,
   
   return np.asarray(ndrops_attr).T
 
-def select_from_attr(attrdata, time, times2sel):
+def attr_at_times(attrdata, time, times2sel):
   '''selects attribute at given times
    (for all superdroplets in sddata)'''
 
@@ -284,7 +284,7 @@ def select_from_attr(attrdata, time, times2sel):
   
   return selected_attr
 
-def select_manytimes_from_sddata(sddata, time, times2sel, attrs2sel):
+def attrs_at_times(sddata, time, times2sel, attrs2sel):
   '''selects attributes at given times from
   sddata (for all superdroplets in sddata)'''
 
@@ -292,25 +292,7 @@ def select_manytimes_from_sddata(sddata, time, times2sel, attrs2sel):
   
   for attr in attrs2sel:
     
-    selattr_data = select_from_attr(sddata[attr], time, times2sel)
-    
+    selattr_data = attr_at_times(sddata[attr], time, times2sel)
     selected_data[attr] = selattr_data
   
   return selected_data
-
-def select_1time_from_sddata(sddata, time, t2sel, attrs2sel):
-  '''selects attributes at given times from
-  sddata (for all superdroplets in sddata)'''
-
-  selected_data = {} # dict containting selected attributes at selected times
-  
-  for attr in attrs2sel:
-
-    ind = np.argmin(abs(time-t2sel))
-    selattr_data = sddata[attr][ind] 
-
-    selected_data[attr] = selattr_data
-  
-  return selected_data
-
-
