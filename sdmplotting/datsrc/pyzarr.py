@@ -73,9 +73,11 @@ class MassMoments:
     self.mom0 = np.reshape(ds["massmoment0"].values, reshape) # number of droplets in gbxs over time
     self.mom1 = np.reshape(ds["massmoment1"].values, reshape) # total mass of droplets in gbxs over time
     self.mom2 = np.reshape(ds["massmoment2"].values, reshape) # 2nd mass moment of droplets (~reflectivity)
+    self.effmass = self.mom2 / self.mom1                       # Effective Radius of droplets
 
     self.mom1_units = ds["massmoment1"].units # probably grams
     self.mom2_units = ds["massmoment2"].units # probably grams^2
+    self.effmass_units = ds["massmoment2"].units + "/" + ds["massmoment1"].units # probably grams
 
   def __getitem__(self, key):
     if key == "nsupers":
@@ -86,6 +88,8 @@ class MassMoments:
       return self.mom1
     elif key == "mom2":
       return self.mom2
+    elif key == "effmass":
+      return self.effmass
     else:
       err = "no known return provided for "+key+" key"
       raise ValueError(err)
@@ -104,10 +108,28 @@ class Thermodata:
     
     self.theta = self.get_potential_temp(setup) 
 
+    self.Mr_ratio = setup["Mr_ratio"]
     self.press_units = ds["press"].units # probably hecto pascals
     self.temp_units = ds["temp"].units # probably kelvin
     self.theta_units = ds["temp"].units # probably kelvin
 
+  def get_vapourpressure(self):
+    '''returns vapour and saturation pressure '''
+    
+    p_pascals = self.press*100 # convert from hPa to Pa
+    pv = thermoeqns.vapour_pressure(p_pascals, self.qvap, self.Mr_ratio) / 100 # [hPa]
+    psat = thermoeqns.saturation_pressure(self.temp) / 100 # [hPa]
+   
+    return pv, psat
+
+  def get_relativehumidity(self):
+    ''' returns relative humidty and supersaturation '''
+    
+    p_pascals = self.press*100 # convert from hPa to Pa
+    relh, supersat = thermoeqns.relative_humidity(p_pascals, self.temp, 
+                                                  self.qvap, self.Mr_ratio)
+    return relh, supersat
+  
   def __getitem__(self, key):
     if key == "press":
       return self.press
@@ -119,6 +141,10 @@ class Thermodata:
       return self.qcond
     elif key == "theta":
       return self.theta
+    elif key == "relh":
+      return self.get_relativehumidity()[0]
+    elif key == "supersat":
+      return self.get_relativehumidity()[1]
     else:
       err = "no known return provided for "+key+" key"
       raise ValueError(err)
