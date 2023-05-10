@@ -251,10 +251,10 @@ def extract_1superdroplet_attr_timeseries(sddata, id, attr):
   
   return ak.flatten(attr_timeseries, axis=1)
 
-def attr_timeseries_for_nsuperdrops_sample(sddata, attr,
-                                           ndrops2sample=0,
-                                           minid=0, maxid=0,
-                                           ids=[]):
+def attrtimeseries_for_superdropssample(sddata, attr,
+                                        ndrops2sample=0,
+                                        minid=0, maxid=0,
+                                        ids=[]):
   ''' returns 2D array with dimensions [time, SD]
   containing attribute data over time for 'ndrops'
   randomly selected from superdrops with id in
