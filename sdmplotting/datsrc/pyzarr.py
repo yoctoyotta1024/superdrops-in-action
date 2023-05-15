@@ -180,6 +180,36 @@ class Time:
       err = "no known return provided for "+key+" key"
       raise ValueError(err)
 
+class GridBoxes:
+  
+  def __init__(self, dataset, grid):
+    
+    ds = get_rawdataset(dataset)
+     
+    self.grid = grid
+    self.gbxindex = np.reshape(ds["gbxindex"].values, 
+                               np.flip(self.grid["ndims"]))
+
+    self.xxh, self.zzh = np.meshgrid(self.grid["xhalf"],
+                                     self.grid["zhalf"], indexing="ij") # dims [xdims, zdims] [m]
+    
+    self.xxf, self.zzf = np.meshgrid(self.grid["xfull"],
+                                     self.grid["zfull"], indexing="ij") # dims [xdims, zdims] [m]
+
+  def __getitem__(self, key):
+    if key == "grid":
+      return self.grid
+    elif key == "gbxindex":
+      return self.gbxindex
+    if key == "xxhzzh":
+      return self.xxh, self.zzh
+    if key == "xxfzzf":
+      return self.xxf, self.zzf
+    else:
+      err = "no known return provided for "+key+" key"
+      raise ValueError(err)
+
+
 def dims_from_setup(var, setup):
   """ return constant to multipy non-dimensional 
   data to convert to SI units """
