@@ -8,10 +8,10 @@ from pathlib import Path
 # CXX=[compiler choice] cmake -S [path2CLEO] -B ./build 
 # e.g. CXX=/opt/homebrew/bin/g++-12 cmake -S ../../../CLEO/ -B ./build
 
-# path2CLEO = "/Users/yoctoyotta1024/Documents/b1_springsummer2023/CLEO/"
-# apath = "/Users/yoctoyotta1024/Documents/b1_springsummer2023/superdrops_in_action/"
-path2CLEO = "/home/m/m300950/CLEO/"
-apath = "/home/m/m300950/superdrops_in_action/"
+path2CLEO = "/Users/yoctoyotta1024/Documents/b1_springsummer2023/CLEO/"
+apath = "/Users/yoctoyotta1024/Documents/b1_springsummer2023/superdrops_in_action/"
+# path2CLEO = "/home/m/m300950/CLEO/"
+# apath = "/home/m/m300950/superdrops_in_action/"
 
 sys.path.append(path2CLEO) # for imports from pySD package
 sys.path.append(apath+"sdmplotting/")
@@ -101,7 +101,7 @@ setup, grid = pysetuptxt.get_setup_grid(setupfile, gridfile)
 SDprops = commonsuperdropproperties.CommonSuperdropProperties(setup["RHO_L"], setup["RHO_SOL"],
                                                               setup["MR_SOL"], setup["IONIC"])
 thermo = pyzarr.get_thermodata(dataset, setup, grid["ndims"])
-time = pyzarr.get_time(dataset)
+time = pyzarr.get_time(dataset).secs
 sddata = pyzarr.get_sddata(dataset)
 zprof = displacement(time, setup["W_AVG"], setup["T_HALF"])
 
