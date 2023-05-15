@@ -26,8 +26,9 @@ class Sddata:
     ds = get_rawdataset(dataset)
      
     self.totnsupers = ds["raggedcount"].values
-  
+
     self.sdindex = tryopen(ds, self.totnsupers, "sdindex")
+    self.sd_gbxindex = tryopen(ds, self.totnsupers, "sd_gbxindex")
     self.eps = tryopen(ds, self.totnsupers, "eps")
     self.radius = tryopen(ds, self.totnsupers, "radius")
     self.m_sol = tryopen(ds, self.totnsupers, "m_sol")
@@ -47,6 +48,8 @@ class Sddata:
       return self.totnsupers
     elif key == "sdindex":
       return self.sdindex
+    elif key == "sd_gbxindex":
+      return self.sd_gbxindex
     elif key == "eps":
       return self.eps
     elif key == "radius":
