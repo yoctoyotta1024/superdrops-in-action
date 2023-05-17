@@ -6,7 +6,7 @@ from pathlib import Path
 
 # To create build dir:
 # CXX=[compiler choice] cmake -S [path2CLEO] -B ./build 
-# e.g. CXX=/opt/homebrew/bin/g++-12 cmake -S ../../../CLEO/ -B ./build
+# e.g. CXX=g++-13 CC=gcc-13 cmake -S ../../../CLEO/ -B ./build
 
 path2CLEO = "/Users/yoctoyotta1024/Documents/b1_springsummer2023/CLEO/"
 apath = "/Users/yoctoyotta1024/Documents/b1_springsummer2023/superdrops_in_action/"
@@ -91,7 +91,7 @@ plt.close()
 Path(buildpath).mkdir(exist_ok=True) 
 os.chdir(buildpath)
 os.system('pwd')
-os.system("make clean && make cond0D")
+os.system("make clean && make -j 16 cond0D")
 os.system('rm -rf '+dataset)
 os.system(buildpath+'src/cond0D ' + configfile+' '+constsfile)
 
