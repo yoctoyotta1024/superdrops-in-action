@@ -7,6 +7,7 @@ from pathlib import Path
 # To create build dir:
 # CXX=[compiler choice] cmake -S [path2CLEO] -B ./build 
 # e.g. CXX=g++-13 CC=gcc-13 cmake -S ../../../CLEO/ -B ./build
+# or CXX=g++-13 CC=gcc-13 cmake -S ../../../CLEO/ -B ./build -DKokkos_ENABLE_OPENMP=ON -DKokkos_ARCH_NATIVE=ON
 
 path2CLEO = "/Users/yoctoyotta1024/Documents/b1_springsummer2023/CLEO/"
 apath = "/Users/yoctoyotta1024/Documents/b1_springsummer2023/superdrops_in_action/"
