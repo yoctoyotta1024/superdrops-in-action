@@ -22,14 +22,14 @@ def plot_individ_radiusgrowths(fig, ax, time, radii):
 
   return lines
 
-def plot_individ_radiusgrowths_with_supersat(fig, ax, time, radii, supersat):
+def plot_individ_radiusgrowths_with_supersat(fig, ax, time, radii, supersat0d):
   '''plots of droplet radii growth against height
    with supersaturatio curve superimposed on top'''
   
   lines = plot_individ_radiusgrowths(fig, ax, time, radii)
 
   axb = ax.twinx()
-  axb.plot(time, supersat[:,0], linewidth=1.5, color='k', label='s')
+  axb.plot(time, supersat0d, linewidth=1.5, color='k', label='s')
   axb.hlines(0, np.amin(time), np.amax(time),
              color='gray', linestyle='--', label="s=0") 
   axb.set_ylabel('supersaturation, s')
