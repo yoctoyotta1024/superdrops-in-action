@@ -1,11 +1,9 @@
 import numpy as np
 import sys
 
-path_in2pySD = "/Users/yoctoyotta1024/Documents/b1_springsummer2023/CLEO/"
-# path_in2pySD = "/home/m/m300950/CLEO/"
-sys.path.append(path_in2pySD)
-
-import pySD.gbxboundariesbinary_src.read_gbxboundaries as readgbx
+from ..importpySD import ImportpySD
+ImportpySD().importpySD()
+import pySD.gbxboundariesbinary_src.read_gbxboundaries as rgrid
 
 def print_dict_statement(filename, dict):
 
@@ -161,15 +159,15 @@ def setuptxt2dict(setuptxt, nattrs=3, ngrid=0, printinfo=True):
 
 def get_grid(gridfile, SDnspace, COORD0):
 
-  gbxbounds, ndims =  readgbx.read_dimless_gbxboundaries_binary(gridfile,
+  gbxbounds, ndims =  rgrid.read_dimless_gbxboundaries_binary(gridfile,
                                                                 COORD0=COORD0,
                                                                 return_ndims=True) 
-  zhalf, xhalf, yhalf = readgbx.halfcoords_from_gbxbounds(gbxbounds)
-  domainvol, gbxvols, ngrid = readgbx.domaininfo(gbxbounds)
+  zhalf, xhalf, yhalf = rgrid.halfcoords_from_gbxbounds(gbxbounds)
+  domainvol, gbxvols, ngrid = rgrid.domaininfo(gbxbounds)
  
-  zfull, deltaz = readgbx.get_fullcell_and_cellspacing(zhalf) 
-  xfull, deltax = readgbx.get_fullcell_and_cellspacing(xhalf) 
-  yfull, deltay = readgbx.get_fullcell_and_cellspacing(yhalf) 
+  zfull, deltaz = rgrid.get_fullcell_and_cellspacing(zhalf) 
+  xfull, deltax = rgrid.get_fullcell_and_cellspacing(xhalf) 
+  yfull, deltay = rgrid.get_fullcell_and_cellspacing(yhalf) 
     
   grid = {
     "ngrid": ngrid, # number of gridboxes 
