@@ -2,7 +2,7 @@ import numpy as np
 import sys
 
 from ..importpySD import ImportpySD
-ImportpySD().importpySD()
+ImportpySD()
 import pySD.gbxboundariesbinary_src.read_gbxboundaries as rgrid
 
 def print_dict_statement(filename, dict):
