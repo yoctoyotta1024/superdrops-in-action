@@ -86,7 +86,7 @@ def plot_individ_coords(fig, ax, time, coords, coordlab):
 
 def plot_superdrop_zxmotion(fig, ax, xcoords, zcoords,  arrows=True):
 
-  ax.plot(xcoords, zcoords, linestyle="", marker=",")
+  lines = ax.plot(xcoords, zcoords, linestyle="", marker=",")[0]
 
   if arrows:
     n2plt = min(300, xcoords.shape[1])
@@ -110,4 +110,40 @@ def plot_superdrop_zxmotion(fig, ax, xcoords, zcoords,  arrows=True):
 
   fig.tight_layout()
 
-  return fig, ax
+  return lines
+
+def randomsample_plotsupers(fig, axs, time, sddata, nsample):
+  
+  minid, maxid = 0, sddata.totnsupers[0] # largest value of ids to sample
+  ids2plot = random.sample(list(range(minid, maxid, 1)), nsample)
+  
+  radii = pyzarr.attrtimeseries_for_superdropssample(sddata, "radius", ids=ids2plot) 
+  m_sols = pyzarr.attrtimeseries_for_superdropssample(sddata, "m_sol", ids=ids2plot)
+  epss = pyzarr.attrtimeseries_for_superdropssample(sddata, "eps", ids=ids2plot)
+  zcoords = pyzarr.attrtimeseries_for_superdropssample(sddata, "coord3", ids=ids2plot) 
+  xcoords = pyzarr.attrtimeseries_for_superdropssample(sddata, "coord1", ids=ids2plot) 
+  ycoords = pyzarr.attrtimeseries_for_superdropssample(sddata, "coord2", ids=ids2plot) 
+
+  lines = []
+  axs = axs.flatten()
+  lines.extend(plot_individ_radiusgrowths(fig, axs[0], time.mins, radii))
+  lines.extend(plot_individ_multiplicities(fig, axs[1], time.mins, epss))
+  lines.extend(plot_individ_m_sols(fig, axs[2], time.mins, m_sols))
+  lines.extend(plot_individ_coords(fig, axs[3], time.mins, zcoords, "z coord"))
+  lines.extend(plot_individ_coords(fig, axs[4], time.mins, xcoords, "x coord"))
+  lines.extend(plot_individ_coords(fig, axs[5], time.mins, ycoords, "y coord"))
+
+  fig.tight_layout()
+
+  return lines
+
+def randomsample_plotsuperdrop_zxmotio(fig, ax, sddata, nsample):
+  
+  n2plt = min(nsample, sddata.totnsupers[0])
+  ids2plot = random.sample(list(range(0, sddata.totnsupers[0], 1)), n2plt)
+  zcoords = pyzarr.attr_timeseries_for_nsuperdrops_sample(sddata, "coord3", ids=ids2plot) / 1000  #[km]
+  xcoords = pyzarr.attr_timeseries_for_nsuperdrops_sample(sddata, "coord1", ids=ids2plot)  / 1000 #[km]
+
+  lines = plot_superdrop_zxmotion(fig, ax, xcoords, zcoords,  arrows=False)
+
+  return lines
