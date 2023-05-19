@@ -315,7 +315,7 @@ def attr_at_times(attrdata, time, times2sel):
     ind = np.argmin(abs(time-t))
     selected_attr.append(attrdata[ind]) 
   
-  return selected_attr
+  return ak.Array(selected_attr)
 
 def attrs_at_times(sddata, time, times2sel, attrs2sel):
   '''selects attributes at given times from
