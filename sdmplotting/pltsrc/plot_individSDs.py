@@ -1,5 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
+import random
 
 def plot_individ_radiusgrowths(fig, ax, time, radii):
   ''' plots of droplet radii growth given array of radii
@@ -80,3 +81,31 @@ def plot_individ_coords(fig, ax, time, zcoords, coordlab):
   fig.tight_layout()
 
   return lines
+
+def plot_superdrop_zxmotion(fig, ax, xcoords, zcoords,  arrows=True):
+
+  ax.plot(xcoords, zcoords, linestyle="", marker=",")
+
+  if arrows:
+    n2plt = min(300, xcoords.shape[1])
+    drops2arrow = random.sample(list(range(0, xcoords.shape[1], 1)), n2plt)
+    for n in drops2arrow: # must loop over drops to get nice positioning of arrows
+      x = xcoords[:,n][np.logical_not(np.isnan(xcoords[:,n]))]
+      z = zcoords[:,n][np.logical_not(np.isnan(zcoords[:,n]))]
+      
+      u = np.diff(x)
+      w = np.diff(z)
+      norm = np.sqrt(u**2+w**2) 
+      pos_x = x[:-1] + u/2
+      pos_z = z[:-1] + w/2
+      
+      sl = list(range(0, len(pos_x), 100))
+      ax.quiver(pos_x[sl], pos_z[sl], (u/norm)[sl], (w/norm)[sl],
+              angles="xy", zorder=5, pivot="mid", scale=50)
+
+  ax.set_xlabel("x / km")
+  ax.set_ylabel("z / km")
+
+  fig.tight_layout()
+
+  return fig, ax

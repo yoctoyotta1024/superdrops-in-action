@@ -12,7 +12,7 @@ def save_figure(fig, savedir, savename, show=True):
     if show:
         plt.show()
 
-def ticks_withinlims(ticks, ticklabels, lims):
+def getticks_withinlims(ticks, ticklabels, lims):
   
   ticklabels = np.where(ticks>=lims[0], ticklabels, "")
   ticklabels = np.where(ticks<=lims[1], ticklabels, "")
@@ -33,9 +33,9 @@ def remove_spines_set_fontsize(axs, labels, ticks, legend):
     xlims = ax.get_xlim() 
     ylims = ax.get_ylim() 
 
-    xticks, xticklabels = ticks_withinlims(ax.get_xticks(),
+    xticks, xticklabels = getticks_withinlims(ax.get_xticks(),
                                            ax.get_xticklabels(), xlims) 
-    yticks, yticklabels = ticks_withinlims(ax.get_yticks(),
+    yticks, yticklabels = getticks_withinlims(ax.get_yticks(),
                                            ax.get_yticklabels(), ylims) 
     
     ax.set_xlim(xlims), ax.set_ylim(ylims)
