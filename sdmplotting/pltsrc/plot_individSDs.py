@@ -2,6 +2,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 import random
 
+from ..datsrc import pyzarr
+
 def plot_individ_radiusgrowths(fig, ax, time, radii):
   ''' plots of droplet radii growth given array of radii
   of shape [time, SDs] '''
@@ -11,7 +13,7 @@ def plot_individ_radiusgrowths(fig, ax, time, radii):
     line = ax.plot(time, radii[:,i], linewidth=0.8)
     lines.append(line)
 
-  ax.set_xlabel('time /s')
+  ax.set_xlabel('time /min')
   ax.set_yscale('log')
   ax.set_ylabel('droplet radius /\u03BCm')
 
@@ -45,7 +47,7 @@ def plot_individ_multiplicities(fig, ax, time, epss):
     line = ax.plot(time, epss[:,i], linewidth=0.8)
     lines.append(line)
 
-  ax.set_xlabel('time /s')
+  ax.set_xlabel('time /min')
   ax.set_ylabel('multiplicity, \u03BE')
 
   fig.tight_layout()
@@ -60,22 +62,22 @@ def plot_individ_m_sols(fig, ax, time, m_sols):
     line = ax.plot(time, m_sols[:,i], linewidth=0.8)
     lines.append(line)
      
-  ax.set_xlabel('time /s')
+  ax.set_xlabel('time /min')
   ax.set_ylabel('solute mass /g')
   
   fig.tight_layout()
 
   return lines
 
-def plot_individ_coords(fig, ax, time, zcoords, coordlab):
+def plot_individ_coords(fig, ax, time, coords, coordlab):
   ''' plots of droplet radii growth '''
   
   lines = []
-  for i in range(zcoords.shape[1]):
-    line = ax.plot(time, zcoords[:,i]/1000, linewidth=0.8)
+  for i in range(coords.shape[1]):
+    line = ax.plot(time, coords/1000, linestyle="", marker=".", markersize=0.4)
     lines.append(line)
      
-  ax.set_xlabel('time /s')
+  ax.set_xlabel('time /min')
   ax.set_ylabel(coordlab+' /km')
   
   fig.tight_layout()

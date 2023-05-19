@@ -1,16 +1,25 @@
+import numpy as np
 import matplotlib.pyplot as plt
 
 def axplt(ax, x, y, xlab=None, ylab=None, lab="_nolegend_",
-          c=0, l='-', lw=1):
+          c="k", l='-', lw=1):
     
     if type(c)==type(0):
         c= 'C'+str(c)
     
-    line = ax.plot(x,y, label=lab, color=c, linestyle=l, linewidth=lw)
+    l = ax.plot(x, y, label=lab, color=c, linestyle=l, linewidth=lw)
     ax.set_xlabel(xlab)
     ax.set_ylabel(ylab)
 
-    return line
+    return l[0]
+
+def axplt2d(ax, xxh, zzh, var, cmap, lab):
+    
+    var2d = np.mean(var, axis=(0,1)) # avg over time and y axes
+    pcm = ax.pcolormesh(xxh[:,:], zzh[:,:], var2d, cmap=cmap)
+    plt.colorbar(pcm, ax=ax, location="top", label=lab)
+    
+    return pcm
 
 def plot_kinetics_against_time(fig, axs, time, press, temp, qvap, qcond,
                                relh, supersat, dry_adia):
@@ -32,15 +41,9 @@ def plot_kinetics_against_time(fig, axs, time, press, temp, qvap, qcond,
     line7 = axplt(axs[3].twinx(), time, supersat, 
                   ylab="supersaturation", lab="supersat", c=4, l='--')
 
-    handles=[line1[0]]+[line2[0]]
-    axs[1].legend(fontsize=11, loc='upper right', handles=handles)
-    
-    handles=[line3[0]]+[line4[0]]+[line5[0]]
-    axs[2].legend(fontsize=11, loc='upper right', handles=handles)
-    
-    handles=[line6[0]]+[line7[0]]
-    axs[3].legend(fontsize=11, loc='upper right', handles=handles)
-
+    axs[1].legend(fontsize=11, loc='upper right', handles=[line1, line2])
+    axs[2].legend(fontsize=11, loc='upper right', handles=[line3, line4, line5])
+    axs[3].legend(fontsize=11, loc='upper right', handles=[line6, line7])
     axs[0].set_yscale("log")
 
     fig.tight_layout()
@@ -80,17 +83,10 @@ def plot_kinetics_against_pressure(fig, axs, press, temp, qvap, qcond,
         ax.set_yscale('log')
         ax.invert_yaxis()
 
-    handles=[line3[0]]+[line4[0]]
-    axs[2].legend(fontsize=11, loc='upper right', handles=handles)
-
-    handles=[line5[0]]+[line6[0]]
-    axs[3].legend(fontsize=11, loc='upper right', handles=handles)
-    
-    handles=[line7[0]]+[line8[0]]+[line9[0]]
-    axs[4].legend(fontsize=11, loc='upper right', handles=handles)
-
-    handles=[line10[0]]+[line11[0]]
-    axs[5].legend(fontsize=11, loc='upper right', handles=handles)
+    axs[2].legend(fontsize=11, loc='upper right', handles=[line3, line4])
+    axs[3].legend(fontsize=11, loc='upper right', handles=[line5, line6])
+    axs[4].legend(fontsize=11, loc='upper right', handles=[line7, line8, line9])
+    axs[5].legend(fontsize=11, loc='upper right', handles=[line10, line11])
 
     fig.tight_layout()
 
@@ -98,7 +94,6 @@ def plot_kinetics_against_pressure(fig, axs, press, temp, qvap, qcond,
                   line7, line8, line9, line10, line11]
 
     return lines
-
 
 def plot_moist_static_energy(fig, ax, time, mse):
 
@@ -112,3 +107,57 @@ def plot_moist_static_energy(fig, ax, time, mse):
     fig.tight_layout()
 
     return [line0, line1]
+
+def domainmean_against_time(fig, axs, time, thermo):
+
+    axs = axs.flatten()
+    
+    l0 = axplt(axs[0], time.mins, np.mean(thermo.press, axis=(1,2,3)),
+               ylab='Pressure /mbar', c=0)
+    l1 = axplt(axs[1], time.mins, np.mean(thermo.temp, axis=(1,2,3)),
+               ylab='Temperature /K', lab='temp', c=3)
+    
+    meantotwater =  np.mean(thermo.qvap+thermo.qcond, axis=(1,2,3))
+    l2 = axplt(axs[2], time.mins, meantotwater, lab='total', c=7, l='--')
+    l3 = axplt(axs[2], time.mins, np.mean(thermo.qvap, axis=(1,2,3)),
+               lab='vapour', c=5)
+    l4 = axplt(axs[2], time.mins, np.mean(thermo.qcond, axis=(1,2,3)),
+               xlab="time /min", ylab='Water Content', lab='liquid', c=6)
+
+    l5 = axplt(axs[3], time.mins, np.mean(thermo["relh"], axis=(1,2,3)),
+               xlab="time /min", ylab='relative humidity', lab="relh", c=4)
+    l6 = axplt(axs[3].twinx(), time.mins, np.mean(thermo["supersat"], axis=(1,2,3)), 
+               ylab="supersaturation", lab="supersat", c=4, l='--')
+ 
+    axs[2].legend(fontsize=11, loc='upper right', handles=[l2, l3, l4])
+    axs[3].legend(fontsize=11, loc='upper right', handles=[l5, l6])
+
+    axs[0].set_yscale("log")
+
+    fig.tight_layout()
+
+    return [l0, l1, l2, l3, l4, l5, l6]
+
+
+def domain2dmean(fig, axs, grid, thermo):
+
+    axs = axs.flatten()
+    xxh, zzh = np.meshgrid(grid["xhalf"], grid["zhalf"], indexing="ij") # dims [xdims, zdims] [m]
+    xxh, zzh = [xxh/1000, zzh/1000] #[km]
+
+    l0 = axplt2d(axs[0], xxh, zzh, thermo.press, "PRGn", "pressure / hPa")
+    l1 = axplt2d(axs[1], xxh, zzh, thermo.temp, "RdBu", "temperature / K")
+    l1 = axplt2d(axs[2], xxh, zzh, thermo.theta, "RdBu", "\u03F4$_{dry}$ / K")
+    l2 = axplt2d(axs[3], xxh, zzh, thermo.qvap*1000, "BrBG", "q$_{v}$ / g/kg")
+    l3 = axplt2d(axs[4], xxh, zzh, thermo.qcond*1000, "BrBG", "q$_{l}$ / g/kg")
+    l4 = axplt2d(axs[5], xxh, zzh, thermo["supersat"], "Blues", "supersaturation")
+    
+  
+    for ax in axs:
+        ax.set_aspect("equal")
+        ax.set_xlabel("x /km")
+        ax.set_ylabel("z /km")
+
+    fig.tight_layout()
+
+    return [l0, l1, l2, l3, l4]

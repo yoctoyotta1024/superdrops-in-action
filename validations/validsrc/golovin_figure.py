@@ -12,7 +12,7 @@ def golovin_validation_figure(witherr, time, sddata, tplt, domainvol,
                               SDprops, n_a, r_a, smoothsig):
 
   attrs2sel = ["radius", "eps"]
-  selsddata = pyzarr.select_manytimes_from_sddata(sddata, time, tplt, attrs2sel)
+  selsddata = pyzarr.attrs_at_times(sddata, time, tplt, attrs2sel)
 
   nbins = 500
   rspan = [np.nanmin(sddata["radius"]), np.nanmax(sddata["radius"])]

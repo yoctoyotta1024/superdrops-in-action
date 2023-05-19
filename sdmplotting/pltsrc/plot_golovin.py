@@ -40,7 +40,7 @@ def plot_golovin_validation(fig, ax, ax_err, time, sddata, tplt, domainvol, SDpr
                             n_a, r_a, smoothsig, rspan, nbins):
 
   attrs2sel = ["radius", "eps"]
-  selsddata = pyzarr.select_manytimes_from_sddata(sddata, time, tplt, attrs2sel)
+  selsddata = pyzarr.attrs_at_times(sddata, time, tplt, attrs2sel)
 
   lines = [] 
   for n in range(len(tplt)):

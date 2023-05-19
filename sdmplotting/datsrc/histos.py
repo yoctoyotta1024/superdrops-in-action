@@ -85,7 +85,7 @@ def coord3radius_2Ddistribs(tplt, rspan, c3span, nbins2d, time, sddata,
   from all the droplets in the domain at each time in tplt list '''
   
   attrs2sel = ["radius", "coord3", "eps"]
-  selsddata = pyzarr.select_manytimes_from_sddata(sddata, time, tplt, attrs2sel)
+  selsddata = pyzarr.attrs_at_times(sddata, time, tplt, attrs2sel)
   
   freqs = []
   for t in range(len(tplt)):

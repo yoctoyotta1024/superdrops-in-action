@@ -23,10 +23,12 @@ def tryunits(ds, var):
 class Sddata:
   
   def __init__(self, dataset):
-    ds = get_rawdataset(dataset) 
+    ds = get_rawdataset(dataset)
+     
     self.totnsupers = ds["raggedcount"].values
-  
+
     self.sdindex = tryopen(ds, self.totnsupers, "sdindex")
+    self.sd_gbxindex = tryopen(ds, self.totnsupers, "sd_gbxindex")
     self.eps = tryopen(ds, self.totnsupers, "eps")
     self.radius = tryopen(ds, self.totnsupers, "radius")
     self.m_sol = tryopen(ds, self.totnsupers, "m_sol")
@@ -42,8 +44,12 @@ class Sddata:
     self.coord2_units = tryunits(ds, "coord2") # probably meters
 
   def __getitem__(self, key):
-    if key == "sdindex":
+    if key == "totnsupers":
+      return self.totnsupers
+    elif key == "sdindex":
       return self.sdindex
+    elif key == "sd_gbxindex":
+      return self.sd_gbxindex
     elif key == "eps":
       return self.eps
     elif key == "radius":
@@ -65,14 +71,31 @@ class MassMoments:
     ds = get_rawdataset(dataset) 
     
     reshape = [setup["ntime"]] + list(np.flip(ndims))
-    
+
+    self.nsupers =  np.reshape(ds["nsupers"].values, reshape) # number of superdroplets in gbxs over time
     self.mom0 = np.reshape(ds["massmoment0"].values, reshape) # number of droplets in gbxs over time
     self.mom1 = np.reshape(ds["massmoment1"].values, reshape) # total mass of droplets in gbxs over time
     self.mom2 = np.reshape(ds["massmoment2"].values, reshape) # 2nd mass moment of droplets (~reflectivity)
+    self.effmass = self.mom2 / self.mom1                       # Effective Radius of droplets
 
     self.mom1_units = ds["massmoment1"].units # probably grams
     self.mom2_units = ds["massmoment2"].units # probably grams^2
+    self.effmass_units = ds["massmoment2"].units + "/" + ds["massmoment1"].units # probably grams
 
+  def __getitem__(self, key):
+    if key == "nsupers":
+      return self.nsupers
+    elif key == "mom0":
+      return self.mom0
+    elif key == "mom1":
+      return self.mom1
+    elif key == "mom2":
+      return self.mom2
+    elif key == "effmass":
+      return self.effmass
+    else:
+      err = "no known return provided for "+key+" key"
+      raise ValueError(err)
 
 class Thermodata:
 
@@ -88,10 +111,28 @@ class Thermodata:
     
     self.theta = self.get_potential_temp(setup) 
 
+    self.Mr_ratio = setup["Mr_ratio"]
     self.press_units = ds["press"].units # probably hecto pascals
     self.temp_units = ds["temp"].units # probably kelvin
     self.theta_units = ds["temp"].units # probably kelvin
 
+  def get_vapourpressure(self):
+    '''returns vapour and saturation pressure '''
+    
+    p_pascals = self.press*100 # convert from hPa to Pa
+    pv = thermoeqns.vapour_pressure(p_pascals, self.qvap, self.Mr_ratio) / 100 # [hPa]
+    psat = thermoeqns.saturation_pressure(self.temp) / 100 # [hPa]
+   
+    return pv, psat
+
+  def get_relativehumidity(self):
+    ''' returns relative humidty and supersaturation '''
+    
+    p_pascals = self.press*100 # convert from hPa to Pa
+    relh, supersat = thermoeqns.relative_humidity(p_pascals, self.temp, 
+                                                  self.qvap, self.Mr_ratio)
+    return relh, supersat
+  
   def __getitem__(self, key):
     if key == "press":
       return self.press
@@ -103,6 +144,10 @@ class Thermodata:
       return self.qcond
     elif key == "theta":
       return self.theta
+    elif key == "relh":
+      return self.get_relativehumidity()[0]
+    elif key == "supersat":
+      return self.get_relativehumidity()[1]
     else:
       err = "no known return provided for "+key+" key"
       raise ValueError(err)
@@ -113,25 +158,58 @@ class Thermodata:
     theta = thermoeqns.dry_pot_temp(self.temp, press, self.qvap, setup)        # parcel potential temp
   
     return theta
+
+class Time:
   
-  def meanytime(self, var):
-    ''' mean of thermo variable over
-    time and y dimeensions '''      
-        
-    return np.mean(var, axis=(0,1))
+  def __init__(self, dataset):
+    
+    ds = get_rawdataset(dataset) 
+    
+    self.secs = ds["time"].values
+    self.mins = self.secs / 60
+    self.hrs = self.secs / 60 / 60
+  
+  def __getitem__(self, key):
+    if key == "secs":
+      return self.secs
+    elif key == "mins":
+      return self.mins
+    elif key == "hrs":
+      return self.hrs
+    else:
+      err = "no known return provided for "+key+" key"
+      raise ValueError(err)
 
-  def meanxyz(self, var):
-    ''' mean of thermo variable over
-    (x,y,z) dimensions '''      
-        
-    return np.mean(var, axis=(1,2,3))
+class GridBoxes:
+  
+  def __init__(self, dataset, grid):
+    
+    ds = get_rawdataset(dataset)
+     
+    self.grid = grid
+    self.gbxindex = np.reshape(ds["gbxindex"].values, 
+                               np.flip(self.grid["ndims"]))
 
-  def meanxytime(self, var):
-    ''' mean of thermo variable over
-    (x,y,z) dimensions '''      
-        
-    return np.mean(var, axis=(0,1,2))
-   
+    self.xxh, self.zzh = np.meshgrid(self.grid["xhalf"],
+                                     self.grid["zhalf"], indexing="ij") # dims [xdims, zdims] [m]
+    
+    self.xxf, self.zzf = np.meshgrid(self.grid["xfull"],
+                                     self.grid["zfull"], indexing="ij") # dims [xdims, zdims] [m]
+
+  def __getitem__(self, key):
+    if key == "grid":
+      return self.grid
+    elif key == "gbxindex":
+      return self.gbxindex
+    if key == "xxhzzh":
+      return self.xxh, self.zzh
+    if key == "xxfzzf":
+      return self.xxf, self.zzf
+    else:
+      err = "no known return provided for "+key+" key"
+      raise ValueError(err)
+
+
 def dims_from_setup(var, setup):
   """ return constant to multipy non-dimensional 
   data to convert to SI units """
@@ -155,6 +233,7 @@ def dims_from_setup(var, setup):
 
 def get_rawdataset(dataset):
 
+  print("opening: ", dataset)
   return xr.open_dataset(dataset, engine="zarr", consolidated=False)
 
 def get_sddata(dataset):
@@ -178,13 +257,14 @@ def get_thermodata(dataset, setup, ndims):
 
   return thermo
 
+
 def get_time(dataset):
 
-  ds = xr.open_dataset(dataset, engine="zarr", consolidated=False)
-  
-  return ds["time"].values
+  time = Time(dataset)
 
-def extract_1superdroplet_attr_timeseries(sddata, id, attr):
+  return time
+
+def attrtimeseries_for_1superdrop(sddata, id, attr):
   '''selects attribute from sddata belonging
   to superdroplet with identitiy 'sdindex'
   at every output time '''
@@ -204,10 +284,10 @@ def extract_1superdroplet_attr_timeseries(sddata, id, attr):
   
   return ak.flatten(attr_timeseries, axis=1)
 
-def attr_timeseries_for_nsuperdrops_sample(sddata, attr,
-                                           ndrops2sample=0,
-                                           minid=0, maxid=0,
-                                           ids=[]):
+def attrtimeseries_for_superdropssample(sddata, attr,
+                                        ndrops2sample=0,
+                                        minid=0, maxid=0,
+                                        ids=[]):
   ''' returns 2D array with dimensions [time, SD]
   containing attribute data over time for 'ndrops'
   randomly selected from superdrops with id in
@@ -221,12 +301,12 @@ def attr_timeseries_for_nsuperdrops_sample(sddata, attr,
 
   ndrops_attr = []
   for id in sampled_ids: 
-    attr_timeseries = extract_1superdroplet_attr_timeseries(sddata, id, attr)
+    attr_timeseries = attrtimeseries_for_1superdrop(sddata, id, attr)
     ndrops_attr.append(attr_timeseries)
   
   return np.asarray(ndrops_attr).T
 
-def select_from_attr(attrdata, time, times2sel):
+def attr_at_times(attrdata, time, times2sel):
   '''selects attribute at given times
    (for all superdroplets in sddata)'''
 
@@ -237,7 +317,7 @@ def select_from_attr(attrdata, time, times2sel):
   
   return selected_attr
 
-def select_manytimes_from_sddata(sddata, time, times2sel, attrs2sel):
+def attrs_at_times(sddata, time, times2sel, attrs2sel):
   '''selects attributes at given times from
   sddata (for all superdroplets in sddata)'''
 
@@ -245,25 +325,7 @@ def select_manytimes_from_sddata(sddata, time, times2sel, attrs2sel):
   
   for attr in attrs2sel:
     
-    selattr_data = select_from_attr(sddata[attr], time, times2sel)
-    
+    selattr_data = attr_at_times(sddata[attr], time, times2sel)
     selected_data[attr] = selattr_data
   
   return selected_data
-
-def select_1time_from_sddata(sddata, time, t2sel, attrs2sel):
-  '''selects attributes at given times from
-  sddata (for all superdroplets in sddata)'''
-
-  selected_data = {} # dict containting selected attributes at selected times
-  
-  for attr in attrs2sel:
-
-    ind = np.argmin(abs(time-t2sel))
-    selattr_data = sddata[attr][ind] 
-
-    selected_data[attr] = selattr_data
-  
-  return selected_data
-
-

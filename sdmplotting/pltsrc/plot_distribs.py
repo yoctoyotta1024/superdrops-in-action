@@ -83,7 +83,7 @@ def plot_domain_superdroplets_distrib(fig, ax, tplt, rspan, nbins, times,
     for all the superdroplets in the domain at each time in tplt list '''
 
     weights = None
-    radius = pyzarr.select_from_attr(sddata["radius"], times, tplt)
+    radius = pyzarr.attr_at_times(sddata["radius"], times, tplt)
   
     lines = calc_distrib_plotonaxis(ax, tplt, rspan, nbins, times,
                         radius, weights, perlogR=False, smooth=False,
@@ -98,7 +98,7 @@ def plot_domain_realdroplet_numconc_distrib(fig, ax, tplt, rspan, nbins, times,
     ''' plot the real droplet number conc distirbution over log(r)
     for all the droplets in the domain at each time in tplt list '''
 
-    sel_data = pyzarr.select_manytimes_from_sddata(sddata, times, tplt, ["eps", "radius"])
+    sel_data = pyzarr.attrs_at_times(sddata, times, tplt, ["eps", "radius"])
   
     weights = sel_data["eps"]/domainvol
     radius = sel_data["radius"]
@@ -120,7 +120,7 @@ def plot_domain_realdroplet_numconc_difference(fig, ax, tplt, rspan, nbins, time
     weights0 = sddata["eps"][0]/domainvol
     hist0 = histos.logr_distribution(rspan, nbins, sddata["radius"][0], weights0)[0]
 
-    sel_data = pyzarr.select_manytimes_from_sddata(sddata, times, tplt, ["eps", "radius"])
+    sel_data = pyzarr.attrs_at_times(sddata, times, tplt, ["eps", "radius"])
     
     lines = []
     for n in range(len(tplt)):
@@ -158,7 +158,7 @@ def plot_domain_msolutedens_distrib(fig, ax, tplt, rspan, nbins, times,
   from all the superdroplets in the domain at each time in tplt list '''
 
   attrs2sel = ["radius", "m_sol", "eps"]
-  selsddata = pyzarr.select_manytimes_from_sddata(sddata, times, tplt, attrs2sel)
+  selsddata = pyzarr.attrs_at_times(sddata, times, tplt, attrs2sel)
   
   weights = []
   for t in range(len(tplt)):
@@ -180,7 +180,7 @@ def plot_domain_mwaterdens_distrib(fig, ax, tplt, rspan, nbins, times,
   from all the superdroplets in the domain at each time in tplt list '''
 
   attrs2sel = ["radius", "m_sol", "eps"]
-  selsddata = pyzarr.select_manytimes_from_sddata(sddata, times, tplt, attrs2sel)
+  selsddata = pyzarr.attrs_at_times(sddata, times, tplt, attrs2sel)
   
   weights = []
   for t in range(len(tplt)):
@@ -204,7 +204,7 @@ def plot_domain_mtotdens_distribs(fig, ax, tplt, rspan, nbins, time,
   from all the droplets in the domain at each time in tplt list '''
   
   attrs2sel = ["radius", "m_sol", "eps"]
-  selsddata = pyzarr.select_manytimes_from_sddata(sddata, time, tplt, attrs2sel)
+  selsddata = pyzarr.attrs_at_times(sddata, time, tplt, attrs2sel)
   
   lines = []
   for t in range(len(tplt)):
