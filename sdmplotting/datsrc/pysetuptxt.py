@@ -1,7 +1,7 @@
 import numpy as np
 import sys
 
-from ..importpySD import ImportpySD
+from .importpySD import ImportpySD
 ImportpySD()
 import pySD.gbxboundariesbinary_src.read_gbxboundaries as rgrid
 

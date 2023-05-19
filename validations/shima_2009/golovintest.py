@@ -1,3 +1,9 @@
+# Script creates the data and
+# plots as in Shima et al. 2009
+# to show comparision of 0D box model
+# of collision-coalescence with
+# Golovin's analytical solution
+
 import os
 import sys
 import numpy as np
@@ -106,8 +112,8 @@ plt.close()
 Path(buildpath).mkdir(exist_ok=True) 
 os.chdir(buildpath)
 os.system('pwd')
-os.system("make clean && make -j 16 golcolls0D")
 os.system('rm -rf '+dataset)
+os.system("make clean && make -j 16 golcolls0D")
 os.system(buildpath+'/src/golcolls0D ' + configfile+' '+constsfile)
 
 # 3. load results

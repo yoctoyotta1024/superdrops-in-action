@@ -1,4 +1,4 @@
-# script creates the data and
+# Script creates the data and
 # plots the same plots as in Figure 5 of
 # "On the CCN (de)activation nonlinearities"
 # S. Arabas and S. Shima 2017 to check radius
@@ -15,10 +15,10 @@ from pathlib import Path
 # e.g. CXX=g++-13 CC=gcc-13 cmake -S ../../../CLEO/ -B ./build
 # or CXX=g++-13 CC=gcc-13 cmake -S ../../../CLEO/ -B ./build -DKokkos_ENABLE_OPENMP=ON -DKokkos_ARCH_NATIVE=ON
 
-path2CLEO = "/Users/yoctoyotta1024/Documents/b1_springsummer2023/CLEO/"
-apath = "/Users/yoctoyotta1024/Documents/b1_springsummer2023/superdrops_in_action/"
-# path2CLEO = "/home/m/m300950/CLEO/"
-# apath = "/home/m/m300950/superdrops_in_action/"
+# path2CLEO = "/Users/yoctoyotta1024/Documents/b1_springsummer2023/CLEO/"
+# apath = "/Users/yoctoyotta1024/Documents/b1_springsummer2023/superdrops_in_action/"
+path2CLEO = "/home/m/m300950/CLEO/"
+apath = "/home/m/m300950/superdrops_in_action/"
 
 sys.path.append(path2CLEO) # for imports from pySD package
 sys.path.append(apath+"sdmplotting/")
@@ -98,10 +98,10 @@ def displacement(time, w_avg, thalf):
 Path(buildpath).mkdir(exist_ok=True) 
 os.chdir(buildpath)
 os.system("pwd")
-os.system("make clean && make -j 16 cond0D")
 for run_num in range(len(monors)*len(paramslist)):
     dataset = binpath+"arabassol"+str(run_num)+".zarr"
     os.system("rm -rf "+dataset)
+os.system("make clean && make -j 16 cond0D")
 
 # 2a. create file with gridbox boundaries
 Path(binpath).mkdir(parents=True, exist_ok=True)             
