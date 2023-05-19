@@ -1,5 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
+from matplotlib.markers import MarkerStyle
 import random
 
 from ..datsrc import pyzarr
@@ -74,7 +75,9 @@ def plot_individ_coords(fig, ax, time, coords, coordlab):
   
   lines = []
   for i in range(coords.shape[1]):
-    line = ax.plot(time, coords/1000, linestyle="", marker=".", markersize=0.4)
+    line = ax.plot(time, coords/1000, linestyle="",
+                   marker=MarkerStyle('o', fillstyle='full'),
+                   markersize=0.2)
     lines.append(line)
      
   ax.set_xlabel('time /min')
@@ -86,7 +89,9 @@ def plot_individ_coords(fig, ax, time, coords, coordlab):
 
 def plot_superdrop_zxmotion(fig, ax, xcoords, zcoords,  arrows=True):
 
-  lines = ax.plot(xcoords, zcoords, linestyle="", marker=",")[0]
+  lines = ax.plot(xcoords, zcoords, linestyle="",
+                  marker=MarkerStyle('o', fillstyle='full'),
+                  markersize=0.4)[0]
 
   if arrows:
     n2plt = min(300, xcoords.shape[1])
