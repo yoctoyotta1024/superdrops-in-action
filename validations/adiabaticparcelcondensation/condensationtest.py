@@ -18,7 +18,8 @@ sys.path.append(path2CLEO) # for imports from pySD package
 sys.path.append(apath+"sdmplotting/")
 sys.path.append(apath+"validations/")
 
-from pySD.gbxboundariesbinary_src import create_gbxboundaries, read_gbxboundaries
+from pySD.gbxboundariesbinary_src import create_gbxboundaries as cgrid
+from pySD.gbxboundariesbinary_src import read_gbxboundaries as rgrid
 from pySD.initsuperdropsbinary_src import *
 from datsrc import *
 from validsrc import individSDs
@@ -48,7 +49,7 @@ numconc              = 0.5e9                        # [m^-3] total no. concentra
 monor                = 0.025e-6                        
 radiigen  = initattributes.MonoAttrsGen(monor)       # all SDs have the same dryradius = monor [m]
 radiiprobdist = radiiprobdistribs.DiracDelta(monor)  # monodisperse droplet radii probability distribution
-samplevol = read_gbxboundaries.calc_domainvol(zgrid, xgrid, ygrid) # volume SD sample occupies (entire domain) [m^3]
+samplevol = rgrid.calc_domainvol(zgrid, xgrid, ygrid) # volume SD sample occupies (entire domain) [m^3]
 coord3gen            = None                        # do not generate superdroplet coords
 coord1gen            = None                        
 coord2gen            = None   
@@ -70,9 +71,9 @@ def displacement(time, w_avg, thalf):
 Path(binpath).mkdir(parents=True, exist_ok=True) 
 os.system("rm "+gridfile)
 os.system("rm "+initSDsfile)            
-create_gbxboundaries.write_gridboxboundaries_binary(gridfile, zgrid, xgrid, 
+cgrid.write_gridboxboundaries_binary(gridfile, zgrid, xgrid, 
                                                      ygrid, constsfile)
-read_gbxboundaries.print_domain_info(constsfile, gridfile)
+rgrid.print_domain_info(constsfile, gridfile)
 
 initattrsgen = initattributes.InitManyAttrsGen(radiigen, radiiprobdist,
                                                coord3gen, coord1gen, coord2gen)
@@ -82,7 +83,7 @@ create_initsuperdrops.write_initsuperdrops_binary(initSDsfile, initattrsgen,
 
 
 if isfigures[0]:
-    read_gbxboundaries.plot_gridboxboundaries(constsfile, gridfile, 
+    rgrid.plot_gridboxboundaries(constsfile, gridfile, 
                                               binpath, isfigures[1])
     read_initsuperdrops.plot_initdistribs(configfile, constsfile, initSDsfile,
                                           gridfile, binpath, isfigures[1])

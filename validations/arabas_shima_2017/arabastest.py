@@ -24,7 +24,8 @@ sys.path.append(path2CLEO) # for imports from pySD package
 sys.path.append(apath+"sdmplotting/")
 sys.path.append(apath+"validations/")
 
-from pySD.gbxboundariesbinary_src import create_gbxboundaries, read_gbxboundaries
+from pySD.gbxboundariesbinary_src import create_gbxboundaries as cgrid
+from pySD.gbxboundariesbinary_src import read_gbxboundaries as rgrid
 from pySD.initsuperdropsbinary_src import *
 from pySD import editconfigfile 
 from datsrc import *
@@ -56,7 +57,7 @@ monors                = [0.05e-6, 0.1e-6, 0.1e-6]
 coord3gen            = None                        # do not generate superdroplet coords
 coord1gen            = None                        
 coord2gen            = None   
-samplevol = read_gbxboundaries.calc_domainvol(zgrid, xgrid, ygrid)  # volume SD sample occupies (entire domain) [m^3]
+samplevol = rgrid.calc_domainvol(zgrid, xgrid, ygrid)  # volume SD sample occupies (entire domain) [m^3]
 
 # setup parameters
 params1 = {
@@ -105,11 +106,11 @@ for run_num in range(len(monors)*len(paramslist)):
 # 2a. create file with gridbox boundaries
 Path(binpath).mkdir(parents=True, exist_ok=True)             
 os.system("rm "+gridfile)
-create_gbxboundaries.write_gridboxboundaries_binary(gridfile, zgrid, xgrid, 
+cgrid.write_gridboxboundaries_binary(gridfile, zgrid, xgrid, 
                                                      ygrid, constsfile)
-read_gbxboundaries.print_domain_info(constsfile, gridfile)
+rgrid.print_domain_info(constsfile, gridfile)
 if isfigures[0]:
-    read_gbxboundaries.plot_gridboxboundaries(constsfile, gridfile, 
+    rgrid.plot_gridboxboundaries(constsfile, gridfile, 
                                               binpath, isfigures[1])
 plt.close()
 

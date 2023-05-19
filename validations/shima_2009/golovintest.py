@@ -18,7 +18,8 @@ sys.path.append(path2CLEO) # for imports from pySD package
 sys.path.append(apath+"sdmplotting/")
 sys.path.append(apath+"validations/")
 
-from pySD.gbxboundariesbinary_src import create_gbxboundaries, read_gbxboundaries
+from pySD.gbxboundariesbinary_src import create_gbxboundaries as cgrid
+from pySD.gbxboundariesbinary_src import read_gbxboundaries as rgrid
 from pySD.initsuperdropsbinary_src import *
 from pySD.thermobinary_src.thermogen import ConstUniformThermo
 from pySD.thermobinary_src import create_thermodynamics as cthermo
@@ -60,7 +61,7 @@ numconc              = 2**(23)                     # total no. conc of real drop
 rspan                = [1e-8, 9e-5]                # max and min range of radii to sample [m]
 randomr              = True                        # sample radii range randomly or not
 
-samplevol = read_gbxboundaries.calc_domainvol(zgrid, xgrid, ygrid)
+samplevol = rgrid.calc_domainvol(zgrid, xgrid, ygrid)
 radiiprobdist = radiiprobdistribs.VolExponential(volexpr0, rspan)
 radiigen = initattributes.SampleDryradiiGen(rspan, randomr) # radii are sampled from rspan [m]
 coord3gen            = None                        # do not generate superdroplet coords
@@ -76,9 +77,9 @@ dataset = binpath+"golovinsol.zarr"
 Path(binpath).mkdir(parents=True, exist_ok=True)             
 os.system("rm "+gridfile)
 os.system("rm "+initSDsfile)
-create_gbxboundaries.write_gridboxboundaries_binary(gridfile, zgrid, xgrid, 
+cgrid.write_gridboxboundaries_binary(gridfile, zgrid, xgrid, 
                                                     ygrid, constsfile)
-read_gbxboundaries.print_domain_info(constsfile, gridfile)
+rgrid.print_domain_info(constsfile, gridfile)
 
 thermogen = ConstUniformThermo(PRESS, TEMP, None, qcond,
                                WVEL, UVEL, VVEL, relh=relh, 
@@ -93,7 +94,7 @@ create_initsuperdrops.write_initsuperdrops_binary(initSDsfile, initattrsgen,
                                                   gridfile, nsupers, numconc)
 
 if isfigures[0]:
-    read_gbxboundaries.plot_gridboxboundaries(constsfile, gridfile, 
+    rgrid.plot_gridboxboundaries(constsfile, gridfile, 
                                         binpath, isfigures[1])
     rthermo.plot_thermodynamics(constsfile, configfile, gridfile,
                                 thermofile, binpath, isfigures[1])
