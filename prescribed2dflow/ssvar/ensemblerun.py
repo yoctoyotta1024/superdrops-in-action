@@ -31,7 +31,7 @@ isfigures = [True, True]
 
 runids = range(0,1,1) # numbers of for initial SD conditions
 sratios_experiments = { # s_ratio [below, above] Zbase for each experiment
-   "ss0p65_1p0" : [0.65, 1.0]
+   "ss0p85_1p0001" : [0.85, 1.0001]
 }
 
 ### ---------------------------------------------------------------- ###
@@ -46,6 +46,7 @@ configfile = currentdir+"/ssvarconfig.txt"
 
 savefigpath = currentdir
 binpath = path2build+"../bin/"
+tempdir = currentdir+"/temp/"
 
 ### input parameters for gridbox boundaries
 zgrid                = [0, 1500, 50]
@@ -88,8 +89,8 @@ moistlayer = {
 }
 ### ---------------------------------------------------------------- ###
 
-def edit_bash_script(bashfile, path2build, configfile, constsfile,
-                      binpath, expid, runid):
+def edit_bash_script(bashfile, path2build, tempdir, configdir,
+                     constsfile, expid):
   
   os.system("cp "+bashfile+" "+bashfile[:-3]+"_backup.sh")
 
@@ -98,18 +99,19 @@ def edit_bash_script(bashfile, path2build, configfile, constsfile,
   
   for l in range(len(lines)):
     if "#SBATCH --job-name=" in lines[l]:
-      lines[l] = "#SBATCH --job-name=ssvarexp_"+\
-                    expid+"_run"+runid+"\n"
+      lines[l] = "#SBATCH --job-name="+expid+"\n"
     if "#SBATCH --output=" in lines[l]:
-      lines[l] = "#SBATCH --output="+binpath+"/ssvarexp_"+\
-                    expid+"_run"+runid+"_out.%j.out"+"\n"
+      lines[l] = "#SBATCH --output="+tempdir+"/ssvarexp_"+\
+                    expid+"_out.%j.out"+"\n"
     if "#SBATCH --error=" in lines[l]:
-      lines[l] = "#SBATCH --error="+binpath+"/ssvarexp_"+expid+\
-                    "_run"+runid+"_err.%j.out"+"\n"
+      lines[l] = "#SBATCH --error="+tempdir+"/ssvarexp_"+\
+                    expid+"_err.%j.out"+"\n"
     if "path2build=" in lines[l]:
       lines[l] = "path2build="+path2build+"\n"                
-    if "configfile=" in lines[l]:
-      lines[l] = "configfile="+configfile+"\n"
+    if "configdir=" in lines[l]:
+      lines[l] = "configdir="+configdir+"\n"
+    if "experimentid=" in lines[l]:
+      lines[l] = "experimentid="+"/"+exp+"\n"
     if "constsfile=" in lines[l]:
       lines[l] = "constsfile="+constsfile+"\n"
   
@@ -122,6 +124,40 @@ def echo_and_sys(cmd):
   os.system("echo "+cmd)
   os.system(cmd)
 
+def configfiles_forexperiment_runX(exp, runn, binariespath, binpath_exp,
+                                   grid_filename, thermo_filenames,
+                                   configfile, tempdir):
+  
+  initSDs_filename = binariespath+"/run"+str(runn)+"_dimlessSDsinit.dat"
+  setuptxt = binpath_exp+"run"+str(runn)+"setup.txt"                 
+  zarrbasedir = binpath_exp+"run"+str(runn)+"SDMdata.zarr"  
+
+  print(" --- exp "+exp+" run "+str(runn)+" ---")
+  print("gridfile:", grid_filename)
+  print("thermofiles:", thermo_filenames[:-4]+"_[XXX].dat")
+  print("initSDs:", initSDs_filename)
+  print("output to: "+setuptxt+"\n           "+zarrbasedir)
+
+  ### modify config file ###
+  configparams2edit = {
+    "initSDs_filename" : initSDs_filename,
+    "grid_filename" : grid_filename,
+    "setuptxt" : setuptxt,
+    "zarrbasedir" : zarrbasedir,
+    "press_filename" : thermo_filenames[:-4]+"_press.dat", 
+    "temp_filename" : thermo_filenames[:-4]+"_temp.dat",
+    "qvap_filename" : thermo_filenames[:-4]+"_qvap.dat",
+    "qcond_filename" : thermo_filenames[:-4]+"_qcond.dat",
+    "wvel_filename" : thermo_filenames[:-4]+"_wvel.dat",
+    "uvel_filename" : thermo_filenames[:-4]+"_uvel.dat",
+    "vvel_filename" : thermo_filenames[:-4]+"_vvel.dat",
+    }
+  
+  editconfigfile.edit_config_params(configfile, configparams2edit)
+  tempconfigfile = tempdir+"/"+exp+"_run"+str(runn)+"_config.txt" # n.b. this must match bash script
+  echo_and_sys("cp "+configfile+" "+tempconfigfile)
+
+  return tempconfigfile
 ### ---------------------------------------------------------------- ###
 if path2CLEO == path2build:
   raise ValueError("build directory cannot be CLEO")
@@ -129,6 +165,7 @@ else:
   Path(path2build).mkdir(exist_ok=True) 
   Path(binariespath).mkdir(exist_ok=True) 
   Path(binpath).mkdir(exist_ok=True) 
+  Path(tempdir).mkdir(exist_ok=True) 
 
 # write initial conditions / setup binaries
 if isgenSDsGBxs:
@@ -196,48 +233,22 @@ for exp, sratios in sratios_experiments.items():
                                   thermo_filenames, savefigpath_exp,
                                   isfigures[1])
   
-  print("- copying config to temp files -")  
+  print("\n- copying config to temp files -")  
   for runn in runids:  
-    initSDs_filename = binariespath+"/run"+str(runn)+"_dimlessSDsinit.dat"
-    setuptxt = binpath_exp+"run"+str(runn)+"setup.txt"                 
-    zarrbasedir = binpath_exp+"run"+str(runn)+"SDMdata.zarr"  
+    tempconfigfile = configfiles_forexperiment_runX(exp, runn, binariespath, binpath_exp,
+                                   grid_filename, thermo_filenames,
+                                   configfile, tempdir)  
+    print("config file copied to: "+tempconfigfile)
 
-    print(" --- exp "+exp+" run "+str(runn)+" ---")
-    print("gridfile:", grid_filename)
-    print("thermofiles:", thermo_filenames[:-4]+"_[XXX].dat")
-    print("initSDs:", initSDs_filename)
-    print("output to: "+setuptxt+"\n           "+zarrbasedir)
-
-    ### modify config file ###
-    configparams2edit = {
-      "initSDs_filename" : initSDs_filename,
-      "grid_filename" : grid_filename,
-      "setuptxt" : setuptxt,
-      "zarrbasedir" : zarrbasedir,
-      "press_filename" : thermo_filenames[:-4]+"_press.dat", 
-      "temp_filename" : thermo_filenames[:-4]+"_temp.dat",
-      "qvap_filename" : thermo_filenames[:-4]+"_qvap.dat",
-      "qcond_filename" : thermo_filenames[:-4]+"_qcond.dat",
-      "wvel_filename" : thermo_filenames[:-4]+"_wvel.dat",
-      "uvel_filename" : thermo_filenames[:-4]+"_uvel.dat",
-      "vvel_filename" : thermo_filenames[:-4]+"_vvel.dat",
-      }
-    
-    editconfigfile.edit_config_params(configfile, configparams2edit)
-    tempconfigfile = path2build+"../"+exp+"_config.txt"
-    echo_and_sys("cp "+configfile+" "+tempconfigfile)
-
-  print("- executing runCLEO via sbatch -")  
+  print("\n- executing runCLEO via sbatch -")  
   bashfile = currentdir+"/ssvarrunexp.sh"
-  for runn in runids:  
-    edit_bash_script(bashfile, path2build, tempconfigfile,
-                    constsfile, binpath, exp, str(runn))
-    echo_and_sys("sbatch "+bashfile)
+  edit_bash_script(bashfile, path2build, tempdir,
+                    tempdir, constsfile, exp)
+  runsstr = " ".join([str(n) for n in list(runids)])
+  print("executing experiment: "+exp+" for runs "+runsstr)
+  echo_and_sys("sbatch "+bashfile+" "+runsstr)
 
-  time.sleep(15) # sleep for 15s before deleting to allow time for config files to be read
-  print("- deleting temp config files -")  
-  for runn in runids:  
-    echo_and_sys("rm "+tempconfigfile)
   print("-----------------------")
-
 ### ---------------------------------------------------------------- ###
+
+

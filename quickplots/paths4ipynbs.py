@@ -16,11 +16,10 @@ path2sds = HOMEdir+"/superdrops_in_action/"
 path2build = "/work/mh1126/m300950/prescribed2dflow/ssvar/build/"
 gridfile = path2build+"/share/dimlessGBxbounds.dat"
 
-path2dataset = path2build+"../bin/ss0p65_1p0/"
+path2dataset = path2build+"../bin/ss0p85_1p0001/"
 setuptxt = path2dataset+"/run0setup.txt"
 dataset = path2dataset+"/run0SDMdata.zarr"
 
-stem = "test"
-savedir = path2sds+"prescribed2dflow/ssvar/ss0p65_1p0/"+stem+"plots/"
+savedir = path2sds+"prescribed2dflow/ssvar/ss0p85_1p0001/"
 
 print("build: "+path2build+"\ndataset: "+dataset+"\nsavedir: "+savedir)
