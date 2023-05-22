@@ -16,3 +16,4 @@ bin*
 docs/source/_autosummary
 verticalresolution_experiment/plots
 prescribed2dflow/ssvar/ss*
+prescribed2dflow/ssvar/temp
