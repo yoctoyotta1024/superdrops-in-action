@@ -125,18 +125,23 @@ def randomsample_plotsupers(fig, axs, time, sddata, nsample):
   radii = pyzarr.attrtimeseries_for_superdropssample(sddata, "radius", ids=ids2plot) 
   m_sols = pyzarr.attrtimeseries_for_superdropssample(sddata, "m_sol", ids=ids2plot)
   epss = pyzarr.attrtimeseries_for_superdropssample(sddata, "eps", ids=ids2plot)
-  zcoords = pyzarr.attrtimeseries_for_superdropssample(sddata, "coord3", ids=ids2plot) 
-  xcoords = pyzarr.attrtimeseries_for_superdropssample(sddata, "coord1", ids=ids2plot) 
-  ycoords = pyzarr.attrtimeseries_for_superdropssample(sddata, "coord2", ids=ids2plot) 
-
+  try:
+    zcoords = pyzarr.attrtimeseries_for_superdropssample(sddata, "coord3", ids=ids2plot) 
+    xcoords = pyzarr.attrtimeseries_for_superdropssample(sddata, "coord1", ids=ids2plot) 
+    ycoords = pyzarr.attrtimeseries_for_superdropssample(sddata, "coord2", ids=ids2plot) 
+  except:
+    print("warning not all SD coords found")
   lines = []
   axs = axs.flatten()
   lines.extend(plot_individ_radiusgrowths(fig, axs[0], time.mins, radii))
   lines.extend(plot_individ_multiplicities(fig, axs[1], time.mins, epss))
   lines.extend(plot_individ_m_sols(fig, axs[2], time.mins, m_sols))
-  lines.extend(plot_individ_coords(fig, axs[3], time.mins, zcoords, "z coord"))
-  lines.extend(plot_individ_coords(fig, axs[4], time.mins, xcoords, "x coord"))
-  lines.extend(plot_individ_coords(fig, axs[5], time.mins, ycoords, "y coord"))
+  try:
+    lines.extend(plot_individ_coords(fig, axs[3], time.mins, zcoords, "z coord"))
+    lines.extend(plot_individ_coords(fig, axs[4], time.mins, xcoords, "x coord"))
+    lines.extend(plot_individ_coords(fig, axs[5], time.mins, ycoords, "y coord"))
+  except:
+    print("warning not all SD coords plotted ")
 
   fig.tight_layout()
 

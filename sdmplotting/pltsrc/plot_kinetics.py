@@ -1,5 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
+from matplotlib import colors
 
 def axplt(ax, x, y, xlab=None, ylab=None, lab="_nolegend_",
           c="k", l='-', lw=1):
@@ -13,10 +14,13 @@ def axplt(ax, x, y, xlab=None, ylab=None, lab="_nolegend_",
 
     return l[0]
 
-def axplt2d(ax, xxh, zzh, var, cmap, lab):
+def axplt2d(ax, xxh, zzh, var, cmap, norm, lab):
     
     var2d = np.mean(var, axis=(0,1)) # avg over time and y axes
-    pcm = ax.pcolormesh(xxh[:,:], zzh[:,:], var2d, cmap=cmap)
+    if norm:
+        pcm = ax.pcolormesh(xxh[:,:], zzh[:,:], var2d, cmap=cmap, norm=norm)
+    else:
+        pcm = ax.pcolormesh(xxh[:,:], zzh[:,:], var2d, cmap=cmap)
     plt.colorbar(pcm, ax=ax, location="top", label=lab)
     
     return pcm
@@ -144,15 +148,27 @@ def domain2dmean(fig, axs, grid, thermo):
     axs = axs.flatten()
     xxh, zzh = np.meshgrid(grid["xhalf"], grid["zhalf"], indexing="ij") # dims [xdims, zdims] [m]
     xxh, zzh = [xxh/1000, zzh/1000] #[km]
+ 
+    norms=[colors.CenteredNorm(vcenter=np.nanmin(thermo.press)),
+            colors.CenteredNorm(vcenter=np.nanmin(thermo.temp)),
+            colors.CenteredNorm(vcenter=np.nanmin(thermo.theta)),
+            colors.CenteredNorm(vcenter=np.nanmin(thermo.qvap*1000)),
+            colors.CenteredNorm(vcenter=np.nanmin(thermo.qcond*1000)),
+            colors.CenteredNorm(vcenter=0.0)]        
 
-    l0 = axplt2d(axs[0], xxh, zzh, thermo.press, "PRGn", "pressure / hPa")
-    l1 = axplt2d(axs[1], xxh, zzh, thermo.temp, "RdBu", "temperature / K")
-    l1 = axplt2d(axs[2], xxh, zzh, thermo.theta, "RdBu", "\u03F4$_{dry}$ / K")
-    l2 = axplt2d(axs[3], xxh, zzh, thermo.qvap*1000, "BrBG", "q$_{v}$ / g/kg")
-    l3 = axplt2d(axs[4], xxh, zzh, thermo.qcond*1000, "BrBG", "q$_{l}$ / g/kg")
-    l4 = axplt2d(axs[5], xxh, zzh, thermo["supersat"], "Blues", "supersaturation")
+    l0 = axplt2d(axs[0], xxh, zzh, thermo.press,
+                 "PRGn", norms[0], "pressure / hPa")
+    l1 = axplt2d(axs[1], xxh, zzh, thermo.temp,
+                 "RdBu_r", norms[1], "temperature / K")
+    l1 = axplt2d(axs[2], xxh, zzh, thermo.theta,
+                 "RdBu_r", norms[2], "\u03F4$_{dry}$ / K")
+    l2 = axplt2d(axs[3], xxh, zzh, thermo.qvap*1000,
+                 "BrBG", norms[3], "q$_{v}$ / g/kg")
+    l3 = axplt2d(axs[4], xxh, zzh, thermo.qcond*1000,
+                 "BrBG", norms[4], "q$_{l}$ / g/kg")
+    l4 = axplt2d(axs[5], xxh, zzh, thermo["supersat"],
+                 "PuOr", norms[5], "supersaturation")
     
-  
     for ax in axs:
         ax.set_aspect("equal")
         ax.set_xlabel("x /km")
