@@ -9,6 +9,7 @@ import os
 import sys
 import numpy as np
 from pathlib import Path 
+import time 
 
 path2CLEO = "/home/m/m300950/CLEO/"
 sys.path.append(path2CLEO)
@@ -30,9 +31,8 @@ isfigures = [True, True]
 
 runids = range(0,1,1) # numbers of for initial SD conditions
 sratios_experiments = { # s_ratio [below, above] Zbase for each experiment
-   "ss0p65_1p001" : [0.65, 1.001]
+   "ss0p65_1p0" : [0.65, 1.0]
 }
-
 
 ### ---------------------------------------------------------------- ###
 ### paths and filenames for inputs and outputs
@@ -41,8 +41,8 @@ path2build = "/work/mh1126/m300950/prescribed2dflow/ssvar/build/"
 binariespath = path2build+"/share/"
 
 constsfile = path2CLEO+"libs/claras_SDconstants.hpp"
-configfile = currentdir+"/ssvarconfig.txt"
 gridfile =  binariespath+"/dimlessGBxbounds.dat" # note this should match config.txt
+configfile = currentdir+"/ssvarconfig.txt"
 
 savefigpath = currentdir
 binpath = path2build+"../bin/"
@@ -53,8 +53,8 @@ xgrid                = [0, 1500, 50]
 ygrid                = np.asarray([0, 20])
 
 ### input parameters for superdroplets
-zlim                 = 100
-npergbx              = 256
+zlim                 = 200
+npergbx              = 64
 
 coord3gen            = iSDs.SampleCoordGen(True) 
 coord1gen            = iSDs.SampleCoordGen(True) 
@@ -84,10 +84,45 @@ moistlayer = {
                  "z2": 850, # [m]
                  "x1": 0,   # [m]
                  "x2": 750, # [m]
-           "mlsratio": 1.01
+           "mlsratio": 1.005
 }
 ### ---------------------------------------------------------------- ###
 
+def edit_bash_script(bashfile, path2build, configfile, constsfile,
+                      binpath, expid, runid):
+  
+  os.system("cp "+bashfile+" "+bashfile[:-3]+"_backup.sh")
+
+  with open(bashfile, "r") as f:
+    lines = f.readlines()
+  
+  for l in range(len(lines)):
+    if "#SBATCH --job-name=" in lines[l]:
+      lines[l] = "#SBATCH --job-name=ssvarexp_"+\
+                    expid+"_run"+runid+"\n"
+    if "#SBATCH --output=" in lines[l]:
+      lines[l] = "#SBATCH --output="+binpath+"/ssvarexp_"+\
+                    expid+"_run"+runid+"_out.%j.out"+"\n"
+    if "#SBATCH --error=" in lines[l]:
+      lines[l] = "#SBATCH --error="+binpath+"/ssvarexp_"+expid+\
+                    "_run"+runid+"_err.%j.out"+"\n"
+    if "path2build=" in lines[l]:
+      lines[l] = "path2build="+path2build+"\n"                
+    if "configfile=" in lines[l]:
+      lines[l] = "configfile="+configfile+"\n"
+    if "constsfile=" in lines[l]:
+      lines[l] = "constsfile="+constsfile+"\n"
+  
+  f = open(bashfile, "w")
+  f.close()
+  with open(bashfile, "a") as f:
+    f.writelines(lines)
+
+def echo_and_sys(cmd):
+  os.system("echo "+cmd)
+  os.system(cmd)
+
+### ---------------------------------------------------------------- ###
 if path2CLEO == path2build:
   raise ValueError("build directory cannot be CLEO")
 else:
@@ -154,18 +189,20 @@ for exp, sratios in sratios_experiments.items():
     
   if isfigures[0]:
       savefigpath_exp = savefigpath+"/"+exp+"/"
+      Path(savefigpath_exp).mkdir(exist_ok=True) 
       if isfigures[1]:
           Path(savefigpath).mkdir(exist_ok=True) 
       rthermo.plot_thermodynamics(constsfile, configfile, gridfile,
                                   thermo_filenames, savefigpath_exp,
                                   isfigures[1])
   
-  for n in runids:  
-    initSDs_filename = binariespath+"/run"+str(n)+"_dimlessSDsinit.dat"
-    setuptxt = binpath_exp+"run"+str(n)+"setup.txt"                 
-    zarrbasedir = binpath_exp+"run"+str(n)+"SDMdata.zarr"  
+  print("- copying config to temp files -")  
+  for runn in runids:  
+    initSDs_filename = binariespath+"/run"+str(runn)+"_dimlessSDsinit.dat"
+    setuptxt = binpath_exp+"run"+str(runn)+"setup.txt"                 
+    zarrbasedir = binpath_exp+"run"+str(runn)+"SDMdata.zarr"  
 
-    print(" --- exp "+exp+" run "+str(n)+" ---")
+    print(" --- exp "+exp+" run "+str(runn)+" ---")
     print("gridfile:", grid_filename)
     print("thermofiles:", thermo_filenames[:-4]+"_[XXX].dat")
     print("initSDs:", initSDs_filename)
@@ -187,9 +224,20 @@ for exp, sratios in sratios_experiments.items():
       }
     
     editconfigfile.edit_config_params(configfile, configparams2edit)
-    print("- executing runCLEO via sbatch -")
-    execute = path2build+"src/runCLEO "+configfile+" "+constsfile
-    os.system("echo "+execute)
-    os.system(execute)
-    print("-----------------------")
+    tempconfigfile = path2build+"../"+exp+"_config.txt"
+    echo_and_sys("cp "+configfile+" "+tempconfigfile)
+
+  print("- executing runCLEO via sbatch -")  
+  bashfile = currentdir+"/ssvarrunexp.sh"
+  for runn in runids:  
+    edit_bash_script(bashfile, path2build, tempconfigfile,
+                    constsfile, binpath, exp, str(runn))
+    echo_and_sys("sbatch "+bashfile)
+
+  time.sleep(15) # sleep for 15s before deleting to allow time for config files to be read
+  print("- deleting temp config files -")  
+  for runn in runids:  
+    echo_and_sys("rm "+tempconfigfile)
+  print("-----------------------")
+
 ### ---------------------------------------------------------------- ###
