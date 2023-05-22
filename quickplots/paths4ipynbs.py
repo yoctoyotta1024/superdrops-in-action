@@ -13,7 +13,7 @@ dataset = path2dataset+"/SDMdata.zarr"
 
 stem = "test"
 savedir = path2sds+"/quickplots/"+stem+"plots/"
-# stem = "substeptests/supersat_0p1ssubstep_v2/"
+# stem = "substeptests/supersat_0p1ssubstep/"
 # savedir = path2sds+"/quickplots/condensationmethod/"+stem+"/plots/"
 
 print("build: "+path2build+"\ndataset: "+dataset+"\nsavedir: "+savedir)
