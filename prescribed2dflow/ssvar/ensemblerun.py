@@ -31,8 +31,9 @@ isfigures = [True, True]
 
 runids = range(0,1,1) # numbers of for initial SD conditions
 sratios_experiments = { # s_ratio [below, above] Zbase for each experiment
-   "ss0p85_1p0001" : [0.85, 1.0001]
+   "ss0p85_1p001" : [0.85, 1.001]
 }
+mlsratio = 1.005
 
 ### ---------------------------------------------------------------- ###
 ### paths and filenames for inputs and outputs
@@ -85,7 +86,7 @@ moistlayer = {
                  "z2": 850, # [m]
                  "x1": 0,   # [m]
                  "x2": 750, # [m]
-           "mlsratio": 1.005
+           "mlsratio": mlsratio
 }
 ### ---------------------------------------------------------------- ###
 
