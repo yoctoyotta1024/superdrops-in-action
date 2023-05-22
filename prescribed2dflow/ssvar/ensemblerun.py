@@ -30,10 +30,9 @@ isgenThermo  = True  # create thermodynamics files
 isfigures = [True, True]
 
 runids = range(0,1,1) # numbers of for initial SD conditions
-sratios_experiments = { # s_ratio [below, above] Zbase for each experiment
-   "ss0p85_1p001" : [0.85, 1.001]
+sratios_experiments = { # s_ratio [below, above] Zbase and in moistlayer for each experiment
+   "ss0p65_1p0001_1p01" : [0.65, 1.0001, 1.01],
 }
-mlsratio = 1.005
 
 ### ---------------------------------------------------------------- ###
 ### paths and filenames for inputs and outputs
@@ -86,10 +85,8 @@ moistlayer = {
                  "z2": 850, # [m]
                  "x1": 0,   # [m]
                  "x2": 750, # [m]
-           "mlsratio": mlsratio
 }
 ### ---------------------------------------------------------------- ###
-
 def edit_bash_script(bashfile, path2build, tempdir, configdir,
                      constsfile, expid):
   
@@ -126,7 +123,7 @@ def echo_and_sys(cmd):
   os.system(cmd)
 
 def configfiles_forexperiment_runX(exp, runn, binariespath, binpath_exp,
-                                   grid_filename, thermo_filenames,
+                                   gridfile, thermo_filenames,
                                    configfile, tempdir):
   
   initSDs_filename = binariespath+"/run"+str(runn)+"_dimlessSDsinit.dat"
@@ -134,7 +131,7 @@ def configfiles_forexperiment_runX(exp, runn, binariespath, binpath_exp,
   zarrbasedir = binpath_exp+"run"+str(runn)+"SDMdata.zarr"  
 
   print(" --- exp "+exp+" run "+str(runn)+" ---")
-  print("gridfile:", grid_filename)
+  print("gridfile:", gridfile)
   print("thermofiles:", thermo_filenames[:-4]+"_[XXX].dat")
   print("initSDs:", initSDs_filename)
   print("output to: "+setuptxt+"\n           "+zarrbasedir)
@@ -142,7 +139,7 @@ def configfiles_forexperiment_runX(exp, runn, binariespath, binpath_exp,
   ### modify config file ###
   configparams2edit = {
     "initSDs_filename" : initSDs_filename,
-    "grid_filename" : grid_filename,
+    "grid_filename" : gridfile,
     "setuptxt" : setuptxt,
     "zarrbasedir" : zarrbasedir,
     "press_filename" : thermo_filenames[:-4]+"_press.dat", 
@@ -200,8 +197,9 @@ if isgenThermo:
     
     Path(thermopath).mkdir(exist_ok=True) 
     thermofiles =  thermopath+"dimless.dat"
+    moistlayer["mlsratio"] = sratios[2]
     thermodyngen = thermogen.ConstHydrostaticAdiabat(configfile, constsfile, PRESS0, 
-                                          THETA, qvapmethod, sratios, Zbase,
+                                          THETA, qvapmethod, sratios[0:2], Zbase,
                                           qcond, WMAX, Zlength, Xlength,
                                           VVEL, moistlayer)
     
@@ -218,7 +216,6 @@ os.chdir(currentdir)
 for exp, sratios in sratios_experiments.items():
   
   ### names of initial condiitons / setup binarues
-  grid_filename = gridfile
   thermo_filenames = binariespath+"/"+exp+"/dimless.dat"
 
   ### where to output data
@@ -237,7 +234,7 @@ for exp, sratios in sratios_experiments.items():
   print("\n- copying config to temp files -")  
   for runn in runids:  
     tempconfigfile = configfiles_forexperiment_runX(exp, runn, binariespath, binpath_exp,
-                                   grid_filename, thermo_filenames,
+                                   gridfile, thermo_filenames,
                                    configfile, tempdir)  
     print("config file copied to: "+tempconfigfile)
 
