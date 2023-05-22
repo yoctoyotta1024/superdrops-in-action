@@ -15,3 +15,4 @@ bin
 bin*
 docs/source/_autosummary
 verticalresolution_experiment/plots
+prescribed2dflow
