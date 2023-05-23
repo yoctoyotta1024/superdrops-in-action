@@ -31,7 +31,7 @@ isfigures = [True, True]
 
 runids = range(0,1,1) # numbers of for initial SD conditions
 sratios_experiments = { # s_ratio [below, above] Zbase and in moistlayer for each experiment
-   "ss0p65_1p0001_1p01" : [0.65, 1.0001, 1.01],
+   "ss1p0_1p001_1p005_V2" : [1.0, 1.001, 1.005],
 }
 
 ### ---------------------------------------------------------------- ###
@@ -54,8 +54,8 @@ xgrid                = [0, 1500, 50]
 ygrid                = np.asarray([0, 20])
 
 ### input parameters for superdroplets
-zlim                 = 200
-npergbx              = 64
+zlim                 = 400
+npergbx              = 256
 
 coord3gen            = iSDs.SampleCoordGen(True) 
 coord1gen            = iSDs.SampleCoordGen(True) 
@@ -66,8 +66,8 @@ randomr              = True
 radiigen             = iSDs.SampleDryradiiGen(rspan, randomr) 
 geomeans             = [0.02e-6, 0.15e-6]               
 geosigs              = [1.4, 1.6]                    
-scalefacs            = [6e6, 4e6]   
-numconc              = np.sum(scalefacs)
+scalefacs            = [6e6, 4e6]
+numconc              = np.sum(scalefacs)*100*15/2
 radiiprobdist        = rprobs.LnNormal(geomeans, geosigs, scalefacs)
 
 ### input parameters for thermodynamic profiles

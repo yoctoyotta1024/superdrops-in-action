@@ -66,6 +66,51 @@ class Sddata:
       err = "no known return provided for "+key+" key"
       raise ValueError(err)
 
+class Raindrops:
+  
+  def __init__(self, sddata, rlim=40):
+    ''' return data for (rain)drops with radii > rlim.
+    Default minimum raindrops size is rlim=40microns'''
+    
+    israin = sddata.radius >= rlim # ak array True for raindrops
+    self.totnsupersrain = ak.num(israin[israin==True])
+
+    self.sdindex = sddata.sdindex[israin]
+    self.sd_gbxindex = sddata.sd_gbxindex[israin] 
+    self.eps = sddata.eps[israin] 
+    self.radius = sddata.radius[israin] 
+    self.m_sol = sddata.m_sol[israin] 
+
+    if np.any(sddata.coord3):
+      self.coord3 = sddata.coord3[israin] 
+      if np.any(sddata.coord1):
+        self.coord1 = sddata.coord1[israin] 
+        if np.any(sddata.coord2):
+          self.coord2 = sddata.coord2[israin] 
+
+  def __getitem__(self, key):
+    if key == "totnsupers_rain":
+      return self.totnsupers_rain
+    elif key == "sdindex":
+      return self.sdindex
+    elif key == "sd_gbxindex":
+      return self.sd_gbxindex
+    elif key == "eps":
+      return self.eps
+    elif key == "radius":
+      return self.radius
+    elif key == "m_sol":
+      return self.m_sol
+    elif key == "coord3":
+      return self.coord3
+    elif key == "coord1":
+      return self.coord1
+    elif key == "coord2":
+      return self.coord2
+    else:
+      err = "no known return provided for "+key+" key"
+      raise ValueError(err)
+
 class MassMoments:
   def __init__(self, dataset, setup, ndims):
     ds = get_rawdataset(dataset) 
