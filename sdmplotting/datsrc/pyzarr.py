@@ -112,9 +112,10 @@ class Raindrops:
       raise ValueError(err)
 
 class MassMoments:
+
   def __init__(self, dataset, setup, ndims):
-    ds = get_rawdataset(dataset) 
     
+    ds = get_rawdataset(dataset) 
     reshape = [setup["ntime"]] + list(np.flip(ndims))
 
     self.nsupers =  np.reshape(ds["nsupers"].values, reshape) # number of superdroplets in gbxs over time

@@ -22,7 +22,7 @@ from ensemblerun_src import *
 isgenbinaries = True # create gridbox bounadires, thermodynamics and SD binaries
 isfigures = [True, True]
 
-runids = range(0,2,1) # numbers of for initial SD conditions
+runids = range(0,10,1) # numbers of for initial SD conditions
 experimentids = { # number of SDs per GBx initially (in gbxs with SDs)
    "n64" : 64,
 }
@@ -44,8 +44,8 @@ binpath = path2build+"../bin/"
 tempdir = currentdir+"/temp/"
 
 ### input parameters for gridbox boundaries
-zgrid                = [0, 1500, 50]
-xgrid                = [0, 1500, 50]
+zgrid                = [0, 1500, 20]
+xgrid                = [0, 1500, 20]
 ygrid                = np.asarray([0, 20])
 
 ### input parameters for superdroplets
@@ -129,7 +129,7 @@ for exp, npergbx in experimentids.items():
       if isfigures[1]:
         savefigpath_exp = savefigpath+"/"+exp+"/"
         Path(savefigpath_exp).mkdir(exist_ok=True) 
-        savefigstem = savefigpath_exp+str(runn)+"_"
+        savefigstem = savefigpath_exp+"/run"+str(runn)+"_"
       rsupers.plot_initGBxsdistribs(configfile, constsfile,
                                     initSDsfile, gridfile,
                                     savefigstem, isfigures[1], 0)
