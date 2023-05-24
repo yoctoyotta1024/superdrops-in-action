@@ -16,7 +16,7 @@ path2sds = HOMEdir+"/superdrops_in_action/"
 path2build = "/work/mh1126/m300950/prescribed2dflow/ssvar/build/"
 gridfile = path2build+"/share/dimlessGBxbounds.dat"
 
-exp = "ss1p0_1p005_1p01_V2"
+exp = "L1_ss1p0_1p001_1p005_V2"
 path2dataset = path2build+"../bin/"+exp+"/"
 setuptxt = path2dataset+"/run0setup.txt"
 dataset = path2dataset+"/run0SDMdata.zarr"

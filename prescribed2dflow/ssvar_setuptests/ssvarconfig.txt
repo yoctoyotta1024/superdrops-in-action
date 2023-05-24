@@ -1,0 +1,50 @@
+##### CONFIG FILE #####
+# Author: Clara Bayley
+# File: config.txt
+# File containing configuration of CLEO
+# SDM = SuperDroplet Model
+# SD(s) = SuperDroplet(s)
+# GBx(s) = GridBox(es)
+
+#  Note: inital superdroplets data (eps, r0 and m_sol (and optionally coord3))
+#  read from file "initSDs_filename" is made with PYSD module using python
+#  script "create_initsuperdropsbinary_script". Likewise data to make 
+#  gridboxmap from gridbox boundaries is read from file "grid_filename"
+#  created using python "create_gbxboundariesbinary_script" script.
+
+### Initialisation Files parameters ###
+initSDs_filename = /work/mh1126/m300950/prescribed2dflow/ssvar/build//share//run0_dimlessSDsinit.dat# binary filename for initialisation of SDs
+grid_filename = /work/mh1126/m300950/prescribed2dflow/ssvar/build//share//dimlessGBxbounds.dat# binary filename for GBx boundaries
+
+### Output Data parameters ###
+setuptxt = /work/mh1126/m300950/prescribed2dflow/ssvar/build/../bin//L1_ss1p0_1p001_1p005_V2condonly/run0setup.txt# name of .txt output file to copy setup to
+zarrbasedir = /work/mh1126/m300950/prescribed2dflow/ssvar/build/../bin//L1_ss1p0_1p001_1p005_V2condonly/run0SDMdata.zarr# zarr store base directory
+maxchunk = 1250000                              # maximum no. of elements in chunks of zarr store array
+
+### SDM parameters ###
+# timestepping parameters #
+cond_iters = 3                            # no. iterations of Newton Raphson Method before testing for convergence
+cond_SUBTSTEP = 0.1                       # smallest timestep in cases where substepping occurs [s]
+cond_rtol = 0.0                           # relative tolerance for implicit euler integration
+cond_atol = 1e-4                          # abolute tolerance for implicit euler integration
+CONDTSTEP = 1                             # time between SD condensation events [s]
+COLLTSTEP = 1                             # time between SD collision events [s]
+MOTIONTSTEP = 5                           # time between SDM motion [s]
+COUPLTSTEP = 180                          # time between SDM observations and between thermodynamic couplings [s]
+T_END = 21600                             # time span of integration [s]
+
+# SDs parameters #
+nSDsvec = 61440                          # initial no. elements in SDs' vector (=total initial no. of SDs)
+SDnspace = 2                            # no. of spatial coordinates of SDs (=dimension of model)
+wetradiiinit = false                    # set initial SD radii to equilibrium wet radius
+doAlterThermo = false                   # enable condensation to alter the thermodynamic state
+thermosolver = fromfile                 # type of thermodynamic solver to configure
+
+### Read in Thermodynamics File parameters ###
+press_filename = /work/mh1126/m300950/prescribed2dflow/ssvar/build//share//L1_ss1p0_1p001_1p005_V2condonly/dimless_press.dat# binary filename for pressure
+temp_filename = /work/mh1126/m300950/prescribed2dflow/ssvar/build//share//L1_ss1p0_1p001_1p005_V2condonly/dimless_temp.dat# binary filename for temperature
+qvap_filename = /work/mh1126/m300950/prescribed2dflow/ssvar/build//share//L1_ss1p0_1p001_1p005_V2condonly/dimless_qvap.dat# binary filename for vapour mixing ratio
+qcond_filename = /work/mh1126/m300950/prescribed2dflow/ssvar/build//share//L1_ss1p0_1p001_1p005_V2condonly/dimless_qcond.dat# binary filename for liquid mixing ratio
+wvel_filename = /work/mh1126/m300950/prescribed2dflow/ssvar/build//share//L1_ss1p0_1p001_1p005_V2condonly/dimless_wvel.dat# binary filename for vertical (z) velocity
+uvel_filename = /work/mh1126/m300950/prescribed2dflow/ssvar/build//share//L1_ss1p0_1p001_1p005_V2condonly/dimless_uvel.dat# binary filename for horizontal x velocity
+vvel_filename = /work/mh1126/m300950/prescribed2dflow/ssvar/build//share//L1_ss1p0_1p001_1p005_V2condonly/dimless_vvel.dat# binary filename for horizontal y velocity

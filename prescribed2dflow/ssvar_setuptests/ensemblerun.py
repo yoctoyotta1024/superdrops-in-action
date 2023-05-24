@@ -109,7 +109,7 @@ def edit_bash_script(bashfile, path2build, tempdir, configdir,
     if "configdir=" in lines[l]:
       lines[l] = "configdir="+configdir+"\n"
     if "experimentid=" in lines[l]:
-      lines[l] = "experimentid="+"/"+exp+"\n"
+      lines[l] = "experimentid="+"/"+expid+"\n"
     if "constsfile=" in lines[l]:
       lines[l] = "constsfile="+constsfile+"\n"
   
