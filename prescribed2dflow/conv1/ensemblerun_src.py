@@ -102,7 +102,7 @@ def edit_confignSDsvec(configfile, zgrid, xgrid, zlim, npergbx):
     
   zs = np.arange(zgrid[2], zgrid[1]+zgrid[2], zgrid[2])
   nxs = len(np.arange(xgrid[2], xgrid[1]+xgrid[2], xgrid[2]))
-  nSDsvec = npergbx * len(zs[zs<zlim]) * nxs # total no. SDs initially in domain
+  nSDsvec = npergbx * len(zs[zs<=zlim]) * nxs # total no. SDs initially in domain
 
   print("changing nSDsvec to ", nSDsvec, "in "+configfile)
   configparams2edit = {"nSDsvec" : nSDsvec}

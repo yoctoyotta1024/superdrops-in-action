@@ -129,9 +129,10 @@ for exp, npergbx in experimentids.items():
       if isfigures[1]:
         savefigpath_exp = savefigpath+"/"+exp+"/"
         Path(savefigpath_exp).mkdir(exist_ok=True) 
+        savefigstem = savefigpath_exp+str(runn)+"_"
       rsupers.plot_initGBxsdistribs(configfile, constsfile,
                                     initSDsfile, gridfile,
-                                    savefigpath_exp, isfigures[1], 0)
+                                    savefigstem, isfigures[1], 0)
 
 ### run model for each s_ratios experiment
 print("--- compiling runCLEO ---\nin "+path2build)
@@ -151,6 +152,7 @@ for exp, npergbx in experimentids.items():
   ### copy config to temporary file for each run of experiment
   print("\n- copying config to temporary file -")  
   for runn in runids:  
+    initSDsfile = initSDsfilename(binariespath, exp, runn) 
     tempconfigfile = configfiles_for_exprunX(exp, runn, binpath_exp,
                                               gridfile, initSDsfile,
                                               thermofiles, configfile,

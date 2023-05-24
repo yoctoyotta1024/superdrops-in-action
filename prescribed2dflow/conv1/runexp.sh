@@ -26,5 +26,5 @@ do
   configfile=${configdir}/${experimentid}_run${run}_config.txt
   execute="${path2build}src/runCLEO ${configfile} ${constsfile}"
   echo ${execute}
-  # ${execute}
+  ${execute}
 done
