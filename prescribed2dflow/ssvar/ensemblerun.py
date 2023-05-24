@@ -79,10 +79,10 @@ VVEL                 = None      # [m/s]
 Zlength              = 1500      # [m]
 Xlength              = 1500      # [m]
 qvapmethod           = "sratio"
-Zbase                = 750       # [m]
+Zbase                = 650       # [m]
 moistlayer = {
-                 "z1": 750, # [m]
-                 "z2": 850, # [m]
+                 "z1": 650, # [m]
+                 "z2": 750, # [m]
                  "x1": 0,   # [m]
                  "x2": 750, # [m]
 }
