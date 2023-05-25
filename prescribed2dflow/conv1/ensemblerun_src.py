@@ -20,10 +20,10 @@ def edit_bash_script(bashfile, path2build, tempdir, configdir,
     if "#SBATCH --job-name=" in lines[l]:
       lines[l] = "#SBATCH --job-name="+expid+"\n"
     if "#SBATCH --output=" in lines[l]:
-      lines[l] = "#SBATCH --output="+tempdir+"/ssvarexp_"+\
+      lines[l] = "#SBATCH --output="+tempdir+"/exp_"+\
                     expid+"_out.%j.out"+"\n"
     if "#SBATCH --error=" in lines[l]:
-      lines[l] = "#SBATCH --error="+tempdir+"/ssvarexp_"+\
+      lines[l] = "#SBATCH --error="+tempdir+"/exp_"+\
                     expid+"_err.%j.out"+"\n"
     if "path2build=" in lines[l]:
       lines[l] = "path2build="+path2build+"\n"                

@@ -13,14 +13,14 @@
 
 HOMEdir = "/home/m/m300950"
 path2sds = HOMEdir+"/superdrops_in_action/"
-path2build = "/work/mh1126/m300950/prescribed2dflow/ssvar/build/"
+path2build = "/work/mh1126/m300950/prescribed2dflow/conv1/build/"
 gridfile = path2build+"/share/dimlessGBxbounds.dat"
 
-exp = "L1_ss1p0_1p001_1p005_V2"
+exp = "n64"
 path2dataset = path2build+"../bin/"+exp+"/"
-setuptxt = path2dataset+"/run0setup.txt"
-dataset = path2dataset+"/run0SDMdata.zarr"
+setuptxt = path2dataset+"/run9setup.txt"
+dataset = path2dataset+"/run9SDMdata.zarr"
 
-savedir = path2sds+"prescribed2dflow/ssvar/"+exp+"/"
+savedir = path2sds+"prescribed2dflow/conv1/"+exp+"/"
 
 print("build: "+path2build+"\ndataset: "+dataset+"\nsavedir: "+savedir)
