@@ -157,7 +157,7 @@ def setuptxt2dict(setuptxt, nattrs=3, ngrid=0, printinfo=True):
 
   return setup 
 
-def get_grid(gridfile, COORD0):
+def gridinfo_fromgridfile(gridfile, COORD0):
 
   gbxbounds, ndims =  rgrid.read_dimless_gbxboundaries_binary(gridfile,
                                                                 COORD0=COORD0,
@@ -196,7 +196,7 @@ def get_setup_grid(setuptxt, gridfile, nattrs=3, printinfo=True):
   
   setup = setuptxt2dict(setuptxt, nattrs=nattrs,
                         ngrid=0, printinfo=printinfo)
-  grid = get_grid(gridfile, setup["COORD0"])
+  grid = gridinfo_fromgridfile(gridfile, setup["COORD0"])
   
   setup["ngrid"] = grid["ngrid"]
 

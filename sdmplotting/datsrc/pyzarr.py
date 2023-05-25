@@ -251,11 +251,11 @@ class GridBoxes:
   ''' grid setup, gridbox indexes and nsupers over time
   in each gridbox as well as 2D (z,x) meshgrids '''
 
-  def __init__(self, dataset, grid):
+  def __init__(self, dataset, gridfile, COORD0):
     
     ds = get_rawdataset(dataset)
      
-    self.grid = grid
+    self.grid = gridinfo_fromgridfile(gridfile, COORD0)
     self.gbxindex = var3d_fromzarr(ds, grid["ndims"], "gbxindex")
     self.gbxindex = var4d_fromzarr(ds, grid["ndims"], "nsupers")
 
