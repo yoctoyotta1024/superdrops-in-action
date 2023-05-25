@@ -10,7 +10,7 @@ from sdmplotting.pltsrc import *
 from sdmplotting.datsrc.commonsuperdropproperties import *
 
 exp = "n64"
-runids = range(0,2,1)
+runids = range(0,10,1)
 basepath = "/work/mh1126/m300950/prescribed2dflow/conv1/"
 path2ensemble = basepath+"/bin/"+exp+"/"
 gridfile = basepath+"/build/share/dimlessGBxbounds.dat"
@@ -18,8 +18,8 @@ gridfile = basepath+"/build/share/dimlessGBxbounds.dat"
 npzdir = path2ensemble+"/ensemb/"
 savenpz = True
 savefigpath = path2sds+"prescribed2dflow/conv1/"+exp+"/ensemb/"
-### ---------------------------------------------------------------- ###
 
+### ------------------------ helper funcs -------------------------- ###
 def get_zarrbasedirs(ensemblepath, runids): 
     
   zarrs = []
@@ -38,6 +38,7 @@ def make_paths(paths):
 
 ### ---------------------------------------------------------------- ###
 
+### -------------- save npz files for ensemble stats --------------- ###
 zarrs, setuptxt = get_zarrbasedirs(path2ensemble, runids)
 make_paths([npzdir, savefigpath])
 
@@ -48,11 +49,14 @@ SDprops = CommonSuperdropProperties(setup["RHO_L"], setup["RHO_SOL"],
 
 
 ### Get Ensemble Data From Datasets (and save to npz files)
-mmmoms = ensemble.EnsembleMassMoments(zarrs=zarrs, setup=setup, grid=grid,
-                                      npzdir=npzdir, savenpz=True).get_massmoms()
-print(mmmoms["mom0"].mean.shape)
+ensemble.EnsembleMassMoments(zarrs=zarrs, setup=setup, grid=grid,
+                                      npzdir=npzdir, savenpz=savenpz)
 
-### Load Ensemble Data From npz files
+### ---------------------------------------------------------------- ###
+
+
+
+### -------------- load ensemble stats From npz files -------------- ###
 mmmoms = ensemble.EnsembleMassMoments(npzdir=npzdir, fromnpz=True).get_massmoms()                     
 print(mmmoms["mom0"].mean.shape)
 
@@ -60,4 +64,4 @@ print(mmmoms["mom0"].mean.shape)
 # sddata = pyzarr.Sddata(dataset)
 # thermo = pyzarr.Thermodata(dataset, setup, grid["ndims"])
 
-
+### ---------------------------------------------------------------- ###
