@@ -19,12 +19,14 @@ from pySD import editconfigfile
 
 from ensemblerun_src import *
 
-isgenbinaries = True # create gridbox bounadires, thermodynamics and SD binaries
+isgenbinaries = False # create gridbox boundaries, thermodynamics binaries
+isgenSDbinaries = True # create SD binaries
 isfigures = [True, True]
 
 runids = range(0,10,1) # numbers of for initial SD conditions
 experimentids = { # number of SDs per GBx initially (in gbxs with SDs)
-   "n64" : 64,
+   "n8" : 8,
+   "n256" : 256,
 }
 
 ### ---------------------------------------------------------------- ###
@@ -110,29 +112,30 @@ if isgenbinaries:
                                   thermofiles, savefigpath, isfigures[1])
 
 
-for exp, npergbx in experimentids.items():
+if isgenSDbinaries:
+  for exp, npergbx in experimentids.items():
 
-  nsupers = iSDs.nsupers_at_domain_base(gridfile, constsfile, npergbx, zlim)
-  initattrsgen = iSDs.InitManyAttrsGen(radiigen, radiiprobdist,
-                                        coord3gen, coord1gen, coord2gen)
-  
-  for runn in runids: 
-    initSDsfile = initSDsfilename(binariespath, exp, runn) 
-    print("experiment: ", exp, "nSDs/GBx init:", npergbx,
-          "run: ",runn , " initSDsfile:", initSDsfile)
+    nsupers = iSDs.nsupers_at_domain_base(gridfile, constsfile, npergbx, zlim)
+    initattrsgen = iSDs.InitManyAttrsGen(radiigen, radiiprobdist,
+                                          coord3gen, coord1gen, coord2gen)
     
-    csupers.write_initsuperdrops_binary(initSDsfile, initattrsgen, 
-                                        configfile, constsfile,
-                                        gridfile, nsupers, numconc)
+    for runn in runids: 
+      initSDsfile = initSDsfilename(binariespath, exp, runn) 
+      print("experiment: ", exp, "nSDs/GBx init:", npergbx,
+            "run: ",runn , " initSDsfile:", initSDsfile)
+      
+      csupers.write_initsuperdrops_binary(initSDsfile, initattrsgen, 
+                                          configfile, constsfile,
+                                          gridfile, nsupers, numconc)
 
-    if isfigures[0]:
-      if isfigures[1]:
-        savefigpath_exp = savefigpath+"/"+exp+"/"
-        Path(savefigpath_exp).mkdir(exist_ok=True) 
-        savefigstem = savefigpath_exp+"/run"+str(runn)+"_"
-      rsupers.plot_initGBxsdistribs(configfile, constsfile,
-                                    initSDsfile, gridfile,
-                                    savefigstem, isfigures[1], 0)
+      if isfigures[0]:
+        if isfigures[1]:
+          savefigpath_exp = savefigpath+"/"+exp+"/"
+          Path(savefigpath_exp).mkdir(exist_ok=True) 
+          savefigstem = savefigpath_exp+"/run"+str(runn)+"_"
+        rsupers.plot_initGBxsdistribs(configfile, constsfile,
+                                      initSDsfile, gridfile,
+                                      savefigstem, isfigures[1], 0)
 
 ### run model for each s_ratios experiment
 print("--- compiling runCLEO ---\nin "+path2build)
