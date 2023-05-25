@@ -25,8 +25,7 @@ isfigures = [True, True]
 
 runids = range(0,10,1) # numbers of for initial SD conditions
 experimentids = { # number of SDs per GBx initially (in gbxs with SDs)
-   "n8" : 8,
-   "n256" : 256,
+   "128" : 128,
 }
 
 ### ---------------------------------------------------------------- ###
