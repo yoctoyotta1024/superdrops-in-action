@@ -35,7 +35,7 @@ def var4d_fromzarr(ds, ntime, ndims, key):
   '''' returns 4D variable with dims
   [time, y, x, z] from zarr dataset "ds" '''
   
-  reshape = [ntime] + list(np.flip(ndims))
+  reshape = [ntime] + list(ndims)
 
   np.reshape(ds[key].values, reshape) 
 
@@ -43,9 +43,7 @@ def var3d_fromzarr(ds, ndims, key):
   '''' returns 3D variable with dims
   [y, x, z] from zarr dataset "ds" '''
   
-  reshape = np.flip(ndims)
-
-  np.reshape(ds[key].values, reshape) 
+  return np.reshape(ds[key].values, ndims) 
 
 def massmom_fromzarr(dataset, ntime, ndims, massmom):
   '''' opens zarr dataset "ds" and returns 
@@ -251,11 +249,11 @@ class GridBoxes:
   ''' grid setup, gridbox indexes and nsupers over time
   in each gridbox as well as 2D (z,x) meshgrids '''
 
-  def __init__(self, dataset, gridfile, COORD0):
+  def __init__(self, dataset, grid):
     
     ds = get_rawdataset(dataset)
-     
-    self.grid = gridinfo_fromgridfile(gridfile, COORD0)
+    
+    self.grid = grid
     self.gbxindex = var3d_fromzarr(ds, grid["ndims"], "gbxindex")
     self.gbxindex = var4d_fromzarr(ds, grid["ndims"], "nsupers")
 

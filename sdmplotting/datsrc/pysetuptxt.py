@@ -5,6 +5,8 @@ from .importpySD import ImportpySD
 ImportpySD()
 import pySD.gbxboundariesbinary_src.read_gbxboundaries as rgrid
 
+from pyzarr import GridBoxes
+
 def print_dict_statement(filename, dict):
 
   print("\n---- floats in dict from "+filename+" -----")
@@ -142,14 +144,13 @@ def read_configparams_into_floats(filename):
 
   return floats
 
-def setuptxt2dict(setuptxt, nattrs=3, ngrid=0, printinfo=True):
+def setuptxt2dict(setuptxt, nattrs=3, printinfo=True):
 
   setup = read_configparams_into_floats(setuptxt)
   setup.update(read_cppconsts_into_floats(setuptxt))
   setup.update(derive_more_floats(setup))
  
   setup["numSDattrs"] = setup["SDnspace"] + nattrs         
-  setup["ngrid"] = ngrid
   setup["ntime"] = round(setup["T_END"]/setup["COUPLTSTEP"])+1
 
   if printinfo:
@@ -161,44 +162,42 @@ def gridinfo_fromgridfile(gridfile, COORD0):
 
   gbxbounds, ndims =  rgrid.read_dimless_gbxboundaries_binary(gridfile,
                                                                 COORD0=COORD0,
-                                                                return_ndims=True) 
+                                                                return_ndims=True,
+                                                                isprint=False) 
   zhalf, xhalf, yhalf = rgrid.halfcoords_from_gbxbounds(gbxbounds)
   domainvol, gbxvols, ngrid = rgrid.domaininfo(gbxbounds)
  
-  zfull, deltaz = rgrid.get_fullcell_and_cellspacing(zhalf) 
-  xfull, deltax = rgrid.get_fullcell_and_cellspacing(xhalf) 
-  yfull, deltay = rgrid.get_fullcell_and_cellspacing(yhalf) 
-    
   grid = {
     "ngrid": ngrid, # number of gridboxes 
-    "ndims": ndims, # dimensions (np gridboxes in [z,x,y] direction)
+    "ndims": np.flip(ndims), # dimensions (no. gridboxes in [y,x,z] direction)
     "domainvol": domainvol,
-    "gbxvols": gbxvols,
+    "gbxvols": np.reshape(gbxvols, ndims), # vol of each gbx dims [y,x,z]
     
     "zhalf": zhalf, # half cell coords (boundaries)
-    "zfull": zfull, # full cell coords (centres)
-    "deltaz": deltaz, # half cell spacing (widths)
+    "zfull": rgrid.fullcell(zhalf), # full cell coords (centres)
     
     "xhalf": xhalf, # half cell coords (boundaries)
-    "xfull": xfull, # full cell coords (centres)
-    "deltax": deltax, # half cell spacing (widths)
+    "xfull": rgrid.fullcell(xhalf), # full cell coords (centres)
     
     "yhalf": yhalf, # half cell coords (boundaries)
-    "yfull": yfull, # full cell coords (centres)
-    "deltay": deltay, # half cell spacing (widths)
+    "yfull":  rgrid.fullcell(yhalf), # full cell coords (centres)
   }
 
   return grid
 
-def get_setup_grid(setuptxt, gridfile, nattrs=3, printinfo=True):
+def get_gridboxes(dataset, gridfile, COORD0):
+
+  grid = gridinfo_fromgridfile(gridfile, COORD0)
+
+  return GridBoxes(dataset, grid)
+
+def get_setup_gridinfo(setuptxt, gridfile, nattrs=3, printinfo=True):
   ''' nattrs is number of attributes of SDs
    excluding spatial ones (eps, radius, m_sol) '''
   
-  setup = setuptxt2dict(setuptxt, nattrs=nattrs,
-                        ngrid=0, printinfo=printinfo)
+  setup = setuptxt2dict(setuptxt, nattrs=nattrs, printinfo=printinfo)
   grid = gridinfo_fromgridfile(gridfile, setup["COORD0"])
   
-  setup["ngrid"] = grid["ngrid"]
-
   return setup, grid
+
 
