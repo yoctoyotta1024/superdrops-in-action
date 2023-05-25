@@ -5,7 +5,7 @@ from .importpySD import ImportpySD
 ImportpySD()
 import pySD.gbxboundariesbinary_src.read_gbxboundaries as rgrid
 
-from pyzarr import GridBoxes
+from .pyzarr import GridBoxes
 
 def print_dict_statement(filename, dict):
 
@@ -144,7 +144,7 @@ def read_configparams_into_floats(filename):
 
   return floats
 
-def setuptxt2dict(setuptxt, nattrs=3, printinfo=True):
+def setuptxt2dict(setuptxt, nattrs=3, isprint=True):
 
   setup = read_configparams_into_floats(setuptxt)
   setup.update(read_cppconsts_into_floats(setuptxt))
@@ -153,17 +153,17 @@ def setuptxt2dict(setuptxt, nattrs=3, printinfo=True):
   setup["numSDattrs"] = setup["SDnspace"] + nattrs         
   setup["ntime"] = round(setup["T_END"]/setup["COUPLTSTEP"])+1
 
-  if printinfo:
+  if isprint:
     print_dict_statement(setuptxt, setup)
 
   return setup 
 
-def gridinfo_fromgridfile(gridfile, COORD0):
+def gridinfo_fromgridfile(gridfile, COORD0, isprint=True):
 
   gbxbounds, ndims =  rgrid.read_dimless_gbxboundaries_binary(gridfile,
                                                                 COORD0=COORD0,
                                                                 return_ndims=True,
-                                                                isprint=False) 
+                                                                isprint=isprint) 
   zhalf, xhalf, yhalf = rgrid.halfcoords_from_gbxbounds(gbxbounds)
   domainvol, gbxvols, ngrid = rgrid.domaininfo(gbxbounds)
  
@@ -171,7 +171,7 @@ def gridinfo_fromgridfile(gridfile, COORD0):
     "ngrid": ngrid, # number of gridboxes 
     "ndims": np.flip(ndims), # dimensions (no. gridboxes in [y,x,z] direction)
     "domainvol": domainvol,
-    "gbxvols": np.reshape(gbxvols, ndims), # vol of each gbx dims [y,x,z]
+    "gbxvols": gbxvols, # list of vols of each gbx 
     
     "zhalf": zhalf, # half cell coords (boundaries)
     "zfull": rgrid.fullcell(zhalf), # full cell coords (centres)
@@ -185,18 +185,18 @@ def gridinfo_fromgridfile(gridfile, COORD0):
 
   return grid
 
-def get_gridboxes(dataset, gridfile, COORD0):
+def get_gridboxes(dataset, gridfile, setup, isprint=True):
 
-  grid = gridinfo_fromgridfile(gridfile, COORD0)
+  grid = gridinfo_fromgridfile(gridfile, setup["COORD0"], isprint=isprint)
+  
+  return GridBoxes(dataset, grid, setup["ntime"])
 
-  return GridBoxes(dataset, grid)
-
-def get_setup_gridinfo(setuptxt, gridfile, nattrs=3, printinfo=True):
+def get_setup_gridinfo(setuptxt, gridfile, nattrs=3, isprint=True):
   ''' nattrs is number of attributes of SDs
    excluding spatial ones (eps, radius, m_sol) '''
   
-  setup = setuptxt2dict(setuptxt, nattrs=nattrs, printinfo=printinfo)
-  grid = gridinfo_fromgridfile(gridfile, setup["COORD0"])
+  setup = setuptxt2dict(setuptxt, nattrs=nattrs, isprint=isprint)
+  grid = gridinfo_fromgridfile(gridfile, setup["COORD0"], isprint=isprint)
   
   return setup, grid
 

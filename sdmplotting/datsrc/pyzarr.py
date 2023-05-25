@@ -37,7 +37,7 @@ def var4d_fromzarr(ds, ntime, ndims, key):
   
   reshape = [ntime] + list(ndims)
 
-  np.reshape(ds[key].values, reshape) 
+  return np.reshape(ds[key].values, reshape) 
 
 def var3d_fromzarr(ds, ndims, key):
   '''' returns 3D variable with dims
@@ -249,13 +249,15 @@ class GridBoxes:
   ''' grid setup, gridbox indexes and nsupers over time
   in each gridbox as well as 2D (z,x) meshgrids '''
 
-  def __init__(self, dataset, grid):
+  def __init__(self, dataset, grid, ntime):
     
     ds = get_rawdataset(dataset)
     
     self.grid = grid
-    self.gbxindex = var3d_fromzarr(ds, grid["ndims"], "gbxindex")
-    self.gbxindex = var4d_fromzarr(ds, grid["ndims"], "nsupers")
+    self.gbxvols = np.reshape(self.grid["gbxvols"], self.grid["ndims"])
+    
+    self.gbxindex = var3d_fromzarr(ds, self.grid["ndims"], "gbxindex")
+    self.nsupers = var4d_fromzarr(ds, ntime, self.grid["ndims"], "nsupers")
 
     self.xxh, self.zzh = np.meshgrid(self.grid["xhalf"],
                                      self.grid["zhalf"], indexing="ij") # dims [xdims, zdims] [m]
@@ -264,14 +266,20 @@ class GridBoxes:
                                      self.grid["zfull"], indexing="ij") # dims [xdims, zdims] [m]
 
   def __getitem__(self, key):
-    if key == "grid":
-      return self.grid
+    if key == "gbxvols":
+      return self.gbxvols
     elif key == "gbxindex":
       return self.gbxindex
-    if key == "xxhzzh":
+    elif key == "nsupers":
+      return self.nsupers
+    elif key == "xxhzzh":
       return self.xxh, self.zzh
-    if key == "xxfzzf":
+    elif key == "xxfzzf":
       return self.xxf, self.zzf
+    elif key == "grid":
+      return self.grid
+    elif key in list(self.grid.keys()):
+      return self.grid[key]
     else:
       err = "no known return provided for "+key+" key"
       raise ValueError(err)
