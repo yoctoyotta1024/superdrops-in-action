@@ -63,7 +63,8 @@ class EnsembleMassMoments:
       
       ensembledata = []
       for zarr in zarrs:
-        data1run = pyzarr.MassMoments(zarr, setup, grid["ndims"])[key]
+        data1run = pyzarr.massmom_fromzarr(zarr, setup["ntime"],
+                                           grid["ndims"], key)
         ensembledata.append(data1run)
       stats = EnsembStats(ensembledata) 
       

@@ -157,7 +157,7 @@ def setuptxt2dict(setuptxt, nattrs=3, ngrid=0, printinfo=True):
 
   return setup 
 
-def get_grid(gridfile, SDnspace, COORD0):
+def get_grid(gridfile, COORD0):
 
   gbxbounds, ndims =  rgrid.read_dimless_gbxboundaries_binary(gridfile,
                                                                 COORD0=COORD0,
@@ -190,11 +190,13 @@ def get_grid(gridfile, SDnspace, COORD0):
 
   return grid
 
-def get_setup_grid(setuptxt, gridfile, printinfo=True):
-
-  nattrs = 3 # number of attributes of SDs excluding spatial ones (eps, radius, m_sol)
-  setup = setuptxt2dict(setuptxt, nattrs=nattrs, ngrid=0, printinfo=printinfo)
-  grid = get_grid(gridfile, setup["SDnspace"], setup["COORD0"])
+def get_setup_grid(setuptxt, gridfile, nattrs=3, printinfo=True):
+  ''' nattrs is number of attributes of SDs
+   excluding spatial ones (eps, radius, m_sol) '''
+  
+  setup = setuptxt2dict(setuptxt, nattrs=nattrs,
+                        ngrid=0, printinfo=printinfo)
+  grid = get_grid(gridfile, setup["COORD0"])
   
   setup["ngrid"] = grid["ngrid"]
 

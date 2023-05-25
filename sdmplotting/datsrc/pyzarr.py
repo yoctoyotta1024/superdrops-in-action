@@ -8,21 +8,86 @@ import random
 from . import thermoeqns
 from sys import maxsize
 
+def get_rawdataset(dataset):
+
+  print("opening: ", dataset)
+  return xr.open_dataset(dataset, engine="zarr", consolidated=False)
+
 def tryopen(ds, totnsupers, var):
   try:
-    return ak.unflatten(ds[var].values, totnsupers)
+    return raggedvar_fromzarr(ds, totnsupers, var) 
   except:
-    return None
-
+    return ak.Array([])
+  
 def tryunits(ds, var):
   try:
     return ds[var].units
   except:
-    return None
+    return ""
+
+def raggedvar_fromzarr(ds, raggedcount, var):
+  ''' returns ragged ak.Array dims [time, ragged]
+  for a variable "var" in zarr ds '''
+
+  return ak.unflatten(ds[var].values, raggedcount)
+
+def var4d_fromzarr(ds, ntime, ndims, key):
+  '''' returns 4D variable with dims
+  [time, y, x, z] from zarr dataset "ds" '''
+  
+  reshape = [ntime] + list(np.flip(ndims))
+
+  np.reshape(ds[key].values, reshape) 
+
+def var3d_fromzarr(ds, ndims, key):
+  '''' returns 3D variable with dims
+  [y, x, z] from zarr dataset "ds" '''
+  
+  reshape = np.flip(ndims)
+
+  np.reshape(ds[key].values, reshape) 
+
+def massmom_fromzarr(dataset, ntime, ndims, massmom):
+  '''' opens zarr dataset "ds" and returns 
+  4D mass moment "massmom" from it '''
+
+  ds = get_rawdataset(dataset) 
+
+  return var4d_fromzarr(ds, ntime, ndims, massmom) 
+
+def thermovar_fromzarr(dataset, ntime, ndims, thermovar):
+  '''' opens zarr dataset "ds" and returns 4D
+  thermodynamic variable "thermovar" from it '''
+
+  ds = get_rawdataset(dataset) 
+
+  return var4d_fromzarr(ds, ntime, ndims, thermovar)  
+
+def get_sddata(dataset):
+  ''' returns superdroplets' attributes data in a dictionary.
+  Each attribute is a key and the value is a list of lists where
+  each (inner) list is all superdroplets at a given output time,
+  ie. [ [time1], [time2], [time3] ]'''
+
+  return Sddata(dataset)
+
+def get_thermodata(dataset, setup, ndims):
+  ''' returns a thermodynamic data in a dictionary. The value under 
+  each key is the thermodynamics data in a 2D array 
+  with dimensions [time, gridbox]. E.g. thermo["qvap"][:,0] gives the 
+  timeseries of qvap for the 0th gridbox. thermo["qvap][0] gives 
+  the qvap of all gridboxes at the 0th output time '''
+
+  return Thermodata(dataset, setup, ndims)
+
+def get_time(dataset):
+
+  return Time(dataset)
 
 class Sddata:
   
   def __init__(self, dataset):
+    
     ds = get_rawdataset(dataset)
      
     self.totnsupers = ds["raggedcount"].values
@@ -66,67 +131,22 @@ class Sddata:
       err = "no known return provided for "+key+" key"
       raise ValueError(err)
 
-class Raindrops:
-  
-  def __init__(self, sddata, rlim=40):
-    ''' return data for (rain)drops with radii > rlim.
-    Default minimum raindrops size is rlim=40microns'''
-    
-    israin = sddata.radius >= rlim # ak array True for raindrops
-    self.totnsupersrain = ak.num(israin[israin==True])
-
-    self.sdindex = sddata.sdindex[israin]
-    self.sd_gbxindex = sddata.sd_gbxindex[israin] 
-    self.eps = sddata.eps[israin] 
-    self.radius = sddata.radius[israin] 
-    self.m_sol = sddata.m_sol[israin] 
-
-    if np.any(sddata.coord3):
-      self.coord3 = sddata.coord3[israin] 
-      if np.any(sddata.coord1):
-        self.coord1 = sddata.coord1[israin] 
-        if np.any(sddata.coord2):
-          self.coord2 = sddata.coord2[israin] 
-
-  def __getitem__(self, key):
-    if key == "totnsupers_rain":
-      return self.totnsupers_rain
-    elif key == "sdindex":
-      return self.sdindex
-    elif key == "sd_gbxindex":
-      return self.sd_gbxindex
-    elif key == "eps":
-      return self.eps
-    elif key == "radius":
-      return self.radius
-    elif key == "m_sol":
-      return self.m_sol
-    elif key == "coord3":
-      return self.coord3
-    elif key == "coord1":
-      return self.coord1
-    elif key == "coord2":
-      return self.coord2
-    else:
-      err = "no known return provided for "+key+" key"
-      raise ValueError(err)
-
 class MassMoments:
 
   def __init__(self, dataset, setup, ndims):
     
-    ds = get_rawdataset(dataset) 
-    reshape = [setup["ntime"]] + list(np.flip(ndims))
+    ds = get_rawdataset(dataset)
+    ntime = setup["ntime"]
+    
+    self.nsupers =  var4d_fromzarr(ds, ntime, ndims, "nsupers")               # number of superdroplets in gbxs over time
+    self.mom0 = var4d_fromzarr(ds, ntime, ndims, "massmoment0")               # number of droplets in gbxs over time
+    self.mom1 = var4d_fromzarr(ds, ntime, ndims, "massmoment1")               # total mass of droplets in gbxs over time
+    self.mom2 = var4d_fromzarr(ds, ntime, ndims, "massmoment2")               # 2nd mass moment of droplets (~reflectivity)
+    self.effmass = self.mom2 / self.mom1                                             # Effective Radius of droplets
 
-    self.nsupers =  np.reshape(ds["nsupers"].values, reshape) # number of superdroplets in gbxs over time
-    self.mom0 = np.reshape(ds["massmoment0"].values, reshape) # number of droplets in gbxs over time
-    self.mom1 = np.reshape(ds["massmoment1"].values, reshape) # total mass of droplets in gbxs over time
-    self.mom2 = np.reshape(ds["massmoment2"].values, reshape) # 2nd mass moment of droplets (~reflectivity)
-    self.effmass = self.mom2 / self.mom1                       # Effective Radius of droplets
-
-    self.mom1_units = ds["massmoment1"].units # probably grams
-    self.mom2_units = ds["massmoment2"].units # probably grams^2
-    self.effmass_units = ds["massmoment2"].units + "/" + ds["massmoment1"].units # probably grams
+    self.mom1_units = ds["massmoment1"].units                                       # probably grams
+    self.mom2_units = ds["massmoment2"].units                                       # probably grams^2
+    self.effmass_units = ds["massmoment2"].units + "/" + ds["massmoment1"].units    # probably grams
 
   def __getitem__(self, key):
     if key == "nsupers":
@@ -146,17 +166,18 @@ class MassMoments:
 class Thermodata:
 
   def __init__(self, dataset, setup, ndims):
-    ds = get_rawdataset(dataset) 
     
-    reshape = [setup["ntime"]] + list(np.flip(ndims))
-    
-    self.press = np.reshape(ds["press"].values, reshape)
-    self.temp = np.reshape(ds["temp"].values, reshape)
-    self.qvap = np.reshape(ds["qvap"].values, reshape)
-    self.qcond = np.reshape(ds["qcond"].values, reshape) #dims [t, y, x, z]
+    ds = get_rawdataset(dataset)
+    ntime = setup["ntime"]
+
+    self.press = var4d_fromzarr(ds, ntime, ndims, "press")
+    self.temp = var4d_fromzarr(ds, ntime, ndims, "temp")
+    self.qvap = var4d_fromzarr(ds, ntime, ndims, "qvap")
+    self.qcond = var4d_fromzarr(ds, ntime, ndims, "qcond") 
     
     self.theta = self.get_potential_temp(setup) 
 
+    ds = get_rawdataset(dataset) 
     self.Mr_ratio = setup["Mr_ratio"]
     self.press_units = ds["press"].units # probably hecto pascals
     self.temp_units = ds["temp"].units # probably kelvin
@@ -227,14 +248,16 @@ class Time:
       raise ValueError(err)
 
 class GridBoxes:
-  
+  ''' grid setup, gridbox indexes and nsupers over time
+  in each gridbox as well as 2D (z,x) meshgrids '''
+
   def __init__(self, dataset, grid):
     
     ds = get_rawdataset(dataset)
      
     self.grid = grid
-    self.gbxindex = np.reshape(ds["gbxindex"].values, 
-                               np.flip(self.grid["ndims"]))
+    self.gbxindex = var3d_fromzarr(ds, grid["ndims"], "gbxindex")
+    self.gbxindex = var4d_fromzarr(ds, grid["ndims"], "nsupers")
 
     self.xxh, self.zzh = np.meshgrid(self.grid["xhalf"],
                                      self.grid["zhalf"], indexing="ij") # dims [xdims, zdims] [m]
@@ -255,60 +278,50 @@ class GridBoxes:
       err = "no known return provided for "+key+" key"
       raise ValueError(err)
 
-
-def dims_from_setup(var, setup):
-  """ return constant to multipy non-dimensional 
-  data to convert to SI units """
-
-  dims = {
-    "time": setup["TIME0"],
-    "press": setup["P0"],
-    "temp": setup["TEMP0"],
-
-    "radius": setup["R0"],
-    "m_sol": setup["RHO0"] * (setup["R0"]**3),
-    "coord3": setup["COORD0"],
-
-    "qcond": 1.0,
-    "qvap": 1.0,
-    "id": 1,
-    "eps": 1,
-  }
+class Raindrops:
   
-  return dims[var]
+  def __init__(self, sddata, rlim=40):
+    ''' return data for (rain)drops with radii > rlim.
+    Default minimum raindrops size is rlim=40microns'''
+    
+    israin = sddata.radius >= rlim # ak array True for raindrops
+    self.totnsupersrain = ak.num(israin[israin==True])
 
-def get_rawdataset(dataset):
+    self.sdindex = sddata.sdindex[israin]
+    self.sd_gbxindex = sddata.sd_gbxindex[israin] 
+    self.eps = sddata.eps[israin] 
+    self.radius = sddata.radius[israin] 
+    self.m_sol = sddata.m_sol[israin] 
 
-  print("opening: ", dataset)
-  return xr.open_dataset(dataset, engine="zarr", consolidated=False)
+    if np.any(sddata.coord3):
+      self.coord3 = sddata.coord3[israin] 
+      if np.any(sddata.coord1):
+        self.coord1 = sddata.coord1[israin] 
+        if np.any(sddata.coord2):
+          self.coord2 = sddata.coord2[israin] 
 
-def get_sddata(dataset):
-  ''' returns superdroplets' attributes data in a dictionary.
-  Each attribute is a key and the value is a list of lists where
-  each (inner) list is all superdroplets at a given output time,
-  ie. [ [time1], [time2], [time3] ]'''
-
-  sddata = Sddata(dataset)
-
-  return sddata
-
-def get_thermodata(dataset, setup, ndims):
-  ''' returns a thermodynamic data in a dictionary. The value under 
-  each key is the thermodynamics data in a 2D array 
-  with dimensions [time, gridbox]. E.g. thermo["qvap"][:,0] gives the 
-  timeseries of qvap for the 0th gridbox. thermo["qvap][0] gives 
-  the qvap of all gridboxes at the 0th output time '''
-
-  thermo = Thermodata(dataset, setup, ndims)
-
-  return thermo
-
-
-def get_time(dataset):
-
-  time = Time(dataset)
-
-  return time
+  def __getitem__(self, key):
+    if key == "totnsupers_rain":
+      return self.totnsupers_rain
+    elif key == "sdindex":
+      return self.sdindex
+    elif key == "sd_gbxindex":
+      return self.sd_gbxindex
+    elif key == "eps":
+      return self.eps
+    elif key == "radius":
+      return self.radius
+    elif key == "m_sol":
+      return self.m_sol
+    elif key == "coord3":
+      return self.coord3
+    elif key == "coord1":
+      return self.coord1
+    elif key == "coord2":
+      return self.coord2
+    else:
+      err = "no known return provided for "+key+" key"
+      raise ValueError(err)
 
 def attrtimeseries_for_1superdrop(sddata, id, attr):
   '''selects attribute from sddata belonging
