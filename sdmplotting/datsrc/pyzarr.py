@@ -251,14 +251,18 @@ class GridBoxes:
 
   def __init__(self, dataset, grid, ntime):
     
-    ds = get_rawdataset(dataset)
     
     self.grid = grid
     self.gbxvols = np.reshape(self.grid["gbxvols"], self.grid["ndims"])
     
-    self.gbxindex = var3d_fromzarr(ds, self.grid["ndims"], "gbxindex")
-    self.nsupers = var4d_fromzarr(ds, ntime, self.grid["ndims"], "nsupers")
-
+    try:
+      ds = get_rawdataset(dataset)
+      self.gbxindex = var3d_fromzarr(ds, self.grid["ndims"], "gbxindex")
+      self.nsupers = var4d_fromzarr(ds, ntime, self.grid["ndims"], "nsupers")
+    except:
+      self.gbxindex = np.array([])
+      self.nsupers = np.array([])
+      
     self.xxh, self.zzh = np.meshgrid(self.grid["xhalf"],
                                      self.grid["zhalf"], indexing="ij") # dims [xdims, zdims] [m]
     

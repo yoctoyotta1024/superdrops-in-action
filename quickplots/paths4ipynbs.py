@@ -17,7 +17,7 @@ path2build = "/work/mh1126/m300950/prescribed2dflow/conv1/build/"
 
 exp = "n64"
 savedir = path2sds+"prescribed2dflow/conv1/"+exp+"/ensemb/"
-print("build: "+path2build+"\nsavedir: "+savedir)
+print("builddir: "+path2build+"\nsavedir: "+savedir)
 
 class DatasetPaths:
   def __init__(self):
@@ -35,10 +35,10 @@ class DatasetPaths:
 class EnsembPaths:
   def __init__(self):
       
-    self.ensembdatadir = path2build+"../bin/"+exp+"/ensemb/" 
+    self.ensembdir = path2build+"../bin/"+exp+"/ensemb/" 
     self.gridfile = path2build+"/share/dimlessGBxbounds.dat"
-    self.setuptxt = self.ensembdatadir+"../run0setup.txt"
+    self.setuptxt = self.ensembdir+"../run0setup.txt"
     
-    print("ensemb datadir: "+self.ensembdatadir,
+    print("ensembdir: "+self.ensembdir,
           "\ngridfile: "+self.gridfile,
           "\nsetup: "+self.setuptxt)
