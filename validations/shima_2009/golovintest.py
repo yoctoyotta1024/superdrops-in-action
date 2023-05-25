@@ -119,7 +119,7 @@ os.system(buildpath+'/src/golcolls0D ' + configfile+' '+constsfile)
 # 3. load results
 # read in constants and intial setup from setup .txt file
 setup, grid = pysetuptxt.get_setup_grid(setupfile, gridfile)
-SDprops = commonsuperdropproperties.CommonSuperdropProperties(setup["RHO_L"], setup["RHO_SOL"],
+SDprops = sdprops.CommonSuperdropProperties(setup["RHO_L"], setup["RHO_SOL"],
                                                               setup["MR_SOL"], setup["IONIC"])
 sddata = pyzarr.get_sddata(dataset)
 time = pyzarr.get_time(dataset).secs

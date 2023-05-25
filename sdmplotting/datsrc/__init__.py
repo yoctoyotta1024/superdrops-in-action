@@ -1,3 +1,3 @@
 __all__ = ["pyzarr", "pysetuptxt", 
-            "thermoeqns", "commonsuperdropproperties", 
+            "thermoeqns", "sdprops", 
             "histos", "ensemble"]

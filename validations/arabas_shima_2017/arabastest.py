@@ -154,7 +154,7 @@ for i in range(len(monors)):
 
         # read in constants and intial setup from setup .txt file
         setup, grid = pysetuptxt.get_setup_grid(setupfile, gridfile) 
-        SDprops = commonsuperdropproperties.CommonSuperdropProperties(setup["RHO_L"], setup["RHO_SOL"],
+        SDprops = sdprops.CommonSuperdropProperties(setup["RHO_L"], setup["RHO_SOL"],
                                                               setup["MR_SOL"], setup["IONIC"])
         thermo = pyzarr.get_thermodata(dataset, setup, grid["ndims"])
         time = pyzarr.get_time(dataset).secs

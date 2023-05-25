@@ -10,7 +10,7 @@ from sys import maxsize
 
 def get_rawdataset(dataset):
 
-  print("opening: ", dataset)
+  print("dataset: ", dataset)
   return xr.open_dataset(dataset, engine="zarr", consolidated=False)
 
 def tryopen(ds, totnsupers, var):

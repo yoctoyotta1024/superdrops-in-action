@@ -164,8 +164,9 @@ def gridinfo_fromgridfile(gridfile, COORD0, isprint=True):
                                                                 COORD0=COORD0,
                                                                 return_ndims=True,
                                                                 isprint=isprint) 
-  zhalf, xhalf, yhalf = rgrid.halfcoords_from_gbxbounds(gbxbounds)
-  domainvol, gbxvols, ngrid = rgrid.domaininfo(gbxbounds)
+  zhalf, xhalf, yhalf = rgrid.halfcoords_from_gbxbounds(gbxbounds,
+                                                        isprint=isprint)
+  domainvol, gbxvols, ngrid = rgrid.domaininfo(gbxbounds, isprint=isprint)
  
   grid = {
     "ngrid": ngrid, # number of gridboxes 

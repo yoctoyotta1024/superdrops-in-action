@@ -7,7 +7,7 @@ path2sds = HOMEdir+"/superdrops_in_action/"
 sys.path.append(path2sds)
 from sdmplotting.datsrc import *
 from sdmplotting.pltsrc import *
-from sdmplotting.datsrc.commonsuperdropproperties import *
+from sdmplotting.datsrc.sdprops import *
 
 exp = "n64"
 runids = range(0,10,1)
@@ -62,6 +62,6 @@ print(mmmoms["mom0"].mean.shape)
 
 # ### Superdroplets' quantities
 # sddata = pyzarr.Sddata(dataset)
-# thermo = pyzarr.Thermodata(dataset, setup, grid["ndims"])
+# thermo = pyzarr.Thermodata(dataset, setup, gbxs["ndims"])
 
 ### ---------------------------------------------------------------- ###
