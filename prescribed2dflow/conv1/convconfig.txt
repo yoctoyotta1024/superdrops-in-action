@@ -13,12 +13,12 @@
 #  created using python "create_gbxboundariesbinary_script" script.
 
 ### Initialisation Files parameters ###
-initSDs_filename = /work/mh1126/m300950/prescribed2dflow/conv1/build//share//256//dimlessSDsinit_run9.dat# binary filename for initialisation of SDs
+initSDs_filename = /work/mh1126/m300950/prescribed2dflow/conv1/build//share//n256//dimlessSDsinit_run9.dat# binary filename for initialisation of SDs
 grid_filename = /work/mh1126/m300950/prescribed2dflow/conv1/build//share//dimlessGBxbounds.dat# binary filename for GBx boundaries
 
 ### Output Data parameters ###
-setuptxt = /work/mh1126/m300950/prescribed2dflow/conv1/build/../bin//256/run9setup.txt# name of .txt output file to copy setup to
-zarrbasedir = /work/mh1126/m300950/prescribed2dflow/conv1/build/../bin//256/run9SDMdata.zarr# zarr store base directory
+setuptxt = /work/mh1126/m300950/prescribed2dflow/conv1/build/../bin//n256/run9setup.txt# name of .txt output file to copy setup to
+zarrbasedir = /work/mh1126/m300950/prescribed2dflow/conv1/build/../bin//n256/run9SDMdata.zarr# zarr store base directory
 maxchunk = 1250000                              # maximum no. of elements in chunks of zarr store array
 
 ### SDM parameters ###
