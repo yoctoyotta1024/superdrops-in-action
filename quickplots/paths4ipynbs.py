@@ -14,13 +14,31 @@
 HOMEdir = "/home/m/m300950"
 path2sds = HOMEdir+"/superdrops_in_action/"
 path2build = "/work/mh1126/m300950/prescribed2dflow/conv1/build/"
-gridfile = path2build+"/share/dimlessGBxbounds.dat"
 
 exp = "n64"
-path2dataset = path2build+"../bin/"+exp+"/"
-setuptxt = path2dataset+"/run9setup.txt"
-dataset = path2dataset+"/run9SDMdata.zarr"
+savedir = path2sds+"prescribed2dflow/conv1/"+exp+"/ensemb/"
+print("build: "+path2build+"\nsavedir: "+savedir)
 
-savedir = path2sds+"prescribed2dflow/conv1/"+exp+"/"
+class DatasetPaths:
+  def __init__(self):
+        
+    path2dataset = path2build+"../bin/"+exp+"/"
+    
+    self.gridfile = path2build+"/share/dimlessGBxbounds.dat"
+    self.setuptxt = path2dataset+"/run9setup.txt"
+    self.dataset = path2dataset+"/run9SDMdata.zarr"
+    
+    print("dataset: "+self.dataset,
+          "\ngridfile: "+self.gridfile,
+          "\nsetup: "+self.setuptxt)
 
-print("build: "+path2build+"\ndataset: "+dataset+"\nsavedir: "+savedir)
+class EnsembPaths:
+  def __init__(self):
+      
+    self.ensembdatadir = path2build+"../bin/"+exp+"/ensemb/" 
+    self.gridfile = path2build+"/share/dimlessGBxbounds.dat"
+    self.setuptxt = self.ensembdatadir+"../run0setup.txt"
+    
+    print("ensemb datadir: "+self.ensembdatadir,
+          "\ngridfile: "+self.gridfile,
+          "\nsetup: "+self.setuptxt)
