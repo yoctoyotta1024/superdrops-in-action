@@ -48,20 +48,17 @@ gbxs = pysetuptxt.get_gridboxes(None, gridfile, setup, isprint=False)
 SDprops = CommonSuperdropProperties(setup["RHO_L"], setup["RHO_SOL"],
                                     setup["MR_SOL"], setup["IONIC"])
 
-### Get Ensemble Data From Datasets (and save to npz files)
+# ### Get Ensemble Data From Datasets (and save to npz files)
 ensemble.EnsembleMassMoments(zarrs=zarrs, setup=setup, gbxs=gbxs,
                                       npzdir=npzdir, savenpz=savenpz)
 
+ensemble.EnsemblePrecip(zarrs=zarrs, setup=setup, gbxs=gbxs,
+                          npzdir=npzdir, savenpz=savenpz)
 ### ---------------------------------------------------------------- ###
 
 
 
 ### -------------- load ensemble stats From npz files -------------- ###
-mmmoms = ensemble.EnsembleMassMoments(npzdir=npzdir, fromnpz=True).get_massmoms()                     
-print(mmmoms["mom0"].mean.shape)
-
-# ### Superdroplets' quantities
-# sddata = pyzarr.Sddata(dataset)
-# thermo = pyzarr.Thermodata(dataset, setup, gbxs["ndims"])
-
+# mmmoms = ensemble.EnsembleMassMoments(npzdir=npzdir, fromnpz=True).get_massmoms()                     
+# precip = ensemble.EnsemblePrecip(npzdir=npzdir, fromnpz=True).get_precip()
 ### ---------------------------------------------------------------- ###

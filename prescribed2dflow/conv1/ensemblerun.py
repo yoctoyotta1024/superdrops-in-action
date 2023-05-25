@@ -20,12 +20,12 @@ from pySD import editconfigfile
 from ensemblerun_src import *
 
 isgenbinaries = False # create gridbox boundaries, thermodynamics binaries
-isgenSDbinaries = True # create SD binaries
+isgenSDbinaries = False # create SD binaries
 isfigures = [True, True]
 
-runids = range(0,10,1) # numbers of for initial SD conditions
+runids = range(4,10,1) # numbers of for initial SD conditions
 experimentids = { # number of SDs per GBx initially (in gbxs with SDs)
-   "128" : 128,
+   "256" : 256,
 }
 
 ### ---------------------------------------------------------------- ###
