@@ -1,4 +1,7 @@
-def massmom1dsnapshots(fig, axs, t2plts, massmom, norm, zfull,
+import numpy as np
+import matplotlib.pyplot as plt
+
+def massmom1dsnapshots(fig, axs, t2plts, time, massmom, norm, zfull,
                       xlab=None, xlims=[None, None], xlog=False):
 
   z = zfull / 1000

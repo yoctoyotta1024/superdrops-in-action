@@ -42,14 +42,14 @@ def make_paths(paths):
 zarrs, setuptxt = get_zarrbasedirs(path2ensemble, runids)
 make_paths([npzdir, savefigpath])
 
-# ### setup, superdroplet properties and grid
-setup, grid = pysetuptxt.get_setup_grid(setuptxt, gridfile, printinfo=False)
+### setup, superdroplet properties and grid
+setup = pysetuptxt.setuptxt2dict(setuptxt, nattrs=3, isprint=False)
+gbxs = pysetuptxt.get_gridboxes(None, gridfile, setup, isprint=False)
 SDprops = CommonSuperdropProperties(setup["RHO_L"], setup["RHO_SOL"],
                                     setup["MR_SOL"], setup["IONIC"])
 
-
 ### Get Ensemble Data From Datasets (and save to npz files)
-ensemble.EnsembleMassMoments(zarrs=zarrs, setup=setup, grid=grid,
+ensemble.EnsembleMassMoments(zarrs=zarrs, setup=setup, gbxs=gbxs,
                                       npzdir=npzdir, savenpz=savenpz)
 
 ### ---------------------------------------------------------------- ###

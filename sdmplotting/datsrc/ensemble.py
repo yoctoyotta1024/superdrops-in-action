@@ -9,18 +9,19 @@ class EnsembStats:
 
     if fromnpz:
       self.mean = data["mean"]
-      self.std = data["std"]
+      self.stderr = data["stderr"]
       self.q1 = data["q1"] 
       self.q3 = data["q3"]
     else:
+      n = np.shape(data)[0]
       self.mean = np.mean(data, axis=(0,2)) # avg over ensemble runs and y dim
-      self.std = np.std(data, axis=(0,2))
+      self.stderr = np.std(data, axis=(0,2)) / np.sqrt(n-1) # standard error of ensemble mean
       self.q1 = np.quantile(data, 0.25, axis=(0,2))
       self.q3 = np.quantile(data, 0.75, axis=(0,2))
     
 class EnsembleMassMoments:
 
-  def __init__(self, zarrs=[], setup="", grid="", npzdir="",
+  def __init__(self, zarrs=[], setup="", gbxs="", npzdir="",
                 savenpz=False, fromnpz=False):
     ''' return average statistics for an ensemble
     of datasets for the mass moments (averaged over 
@@ -44,8 +45,13 @@ class EnsembleMassMoments:
         self.MassMoms[key] = self.ensemb_massmom_from_npzfile(key)
       
       else: 
+        zarrkeys = {"nsupers":  "nsupers",
+                        "mom0": "massmoment0",
+                        "mom1": "massmoment1",
+                        "mom2": "massmoment2"
+                        }
         self.MassMoms[key] = self.ensemb_massmom_from_zarrs(zarrs, setup,
-                                                            grid, key)
+                                                            gbxs, zarrkeys[key])
         if savenpz:
           self.save_ensemb_massmom_npzfile(key)
 
@@ -59,12 +65,12 @@ class EnsembleMassMoments:
 
     return self.npzdir+"/ensemb"+key+".npz"
   
-  def ensemb_massmom_from_zarrs(self, zarrs, setup, grid, key):
+  def ensemb_massmom_from_zarrs(self, zarrs, setup, gbxs, key):
       
       ensembledata = []
       for zarr in zarrs:
         data1run = pyzarr.massmom_fromzarr(zarr, setup["ntime"],
-                                           grid["ndims"], key)
+                                           gbxs["ndims"], key)
         ensembledata.append(data1run)
       stats = EnsembStats(ensembledata) 
       
@@ -82,6 +88,6 @@ class EnsembleMassMoments:
     npzfile = self.massmom_npzfile(key)
     stats = self.MassMoms[key]
 
-    np.savez(npzfile, mean=stats.mean, std=stats.std,
+    np.savez(npzfile, mean=stats.mean, stderr=stats.stderr,
                       q1=stats.q1, q3=stats.q3)
     print("mass momement "+key+" ensemble stats saved in "+npzfile)
