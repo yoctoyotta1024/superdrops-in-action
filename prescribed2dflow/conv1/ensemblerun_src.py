@@ -9,7 +9,7 @@ sys.path.append(path2CLEO)
 from pySD import editconfigfile 
 
 def edit_bash_script(bashfile, path2build, tempdir, configdir,
-                     constsfile, expid):
+                     constsfile, expid, runid=""):
   
   os.system("cp "+bashfile+" "+bashfile[:-3]+"_backup.sh")
 
@@ -18,13 +18,13 @@ def edit_bash_script(bashfile, path2build, tempdir, configdir,
   
   for l in range(len(lines)):
     if "#SBATCH --job-name=" in lines[l]:
-      lines[l] = "#SBATCH --job-name="+expid+"\n"
+      lines[l] = "#SBATCH --job-name="+expid+"_run"+runid+"\n"
     if "#SBATCH --output=" in lines[l]:
-      lines[l] = "#SBATCH --output="+tempdir+"/exp_"+\
-                    expid+"_out.%j.out"+"\n"
+      lines[l] = "#SBATCH --output="+tempdir+"/"+expid+\
+                  "_run"+runid+"_out.%j.out"+"\n"
     if "#SBATCH --error=" in lines[l]:
-      lines[l] = "#SBATCH --error="+tempdir+"/exp_"+\
-                    expid+"_err.%j.out"+"\n"
+      lines[l] = "#SBATCH --error="+tempdir+"/"+expid+\
+                  "_run"+runid+"_err.%j.out"+"\n"
     if "path2build=" in lines[l]:
       lines[l] = "path2build="+path2build+"\n"                
     if "configdir=" in lines[l]:

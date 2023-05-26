@@ -47,7 +47,7 @@ class EnsembPaths:
 class ExperimentsPaths:
   def __init__(self):
     
-    self.exps = ["n8", "n64"]
+    self.exps = ["n8", "n64", "n256"]
     
     self.saveexpsdir, self.ensembdirs = {}, {}
     for exp in self.exps:

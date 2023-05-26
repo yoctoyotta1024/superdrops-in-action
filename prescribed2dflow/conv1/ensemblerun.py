@@ -23,10 +23,11 @@ isgenbinaries = False # create gridbox boundaries, thermodynamics binaries
 isgenSDbinaries = False # create SD binaries
 isfigures = [True, True]
 
-runids = range(4,10,1) # numbers of for initial SD conditions
+runids = range(0,10,1) # numbers of for initial SD conditions
 experimentids = { # number of SDs per GBx initially (in gbxs with SDs)
-   "n256" : 256,
+   "n1024" : 1024,
 }
+sumbit_individruns = True # submit each run of an experiment as seperate SLURM jobs
 
 ### ---------------------------------------------------------------- ###
 ### paths and filenames for inputs and outputs
@@ -38,7 +39,7 @@ constsfile = path2CLEO+"libs/claras_SDconstants.hpp"
 gridfile =  binariespath+"/dimlessGBxbounds.dat" # note this should match config.txt
 thermofiles =  binariespath+"/dimless.dat" # note this should match config.txt
 configfile = currentdir+"/convconfig.txt"
-bashfile = currentdir+"/runexp.sh"
+bashfile = currentdir+"/runexp1run.sh"
 
 savefigpath = currentdir
 binpath = path2build+"../bin/"
@@ -165,13 +166,27 @@ for exp, npergbx in experimentids.items():
      
     print("config file copied to: "+tempconfigfile)
 
-  ### run all runs of experiment
-  print("\n- executing runCLEO via sbatch -")  
-  edit_bash_script(bashfile, path2build, tempdir,
-                   tempdir, constsfile, exp)
-  runsstr = " ".join([str(n) for n in list(runids)])
+  if sumbit_individruns:
+    for runn in runids:
+      ### run all runs of experiment using seperate SLURM jobs for each run
+      print("\n- executing runCLEO via sbatch -")  
+      runid = str(runn)
+      edit_bash_script(bashfile, path2build, tempdir,
+                      tempdir, constsfile, exp,
+                      runid=runid)
+      print("experiment: "+exp+" for run "+runid)
+      echo_and_sys("sbatch "+bashfile+" "+runid)
+      print("-----------------------")
+  
+  else:
+    ### run all runs of experiment using single SLURM job
+    print("\n- executing runCLEO via sbatch -")  
+    edit_bash_script(bashfile, path2build, tempdir,
+                    tempdir, constsfile, exp,
+                    runid="many")
+    runsstr = " ".join([str(n) for n in list(runids)])
+    print("experiment: "+exp+" for runs "+runsstr)
+    echo_and_sys("sbatch "+bashfile+" "+runsstr)
+    print("-----------------------")
 
-  print("experiment: "+exp+" for runs "+runsstr)
-  echo_and_sys("sbatch "+bashfile+" "+runsstr)
-  print("-----------------------")
 ### ---------------------------------------------------------------- ###
