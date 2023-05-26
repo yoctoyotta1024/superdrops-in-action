@@ -131,6 +131,9 @@ if isgenSDbinaries:
         if isfigures[1]:
           savefigpath_exp = savefigpath+"/"+exp+"/"
           Path(savefigpath_exp).mkdir(exist_ok=True) 
+          savefigpath_exp = savefigpath_exp+"initSDdistribs/"
+          Path(savefigpath_exp).mkdir(exist_ok=True) 
+          
           savefigstem = savefigpath_exp+"/run"+str(runn)+"_"
         rsupers.plot_initGBxsdistribs(configfile, constsfile,
                                       initSDsfile, gridfile,
