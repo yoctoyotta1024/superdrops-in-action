@@ -3,6 +3,12 @@ from pathlib import Path
 
 from . import pyzarr
 
+def data_in_timerange(data, time, timerange):
+
+  bools = np.where(time >= timerange[0], time <= timerange[1], False)
+  
+  return [d[bools] for d in data]
+
 class EnsembStats:
 
   def __init__(self, data, axis=0, fromnpz=False):
@@ -22,7 +28,8 @@ class EnsembStats:
 class EnsembleMassMoments:
 
   def __init__(self, zarrs=[], setup="", gbxs="", npzdir="",
-                savenpz=False, fromnpz=False):
+                savenpz=False, fromnpz=False,
+                timerange=[0, np.inf]):
     ''' return average statistics for an ensemble
     of datasets for the mass moments (averaged over 
     y dimension too)'''
@@ -46,7 +53,8 @@ class EnsembleMassMoments:
     else: 
       for key in list(self.MassMoms.keys()):
         self.MassMoms[key] = self.ensemb_massmom_from_zarrs(zarrs, setup,
-                                                            gbxs, key)
+                                                            gbxs, key,
+                                                            timerange)
         if savenpz:
           self.save_ensemb_massmom_npzfile(key)
 
@@ -60,7 +68,7 @@ class EnsembleMassMoments:
 
     return self.npzdir+"/ensemb"+key+".npz"
   
-  def ensemb_massmom_from_zarrs(self, zarrs, setup, gbxs, key):
+  def ensemb_massmom_from_zarrs(self, zarrs, setup, gbxs, key, timerange):
       
       zarrkeys = {"nsupers":  "nsupers",
                   "mom0": "massmoment0",
@@ -70,9 +78,13 @@ class EnsembleMassMoments:
       
       ensembledata = []
       for zarr in zarrs:
-        data1run = pyzarr.massmom_fromzarr(zarr, setup["ntime"],
+        mom = pyzarr.massmom_fromzarr(zarr, setup["ntime"],
                                            gbxs["ndims"], zarrkeys[key])
-        ensembledata.append(data1run)
+        
+        time = pyzarr.get_rawdataset(zarr)["time"].values
+        mom = data_in_timerange([mom], time, timerange)[0]
+        ensembledata.append(mom)
+      
       stats = EnsembStats(ensembledata, axis=(0,2)) # stats avg over time and y dims
       
       return stats
@@ -99,13 +111,14 @@ class EnsembleMassMoments:
 class EnsemblePrecip:
 
   def __init__(self, zarrs=[], setup="", gbxs="", npzdir="",
-                savenpz=False, fromnpz=False):
+                savenpz=False, fromnpz=False, 
+                timerange=[0, np.inf]):
     ''' return average statistics for an ensemble
     of datasets for the total rate of mass
     loss from domain [mm/hr] '''
 
     self.npzdir = npzdir
-
+    
     self.Precip = {"rate":  None, # [mm/hr]
                   "accum":  None} # [mm]
 
@@ -117,7 +130,8 @@ class EnsemblePrecip:
       self.Precip = self.ensemb_precip_from_npzfiles()
     
     else: 
-      self.Precip = self.ensemb_precip_from_zarrs(zarrs, gbxs)
+      self.Precip = self.ensemb_precip_from_zarrs(zarrs, gbxs,
+                                                  timerange)
       if savenpz:
         self.save_ensemb_precip_npzfiles()
 
@@ -131,12 +145,15 @@ class EnsemblePrecip:
 
     return self.npzdir+"/ensemb_precip"+key+".npz"
   
-  def ensemb_precip_from_zarrs(self, zarrs, gbxs):
+  def ensemb_precip_from_zarrs(self, zarrs, gbxs, timerange):
       
     rates, accums = [], []
     for zarr in zarrs:
-      rate, accum = pyzarr.surfaceprecip_fromdataset(zarr, gbxs)
+      data = pyzarr.surfaceprecip_fromdataset(zarr, gbxs)
       
+      time = pyzarr.get_rawdataset(zarr)["time"].values
+      rate, accum = data_in_timerange(data, time, timerange)
+
       rates.append(rate) # [mm/hr]
       accums.append(accum) # [mm]
     

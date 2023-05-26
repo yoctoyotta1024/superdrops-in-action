@@ -11,6 +11,8 @@ from sdmplotting.datsrc.sdprops import *
 
 exp = "n64"
 runids = range(0,10,1)
+timerange = [0, 14400]
+
 basepath = "/work/mh1126/m300950/prescribed2dflow/conv1/"
 path2ensemble = basepath+"/bin/"+exp+"/"
 gridfile = basepath+"/build/share/dimlessGBxbounds.dat"
@@ -48,12 +50,14 @@ gbxs = pysetuptxt.get_gridboxes(None, gridfile, setup, isprint=False)
 SDprops = CommonSuperdropProperties(setup["RHO_L"], setup["RHO_SOL"],
                                     setup["MR_SOL"], setup["IONIC"])
 
-# ### Get Ensemble Data From Datasets (and save to npz files)
-# ensemble.EnsembleMassMoments(zarrs=zarrs, setup=setup, gbxs=gbxs,
-#                                       npzdir=npzdir, savenpz=savenpz)
+### Get Ensemble Data From Datasets (and save to npz files)
+ensemble.EnsembleMassMoments(zarrs=zarrs, setup=setup, gbxs=gbxs,
+                              npzdir=npzdir, savenpz=savenpz,
+                              timerange=timerange)
 
 ensemble.EnsemblePrecip(zarrs=zarrs, setup=setup, gbxs=gbxs,
-                          npzdir=npzdir, savenpz=savenpz)
+                          npzdir=npzdir, savenpz=savenpz, 
+                          timerange=timerange)
 ### ---------------------------------------------------------------- ###
 
 
