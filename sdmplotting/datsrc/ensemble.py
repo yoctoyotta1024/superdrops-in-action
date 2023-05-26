@@ -141,7 +141,7 @@ class EnsemblePrecip:
       accums.append(accum) # [mm]
     
     Precip = {"rate": EnsembStats(rates, axis=0), 
-              "accum":  EnsembStats(rates, axis=0)} 
+              "accum":  EnsembStats(accums, axis=0)} 
     
     return Precip
 

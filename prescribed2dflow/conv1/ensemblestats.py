@@ -49,8 +49,8 @@ SDprops = CommonSuperdropProperties(setup["RHO_L"], setup["RHO_SOL"],
                                     setup["MR_SOL"], setup["IONIC"])
 
 # ### Get Ensemble Data From Datasets (and save to npz files)
-ensemble.EnsembleMassMoments(zarrs=zarrs, setup=setup, gbxs=gbxs,
-                                      npzdir=npzdir, savenpz=savenpz)
+# ensemble.EnsembleMassMoments(zarrs=zarrs, setup=setup, gbxs=gbxs,
+#                                       npzdir=npzdir, savenpz=savenpz)
 
 ensemble.EnsemblePrecip(zarrs=zarrs, setup=setup, gbxs=gbxs,
                           npzdir=npzdir, savenpz=savenpz)
