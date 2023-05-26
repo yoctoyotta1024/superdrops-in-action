@@ -54,7 +54,8 @@ def plot_meandistrib_fromhists(ax, hcens, hedges, hists2avg, smooth, time, tplt,
   line = plot_distribs.plot_distrib(ax, mean, hedges, hcens, time, 
                                     tplt, c=color, smooth=smooth,
                                     ylog=False)                                        
-  ax.fill_between(hcens, mean-stderr, mean+stderr, color=color, alpha=0.2)
+  ax.fill_between(hcens, mean-stderr, mean+stderr, edgecolor=None,
+                  color=color, alpha=0.2)
 
   return line
 
