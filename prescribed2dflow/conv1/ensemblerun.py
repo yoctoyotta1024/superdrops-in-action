@@ -6,28 +6,20 @@ from pathlib import Path
 path2CLEO = "/home/m/m300950/CLEO/"
 sys.path.append(path2CLEO)
 
-from pySD.gbxboundariesbinary_src import create_gbxboundaries as  cgrid
-from pySD.gbxboundariesbinary_src import read_gbxboundaries as rgrid
-from pySD.thermobinary_src import thermogen
-from pySD.thermobinary_src import create_thermodynamics as cthermo
-from pySD.thermobinary_src import read_thermodynamics as rthermo
 from pySD.initsuperdropsbinary_src import initattributes as iSDs
 from pySD.initsuperdropsbinary_src import radiiprobdistribs as rprobs 
-from pySD.initsuperdropsbinary_src import create_initsuperdrops as csupers 
-from pySD.initsuperdropsbinary_src import read_initsuperdrops as rsupers 
-from pySD import editconfigfile 
 
 from ensemblerun_src import *
 
-isgenbinaries = False # create gridbox boundaries, thermodynamics binaries
-isgenSDbinaries = False # create SD binaries
+isgenbinaries = True # create gridbox boundaries, thermodynamics binaries
+isgenSDbinaries = True # create SD binaries
 isfigures = [True, True]
 
 runids = range(0,10,1) # numbers of for initial SD conditions
 experimentids = { # number of SDs per GBx initially (in gbxs with SDs)
-   "n1024" : 1024,
+   "n1" : 1,
 }
-sumbit_individruns = True # submit each run of an experiment as seperate SLURM jobs
+sumbit_individruns = False # submit each run of an experiment as seperate SLURM jobs
 
 ### ---------------------------------------------------------------- ###
 ### paths and filenames for inputs and outputs
@@ -39,7 +31,6 @@ constsfile = path2CLEO+"libs/claras_SDconstants.hpp"
 gridfile =  binariespath+"/dimlessGBxbounds.dat" # note this should match config.txt
 thermofiles =  binariespath+"/dimless.dat" # note this should match config.txt
 configfile = currentdir+"/convconfig.txt"
-bashfile = currentdir+"/runexp1run.sh"
 
 savefigpath = currentdir
 binpath = path2build+"../bin/"
@@ -90,55 +81,22 @@ make_essentialpaths(path2CLEO, path2build, binariespath, binpath, tempdir)
 
 # write initial conditions / setup binaries
 if isgenbinaries:
-  cgrid.write_gridboxboundaries_binary(gridfile, zgrid, xgrid, ygrid, constsfile)
+  gen_gridboxboundaries_binary(gridfile, constsfile, zgrid, xgrid, ygrid, 
+                                  isfigures, savefigpath)
 
-  thermodyngen = thermogen.ConstHydrostaticAdiabat(configfile, constsfile, PRESS0, 
-                                          THETA, qvapmethod, sratios, Zbase,
-                                          qcond, WMAX, Zlength, Xlength,
-                                          VVEL, moistlayer)  
-  cthermo.write_thermodynamics_binary(thermofiles, thermodyngen, configfile,
-                                        constsfile, gridfile)
-  
-  
-  ### plot initial conditions / setup
-  if isfigures[0]:
-      if isfigures[1]:
-          Path(savefigpath).mkdir(exist_ok=True) 
-      
-      rgrid.print_domain_info(constsfile, gridfile)
-      rgrid.plot_gridboxboundaries(constsfile, gridfile, savefigpath, isfigures[1])
-      
-      rthermo.plot_thermodynamics(constsfile, configfile, gridfile,
-                                  thermofiles, savefigpath, isfigures[1])
-
+  gen_thermodynamics_binaries(thermofiles, configfile, constsfile,
+                                gridfile, PRESS0, THETA, qvapmethod,
+                                sratios, Zbase, qcond, WMAX,
+                                Zlength, Xlength, VVEL, moistlayer,
+                                isfigures, savefigpath)
 
 if isgenSDbinaries:
   for exp, npergbx in experimentids.items():
-
-    nsupers = iSDs.nsupers_at_domain_base(gridfile, constsfile, npergbx, zlim)
-    initattrsgen = iSDs.InitManyAttrsGen(radiigen, radiiprobdist,
-                                          coord3gen, coord1gen, coord2gen)
-    
-    for runn in runids: 
-      initSDsfile = initSDsfilename(binariespath, exp, runn) 
-      print("experiment: ", exp, "nSDs/GBx init:", npergbx,
-            "run: ",runn , " initSDsfile:", initSDsfile)
-      
-      csupers.write_initsuperdrops_binary(initSDsfile, initattrsgen, 
-                                          configfile, constsfile,
-                                          gridfile, nsupers, numconc)
-
-      if isfigures[0]:
-        if isfigures[1]:
-          savefigpath_exp = savefigpath+"/"+exp+"/"
-          Path(savefigpath_exp).mkdir(exist_ok=True) 
-          savefigpath_exp = savefigpath_exp+"initSDdistribs/"
-          Path(savefigpath_exp).mkdir(exist_ok=True) 
-          
-          savefigstem = savefigpath_exp+"/run"+str(runn)+"_"
-        rsupers.plot_initGBxsdistribs(configfile, constsfile,
-                                      initSDsfile, gridfile,
-                                      savefigstem, isfigures[1], 0)
+    gen_initSDs_for_ensembleruns(binariespath, gridfile, configfile,
+                                 constsfile, exp, runids, npergbx,
+                                 zlim, radiigen, radiiprobdist, 
+                                 coord3gen, coord1gen, coord2gen,
+                                 numconc, isfigures, savefigpath)
 
 ### run model for each s_ratios experiment
 print("--- compiling runCLEO ---\nin "+path2build)
@@ -147,46 +105,23 @@ os.system("make -j 16")
 os.chdir(currentdir)
 
 for exp, npergbx in experimentids.items():
-  
-  ### where to output data
   binpath_exp = binpath+"/"+exp+"/"  
   Path(binpath_exp).mkdir(exist_ok=True)   
   
   ### edit nSDsvec in config given npergbx of experiment
   edit_confignSDsvec(configfile, zgrid, xgrid, zlim, npergbx)
-
-  ### copy config to temporary file for each run of experiment
-  print("\n- copying config to temporary file -")  
-  for runn in runids:  
-    initSDsfile = initSDsfilename(binariespath, exp, runn) 
-    tempconfigfile = configfiles_for_exprunX(exp, runn, binpath_exp,
-                                              gridfile, initSDsfile,
-                                              thermofiles, configfile,
-                                              tempdir)
-     
-    print("config file copied to: "+tempconfigfile)
-
-  if sumbit_individruns:
-    for runn in runids:
-      ### run all runs of experiment using seperate SLURM jobs for each run
-      print("\n- executing runCLEO via sbatch -")  
-      runid = str(runn)
-      edit_bash_script(bashfile, path2build, tempdir,
-                      tempdir, constsfile, exp,
-                      runid=runid)
-      print("experiment: "+exp+" for run "+runid)
-      echo_and_sys("sbatch "+bashfile+" "+runid)
-      print("-----------------------")
   
+  ### copy config to a temporary file for each run
+  temporary_configfile_copy(tempdir, exp, runids, binpath_exp, 
+                              binariespath, gridfile, thermofiles,
+                              configfile)
+  
+  if sumbit_individruns:
+    bashfile = currentdir+"/runexp1run.sh"
+    submit_runs_individually(bashfile, path2build, tempdir, constsfile,
+                             exp, runids)
   else:
-    ### run all runs of experiment using single SLURM job
-    print("\n- executing runCLEO via sbatch -")  
-    edit_bash_script(bashfile, path2build, tempdir,
-                    tempdir, constsfile, exp,
-                    runid="many")
-    runsstr = " ".join([str(n) for n in list(runids)])
-    print("experiment: "+exp+" for runs "+runsstr)
-    echo_and_sys("sbatch "+bashfile+" "+runsstr)
-    print("-----------------------")
-
+    bashfile = currentdir+"/runexp.sh"
+    submit_allruns1job(bashfile, path2build, tempdir, constsfile,
+                       exp, runids)
 ### ---------------------------------------------------------------- ###
