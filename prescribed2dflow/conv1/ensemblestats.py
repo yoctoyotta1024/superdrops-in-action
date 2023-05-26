@@ -9,7 +9,7 @@ from sdmplotting.datsrc import *
 from sdmplotting.pltsrc import *
 from sdmplotting.datsrc.sdprops import *
 
-exp = "n64"
+exp = "n256"
 runids = range(0,10,1)
 timerange = [0, 14400]
 
