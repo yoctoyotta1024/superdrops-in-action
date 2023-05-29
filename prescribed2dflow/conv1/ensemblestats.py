@@ -9,7 +9,7 @@ from sdmplotting.datsrc import *
 from sdmplotting.pltsrc import *
 from sdmplotting.datsrc.sdprops import *
 
-exp = "n8"
+exp = "n32"
 runids = range(0,10,1)
 timerange = [0, 14400]
 rainrlim = 40 # rlim for defining raindrops as r >= rlim
