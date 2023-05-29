@@ -9,9 +9,10 @@ from sdmplotting.datsrc import *
 from sdmplotting.pltsrc import *
 from sdmplotting.datsrc.sdprops import *
 
-exp = "n1024"
+exp = "n8"
 runids = range(0,10,1)
 timerange = [0, 14400]
+rainrlim = 40 # rlim for defining raindrops as r >= rlim
 
 basepath = "/work/mh1126/m300950/prescribed2dflow/conv1/"
 path2ensemble = basepath+"/bin/"+exp+"/"
@@ -47,17 +48,15 @@ make_paths([npzdir, savefigpath])
 ### setup, superdroplet properties and grid
 setup = pysetuptxt.setuptxt2dict(setuptxt, nattrs=3, isprint=False)
 gbxs = pysetuptxt.get_gridboxes(None, gridfile, setup, isprint=False)
-SDprops = CommonSuperdropProperties(setup["RHO_L"], setup["RHO_SOL"],
-                                    setup["MR_SOL"], setup["IONIC"])
 
 ### Get Ensemble Data From Datasets (and save to npz files)
 # ensemble.EnsembleMassMoments(zarrs=zarrs, setup=setup, gbxs=gbxs,
 #                               npzdir=npzdir, savenpz=savenpz,
 #                               timerange=timerange)
 
-ensemble.EnsembleRainMoments(zarrs=zarrs, setup=setup, gbxs=gbxs,
+ensemble.EnsembleRainMassMoments(zarrs=zarrs, setup=setup, gbxs=gbxs,
                             npzdir=npzdir, savenpz=savenpz, 
-                            timerange=timerange)                       
+                            timerange=timerange, rlim=rainrlim)                       
 
 # ensemble.EnsemblePrecip(zarrs=zarrs, setup=setup, gbxs=gbxs,
 #                           npzdir=npzdir, savenpz=savenpz, 

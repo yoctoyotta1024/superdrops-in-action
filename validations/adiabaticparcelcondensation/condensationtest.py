@@ -107,7 +107,7 @@ os.system(buildpath+'src/cond0D ' + configfile+' '+constsfile)
 # read in constants and intial setup from setup .txt file
 setup, grid = pysetuptxt.get_setup_grid(setupfile, gridfile)
 SDprops = sdprops.CommonSuperdropProperties(setup["RHO_L"], setup["RHO_SOL"],
-                                                              setup["MR_SOL"], setup["IONIC"])
+                                             setup["MR_SOL"], setup["IONIC"])
 thermo = pyzarr.get_thermodata(dataset, setup, grid["ndims"])
 time = pyzarr.get_time(dataset).secs
 sddata = pyzarr.get_sddata(dataset)
