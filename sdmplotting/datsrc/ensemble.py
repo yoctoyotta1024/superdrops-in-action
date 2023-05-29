@@ -296,10 +296,30 @@ class EnsembleRainMassMoments:
                                       self.rainmassmom_npzfile()) 
     return MassMoms
 
+  def calc_rainmassmoms(self, eps, radius, m_sol, SDprops, ntime, ndims):
+    '''calulate mass moments from superdroplets 
+    for raindrops, ie. only including superdrops with r >= rlim '''
+
+    reshape = [np.uint64(ntime)]+[np.uint64(n) for n in ndims]
+
+    israin = radius >= self.rlim # ak array True for raindrops
+    
+    eps = ak.where(israin, eps, 0.0)
+    radius = ak.where(israin, radius, 0.0)
+    m_sol = ak.where(israin, m_sol, 0.0)
+    mass = SDprops.mass(radius, m_sol)
+
+    nsupers = ak.to_numpy(np.reshape(ak.sum(israin, axis=1), reshape), allow_missing=False)
+    mom0 = ak.to_numpy(np.reshape(ak.sum(eps, axis=1), reshape), allow_missing=False)
+    mom1 = ak.to_numpy(np.reshape(ak.sum(eps*mass, axis=1), reshape), allow_missing=False)
+    mom2 = ak.to_numpy(np.reshape(ak.sum(eps*mass*mass, axis=1), reshape), allow_missing=False)
+    
+    return [nsupers, mom0, mom1, mom2]
+
   def rainmassmoms_fromzarr(self, zarr, setup, gbxs):
 
     ntime, ndims = setup["ntime"], gbxs["ndims"]
-    reshape = [ntime]+ndims
+    
     SDprops = CommonSuperdropProperties(setup["RHO_L"], setup["RHO_SOL"],
                                     setup["MR_SOL"], setup["IONIC"])
 
@@ -309,21 +329,9 @@ class EnsembleRainMassMoments:
     eps = pyzarr.raggedvar_fromzarr(ds, nsupers_raggedcount, "eps")
     m_sol = pyzarr.raggedvar_fromzarr(ds, nsupers_raggedcount, "m_sol")
 
-    israin = radius >= self.rlim # ak array True for raindrops
-    nsupers = np.reshape(ak.sum(israin, axis=1), reshape)
-    
-    print(ak.type(radius), ntime*np.prod(ndims))
-    eps = ak.where(israin, eps, 0.0)
-    rain = ak.where(israin, rain, 0.0)
-    m_sol = ak.where(israin, m_sol, 0.0)
-    mass = SDprops.mass(radius, m_sol)
+    massmoms = self.calc_rainmassmoms(eps, radius, m_sol, SDprops, ntime, ndims)
 
-    mom0 = np.reshape(ak.sum(eps, axis=1), reshape)
-    mom1 = np.reshape(ak.sum(eps*mass, axis=1), reshape)
-    mom2 = np.reshape(ak.sum(eps*mass*mass, axis=1), reshape)
-    print(mom0.shape)
-
-    return [nsupers, mom0, mom1, mom2] # for raindrops, ie. only including drops with r >= rlim
+    return massmoms
 
   def ensemb_massmoms_from_zarrs(self, zarrs, setup, gbxs, timerange):
       
