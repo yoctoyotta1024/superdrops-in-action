@@ -94,7 +94,7 @@ class EnsembleMassMoments:
   def ensemb_massmoms_from_npzfile(self): 
 
     MassMoms = statsdict_from_npzfile(self.MassMoms,
-                                      self.massmom_npzfile()) 
+                                      self.massmom_npzfile) 
     return MassMoms
 
   def massmoms_fromzarr(self, zarr, setup, gbxs):
