@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 
 def massmom1dsnapshots(fig, axs, t2plts, time, massmom, norm, zfull,
                       xlab=None, xlims=[None, None], xlog=False,
-                      color=None):
+                      color=None, alpha=0.2):
 
   z = zfull / 1000
 
@@ -16,7 +16,7 @@ def massmom1dsnapshots(fig, axs, t2plts, time, massmom, norm, zfull,
     std = np.mean(massmom.stderr[t,:,:]/norm, axis=0)  
     l = axs[i].plot(meanmom, z, color=color)[0]
     axs[i].fill_betweenx(z, meanmom-std, meanmom+std,
-                         alpha=0.2, edgecolor=None,
+                         alpha=alpha, edgecolor=None,
                          facecolor=color)
     
     axs[i].set_title("t = {:.0f}".format(time.mins[t]))
@@ -35,17 +35,17 @@ def massmom1dsnapshots(fig, axs, t2plts, time, massmom, norm, zfull,
   return lines
 
 def plot_meantimeseries_with_shading(ax, time, mean, err,
-                             q1=[], q3=[], color=None):
+                             q1=[], q3=[], color=None, alpha=0.2):
 
   
   l = ax.plot(time, mean, color=color)[0]
-  ax.fill_between(time, mean-err, mean+err, alpha=0.5,
+  ax.fill_between(time, mean-err, mean+err, alpha=alpha,
                   edgecolor=None, facecolor=color)
   
   if np.any(q1):
-    ax.plot(time, q1, color=color, linestyle="--", alpha=0.5)
+    ax.plot(time, q1, color=color, linestyle="--", alpha=alpha)
   if np.any(q3):
-    ax.plot(time, q3, color=color, linestyle="--", alpha=0.5)
+    ax.plot(time, q3, color=color, linestyle="--", alpha=alpha)
   
   return l
 

@@ -50,18 +50,17 @@ setup = pysetuptxt.setuptxt2dict(setuptxt, nattrs=3, isprint=False)
 gbxs = pysetuptxt.get_gridboxes(None, gridfile, setup, isprint=False)
 
 ### Get Ensemble Data From Datasets (and save to npz files)
-# ensemble.EnsembleMassMoments(zarrs=zarrs, setup=setup, gbxs=gbxs,
-#                               npzdir=npzdir, savenpz=savenpz,
-#                               timerange=timerange)
+ensemble.EnsembleMassMoments(zarrs=zarrs, setup=setup, gbxs=gbxs,
+                              npzdir=npzdir, savenpz=savenpz,
+                              timerange=timerange)
 
 ensemble.EnsembleRainMassMoments(zarrs=zarrs, setup=setup, gbxs=gbxs,
                             npzdir=npzdir, savenpz=savenpz, 
                             timerange=timerange, rlim=rainrlim)                       
 
-# ensemble.EnsemblePrecip(zarrs=zarrs, setup=setup, gbxs=gbxs,
-#                           npzdir=npzdir, savenpz=savenpz, 
-#                           timerange=timerange)
-
+ensemble.EnsemblePrecip(zarrs=zarrs, setup=setup, gbxs=gbxs,
+                          npzdir=npzdir, savenpz=savenpz, 
+                          timerange=timerange)
 ### ---------------------------------------------------------------- ###
 
 
@@ -69,4 +68,5 @@ ensemble.EnsembleRainMassMoments(zarrs=zarrs, setup=setup, gbxs=gbxs,
 ### -------------- load ensemble stats From npz files -------------- ###
 # mmmoms = ensemble.EnsembleMassMoments(npzdir=npzdir, fromnpz=True).get_massmoms()                     
 # precip = ensemble.EnsemblePrecip(npzdir=npzdir, fromnpz=True).get_precip()
+# rainmmmoms = ensemble.EnsembleRainMassMoments(npzdir=npzdir, fromnpz=True).get_massmoms()
 ### ---------------------------------------------------------------- ###

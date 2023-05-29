@@ -290,10 +290,10 @@ class EnsembleRainMassMoments:
 
     save_npz(self.MassMoms, self.rainmassmom_npzfile, "Rain mass moments")
 
-  def ensemb_rainmassmoms_from_npzfile(self): 
+  def ensemb_massmoms_from_npzfile(self): 
 
     MassMoms = statsdict_from_npzfile(self.MassMoms,
-                                      self.rainmassmom_npzfile()) 
+                                      self.rainmassmom_npzfile) 
     return MassMoms
 
   def calc_rainmassmoms(self, eps, radius, m_sol, SDprops, ntime, ndims):
