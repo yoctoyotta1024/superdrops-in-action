@@ -15,8 +15,8 @@ HOMEdir = "/home/m/m300950"
 path2sds = HOMEdir+"/superdrops_in_action/"
 path2build = "/work/mh1126/m300950/prescribed2dflow/conv1/build/"
 
-exp = "n64"
-# savedir = path2sds+"prescribed2dflow/conv1/"+exp+"/"
+exp = "n8"
+# savedir = path2sds+"prescribed2dflow/conv1/"+exp+"/run0/"
 savedir = path2sds+"prescribed2dflow/conv1/compareplots/"
 print("builddir: "+path2build+"\nsavedir: "+savedir)
 
@@ -26,8 +26,8 @@ class DatasetPaths:
     path2dataset = path2build+"../bin/"+exp+"/"
     
     self.gridfile = path2build+"/share/dimlessGBxbounds.dat"
-    self.setuptxt = path2dataset+"/run8setup.txt"
-    self.dataset = path2dataset+"/run8SDMdata.zarr"
+    self.setuptxt = path2dataset+"/run0setup.txt"
+    self.dataset = path2dataset+"/run0SDMdata.zarr"
     
     print("dataset: "+self.dataset,
           "\ngridfile: "+self.gridfile,
