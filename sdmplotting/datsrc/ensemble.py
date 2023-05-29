@@ -91,9 +91,9 @@ class EnsembleMassMoments:
 
   def ensemb_massmoms_from_npzfile(self): 
 
-    self.MassMoms = statsdict_from_npzfile(self.MassMoms,
-                                           self.massmom_npzfile()) 
-    return self.MassMoms
+    MassMoms = statsdict_from_npzfile(self.MassMoms,
+                                      self.massmom_npzfile()) 
+    return MassMoms
 
   def massmoms_fromzarr(self, zarr, setup, gbxs):
 
@@ -176,9 +176,9 @@ class EnsemblePrecip:
     
   def ensemb_precip_from_npzfiles(self): 
 
-    self.Precip = statsdict_from_npzfile(self.Precip,
+    Precip = statsdict_from_npzfile(self.Precip,
                                          self.precip_npzfile)
-    return self.Precip
+    return Precip
   
   def ensemb_precip_from_zarrs(self, zarrs, gbxs, timerange):
       
