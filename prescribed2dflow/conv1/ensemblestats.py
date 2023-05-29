@@ -9,7 +9,7 @@ from sdmplotting.datsrc import *
 from sdmplotting.pltsrc import *
 from sdmplotting.datsrc.sdprops import *
 
-exp = "n1"
+exp = "n1024"
 runids = range(0,10,1)
 timerange = [0, 14400]
 
@@ -51,13 +51,18 @@ SDprops = CommonSuperdropProperties(setup["RHO_L"], setup["RHO_SOL"],
                                     setup["MR_SOL"], setup["IONIC"])
 
 ### Get Ensemble Data From Datasets (and save to npz files)
-ensemble.EnsembleMassMoments(zarrs=zarrs, setup=setup, gbxs=gbxs,
-                              npzdir=npzdir, savenpz=savenpz,
-                              timerange=timerange)
+# ensemble.EnsembleMassMoments(zarrs=zarrs, setup=setup, gbxs=gbxs,
+#                               npzdir=npzdir, savenpz=savenpz,
+#                               timerange=timerange)
 
-ensemble.EnsemblePrecip(zarrs=zarrs, setup=setup, gbxs=gbxs,
-                          npzdir=npzdir, savenpz=savenpz, 
-                          timerange=timerange)
+ensemble.EnsembleRainMoments(zarrs=zarrs, setup=setup, gbxs=gbxs,
+                            npzdir=npzdir, savenpz=savenpz, 
+                            timerange=timerange)                       
+
+# ensemble.EnsemblePrecip(zarrs=zarrs, setup=setup, gbxs=gbxs,
+#                           npzdir=npzdir, savenpz=savenpz, 
+#                           timerange=timerange)
+
 ### ---------------------------------------------------------------- ###
 
 
