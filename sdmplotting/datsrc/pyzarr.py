@@ -137,14 +137,14 @@ class MassMoments:
     ntime = setup["ntime"]
     
     self.nsupers =  var4d_fromzarr(ds, ntime, ndims, "nsupers")               # number of superdroplets in gbxs over time
-    self.mom0 = var4d_fromzarr(ds, ntime, ndims, "massmoment0")               # number of droplets in gbxs over time
-    self.mom1 = var4d_fromzarr(ds, ntime, ndims, "massmoment1")               # total mass of droplets in gbxs over time
-    self.mom2 = var4d_fromzarr(ds, ntime, ndims, "massmoment2")               # 2nd mass moment of droplets (~reflectivity)
+    self.mom0 = var4d_fromzarr(ds, ntime, ndims, "massmom0")               # number of droplets in gbxs over time
+    self.mom1 = var4d_fromzarr(ds, ntime, ndims, "massmom1")               # total mass of droplets in gbxs over time
+    self.mom2 = var4d_fromzarr(ds, ntime, ndims, "massmom2")               # 2nd mass moment of droplets (~reflectivity)
     self.effmass = self.mom2 / self.mom1                                             # Effective Radius of droplets
 
-    self.mom1_units = ds["massmoment1"].units                                       # probably grams
-    self.mom2_units = ds["massmoment2"].units                                       # probably grams^2
-    self.effmass_units = ds["massmoment2"].units + "/" + ds["massmoment1"].units    # probably grams
+    self.mom1_units = ds["massmom1"].units                                       # probably grams
+    self.mom2_units = ds["massmom2"].units                                       # probably grams^2
+    self.effmass_units = ds["massmom2"].units + "/" + ds["massmom1"].units    # probably grams
 
   def __getitem__(self, key):
     if key == "nsupers":
