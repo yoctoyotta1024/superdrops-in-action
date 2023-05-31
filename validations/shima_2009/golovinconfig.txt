@@ -29,8 +29,8 @@ cond_atol = 0.001                       # abolute tolerance for implicit euler i
 CONDTSTEP = 2                           # time between SD condensation events [s]
 COLLTSTEP = 1                           # time between SD collision events [s]
 MOTIONTSTEP = 2                         # time between SDM motion [s]
-COUPLTSTEP = 3                          # time between thermodynamic couplings [s]
-OBSTSTEP = 400                          # time between SDM observations [s]
+COUPLTSTEP = 2000                       # time between thermodynamic couplings [s]
+OBSTSTEP = 200                          # time between SDM observations [s]
 T_END = 4000                            # time span of integration [s]
 
 # SDs parameters #
