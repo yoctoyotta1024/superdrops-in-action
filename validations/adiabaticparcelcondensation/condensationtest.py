@@ -91,8 +91,8 @@ create_initsuperdrops.write_initsuperdrops_binary(initSDsfile, initattrsgen,
 if isfigures[0]:
     rgrid.plot_gridboxboundaries(constsfile, gridfile, 
                                               binpath, isfigures[1])
-    read_initsuperdrops.plot_initdistribs(configfile, constsfile, initSDsfile,
-                                          gridfile, binpath, isfigures[1])
+    read_initsuperdrops.plot_initGBxsdistribs(configfile, constsfile, initSDsfile,
+                                              gridfile, binpath, isfigures[1], "all")
 plt.close()
 
 ### 2. compile and run model
@@ -105,7 +105,7 @@ os.system(buildpath+'src/cond0D ' + configfile+' '+constsfile)
 
 # 3. load and plot results
 # read in constants and intial setup from setup .txt file
-setup, grid = pysetuptxt.get_setup_grid(setupfile, gridfile)
+setup, grid = pysetuptxt.get_setup_gridinfo(setupfile, gridfile)
 SDprops = sdprops.CommonSuperdropProperties(setup["RHO_L"], setup["RHO_SOL"],
                                              setup["MR_SOL"], setup["IONIC"])
 thermo = pyzarr.get_thermodata(dataset, setup, grid["ndims"])
