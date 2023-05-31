@@ -19,7 +19,7 @@ from pathlib import Path
 # apath = "/Users/yoctoyotta1024/Documents/b1_springsummer2023/superdrops_in_action/"
 path2CLEO = "/home/m/m300950/CLEO/"
 apath = "/home/m/m300950/superdrops_in_action/"
-sys.path.append(path2CLEO)  # for imports from pySD package
+sys.path.append(path2CLEO)                           # for imports from pySD package
 sys.path.append(apath+"sdmplotting/")
 sys.path.append(apath+"validations/")
 
