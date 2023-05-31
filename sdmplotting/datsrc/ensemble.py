@@ -101,16 +101,10 @@ class EnsembleMassMoments:
 
     ntime, ndims = setup["ntime"], gbxs["ndims"]
 
-    zarrkeys = {"nsupers":  "nsupers",
-                "mom0": "massmom0",
-                "mom1": "massmom1",
-                "mom2": "massmom2"
-                }
-
-    nsupers = pyzarr.massmom_fromzarr(zarr, ntime, ndims, zarrkeys["nsupers"])
-    mom0 = pyzarr.massmom_fromzarr(zarr, ntime, ndims, zarrkeys["mom0"])
-    mom1 = pyzarr.massmom_fromzarr(zarr, ntime, ndims, zarrkeys["mom1"])
-    mom2 = pyzarr.massmom_fromzarr(zarr, ntime, ndims, zarrkeys["mom2"])
+    nsupers = pyzarr.massmom_fromzarr(zarr, ntime, ndims, "nsupers")
+    mom0 = pyzarr.massmom_fromzarr(zarr, ntime, ndims, "mom0")
+    mom1 = pyzarr.massmom_fromzarr(zarr, ntime, ndims, "mom1")
+    mom2 = pyzarr.massmom_fromzarr(zarr, ntime, ndims, "mom2")
   
     return [nsupers, mom0, mom1, mom2]
 

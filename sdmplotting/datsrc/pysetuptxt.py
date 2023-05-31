@@ -151,7 +151,7 @@ def setuptxt2dict(setuptxt, nattrs=3, isprint=True):
   setup.update(derive_more_floats(setup))
  
   setup["numSDattrs"] = setup["SDnspace"] + nattrs         
-  setup["ntime"] = round(setup["T_END"]/setup["COUPLTSTEP"])+1
+  setup["ntime"] = round(setup["T_END"]/setup["OBSTSTEP"])+1
 
   if isprint:
     print_dict_statement(setuptxt, setup)
