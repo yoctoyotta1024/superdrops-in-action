@@ -1,14 +1,15 @@
 ### paths and file names often required by ipynb plotting scripts ###
 
-HOMEdir = "/home/m/m300950"
+HOMEdir = "/Users/yoctoyotta1024/Documents/b1_springsummer2023/"
+# HOMEdir = "/home/m/m300950"
 path2sds = HOMEdir+"/superdrops_in_action/"
 # path2build = "/work/mh1126/m300950/prescribed2dflow/conv1/build/"
 path2build = HOMEdir+"/CLEO/build/"
 
-exp = "n8"
+exp = "n2"
 # savedir = path2sds+"prescribed2dflow/conv1/"+exp+"/run0/"
-savedir = path2sds+"prescribed2dflow/conv1/compareplots/"
-# savedir = path2sds+"/quickplots/plots/"
+# savedir = path2sds+"prescribed2dflow/conv1/compareplots/"
+savedir = path2sds+"/quickplots/plots/"
 print("builddir: "+path2build+"\nsavedir: "+savedir)
 
 class DatasetPaths:
@@ -16,8 +17,8 @@ class DatasetPaths:
         
     # path2dataset = path2build+"../bin/"+exp+"/"
     # self.gridfile = path2build+"/share/dimlessGBxbounds.dat"
-    # self.setuptxt = path2dataset+"/run0setup.txt"
-    # self.dataset = path2dataset+"/run0SDMdata.zarr"
+    # self.setuptxt = path2dataset+"/run1setup.txt"
+    # self.dataset = path2dataset+"/run1SDMdata.zarr"
     
     path2dataset = path2build+"/bin/"
     self.gridfile = path2build+"/share/dimlessGBxboundaries.dat"
