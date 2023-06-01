@@ -31,7 +31,7 @@ CONDTSTEP = 0.01                        # time between SD condensation events [s
 COLLTSTEP = 0.1                         # time between SD collision events [s]
 MOTIONTSTEP = 0.5                       # time between SDM motion [s]
 COUPLTSTEP = 0.5                        # time between thermodynamic couplings [s]
-OBSTSTEP = 10                           # time between SDM observations [s]
+OBSTSTEP = 5                           # time between SDM observations [s]
 T_END = 150000                          # time span of integration [s]
 
 # SDs parameters #

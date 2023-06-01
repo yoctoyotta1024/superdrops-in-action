@@ -66,7 +66,7 @@ params1 = {
     "T_HALF": 150,
     "T_END": 300,
     "COUPLTSTEP": 1,
-    "OBSTSTEP": 1,
+    "OBSTSTEP": 2,
     "lwdth": 2,
 }
 
@@ -75,7 +75,7 @@ params2 = {
     "T_HALF": 300,
     "T_END": 600,
     "COUPLTSTEP": 1,
-    "OBSTSTEP": 3,
+    "OBSTSTEP": 2,
     "lwdth": 1,
 }
 params3 = {
