@@ -1,6 +1,6 @@
-# Script creates the data and
-# plots as in Shima et al. 2009
-# to show comparision of 0D box model
+# Script creates the data and plots
+# as in Shima et al. 2009 to show
+# comparision of SDM 0D box model
 # of collision-coalescence with
 # Golovin's analytical solution
 
