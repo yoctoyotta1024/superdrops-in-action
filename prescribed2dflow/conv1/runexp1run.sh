@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH --job-name=n1_run0
+#SBATCH --job-name=n8_v2_run9
 #SBATCH --partition=compute
 #SBATCH --nodes=1
 #SBATCH --mem=30G
@@ -7,12 +7,12 @@
 #SBATCH --mail-user=clara.bayley@mpimet.mpg.de
 #SBATCH --mail-type=FAIL
 #SBATCH --account=mh1126
-#SBATCH --output=/home/m/m300950/superdrops_in_action/prescribed2dflow/conv1//temp//n1_run0_out.%j.out
-#SBATCH --error=/home/m/m300950/superdrops_in_action/prescribed2dflow/conv1//temp//n1_run0_err.%j.out
+#SBATCH --output=/home/m/m300950/superdrops_in_action/prescribed2dflow/conv1//temp//n8_v2_run9_out.%j.out
+#SBATCH --error=/home/m/m300950/superdrops_in_action/prescribed2dflow/conv1//temp//n8_v2_run9_err.%j.out
 
 path2build=/work/mh1126/m300950/prescribed2dflow/conv1/build/
 configdir=/home/m/m300950/superdrops_in_action/prescribed2dflow/conv1//temp/
-experimentid=/n1
+experimentid=/n8_v2
 constsfile=/home/m/m300950/CLEO/libs/claras_SDconstants.hpp
 
 module load gcc
