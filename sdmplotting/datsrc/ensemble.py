@@ -180,7 +180,7 @@ class EnsemblePrecip:
       
     rates, accums = [], []
     for zarr in zarrs:
-      data = pyzarr.surfaceprecip_fromdataset(zarr, gbxs)
+      data = pyzarr.surfaceprecip_estimate(zarr, gbxs)
       time = pyzarr.get_rawdataset(zarr)["time"].values
       rate, accum = data_in_timerange(data, time, timerange)
 

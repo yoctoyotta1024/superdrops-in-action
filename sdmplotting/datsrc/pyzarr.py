@@ -399,7 +399,11 @@ def attrs_at_times(sddata, time, times2sel, attrs2sel):
   
   return selected_data
 
-def surfaceprecip_fromdataset(dataset, gbxs):
+def surfaceprecip_estimate(dataset, gbxs):
+  ''' use last radius of SDs before they leave the domain to
+  estimate the volume of precipitation at each timestep.
+  Values should be approx. equal to sum over gbxs (multiplied
+  by area_gbx/area_domain) of logbook values for precip'''
 
     ds = get_rawdataset(dataset)
 
