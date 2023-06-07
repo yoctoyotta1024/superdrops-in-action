@@ -314,7 +314,7 @@ class EnsembleRaindropMassMomsFromSDs:
     sumrain = np.reshape(ak.sum(data, axis=1), reshape)
     return ak.to_numpy(sumrain, allow_missing=False)
 
-  def calc_raindrop_massmoms(self, eps, radius, m_sol, SDprops, ntime, ndims):
+  def calc_raindropmassmoms(self, eps, radius, m_sol, SDprops, ntime, ndims):
     '''calulate mass moments from superdroplets 
     for raindrops, ie. only including superdrops with r >= rlim '''
     reshape = [np.uint64(ntime)]+[np.uint64(n) for n in ndims]

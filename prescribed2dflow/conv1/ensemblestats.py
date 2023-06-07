@@ -54,19 +54,20 @@ ensemble.EnsembleMassMoments(zarrs=zarrs, setup=setup, gbxs=gbxs,
                               npzdir=npzdir, savenpz=savenpz,
                               timerange=timerange)
 
-ensemble.EnsembleRainMassMoments(zarrs=zarrs, setup=setup, gbxs=gbxs,
+ensemble.EnsembleRaindropMassMoments(zarrs=zarrs, setup=setup, gbxs=gbxs,
                                 npzdir=npzdir, savenpz=savenpz, 
-                                timerange=timerange)                       
-
-ensemble.EnsemblePrecipEstimateFromSDs(zarrs=zarrs, gbxs=gbxs,
-                                       npzdir=npzdir, savenpz=savenpz, 
-                                       timerange=timerange)
+                                timerange=timerange)        
+               
 ensemble.EnsembleSurfPrecip(zarrs=zarrs, setup=setup, gbxs=gbxs,
                             npzdir=npzdir, savenpz=savenpz,
                             timerange=timerange)
                             
+ensemble.EnsemblePrecipEstimateFromSDs(zarrs=zarrs, gbxs=gbxs,
+                                       npzdir=npzdir, savenpz=savenpz, 
+                                       timerange=timerange)
+
 rainrlim = 40 # rlim for defining raindrops as r >= rlim
-ensemble.EnsembleRainMassMomsFromSDs(zarrs=zarrs, setup=setup, gbxs=gbxs,
+ensemble.EnsembleRaindropMassMomsFromSDs(zarrs=zarrs, setup=setup, gbxs=gbxs,
                                      npzdir=npzdir, savenpz=savenpz, 
                                      timerange=timerange, rlim=rainrlim)                       
 ### ---------------------------------------------------------------- ###
