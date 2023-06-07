@@ -23,8 +23,8 @@ sumbit_individruns = False # submit each run of an experiment as seperate SLURM 
 
 ### ---------------------------------------------------------------- ###
 ### paths and filenames for inputs and outputs
-currentdir = "/home/m/m300950/superdrops_in_action/prescribed2dflow/conv1/"
-path2build = "/work/mh1126/m300950/prescribed2dflow/conv1/build/"
+currentdir = "/home/m/m300950/superdrops_in_action/prescribed2dflow/convstudy/"
+path2build = "/work/mh1126/m300950/prescribed2dflow/conc1e10_res20/build/"
 binariespath = path2build+"/share/"
 
 constsfile = path2CLEO+"libs/claras_SDconstants.hpp"
@@ -32,7 +32,7 @@ gridfile =  binariespath+"/dimlessGBxbounds.dat" # note this should match config
 thermofiles =  binariespath+"/dimless.dat" # note this should match config.txt
 configfile = currentdir+"/convconfig.txt"
 
-savefigpath = currentdir
+savefigpath = currentdir+"/conc1e10_res20/"
 binpath = path2build+"../bin/"
 tempdir = currentdir+"/temp/"
 
@@ -54,7 +54,7 @@ radiigen             = iSDs.SampleDryradiiGen(rspan, randomr)
 geomeans             = [0.02e-6, 0.15e-6]               
 geosigs              = [1.4, 1.6]                    
 scalefacs            = [6e6, 4e6]
-numconc              = np.sum(scalefacs)*100*15/2
+numconc              = np.sum(scalefacs)*1000
 radiiprobdist        = rprobs.LnNormal(geomeans, geosigs, scalefacs)
 
 ### input parameters for thermodynamic profiles

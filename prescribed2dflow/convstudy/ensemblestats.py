@@ -10,17 +10,17 @@ from sdmplotting.datsrc import *
 from sdmplotting.pltsrc import *
 from sdmplotting.datsrc.sdprops import *
 
-exp = "n8_v2"
+exp = "n1024"
 runids = range(0,10,1)
 timerange = [0, 14400]
 
-basepath = "/work/mh1126/m300950/prescribed2dflow/conv1/"
+basepath = "/work/mh1126/m300950/prescribed2dflow/conc1e10_res20/"
 path2ensemble = basepath+"/bin/"+exp+"/"
 gridfile = basepath+"/build/share/dimlessGBxbounds.dat"
 
 npzdir = path2ensemble+"/ensemb/"
 savenpz = True
-savefigpath = path2sds+"prescribed2dflow/conv1/"+exp+"/ensemb/"
+savefigpath = path2sds+"prescribed2dflow/convstudy/conc1e10_res20/"+exp+"/ensemb/"
 
 ### ------------------------ helper funcs -------------------------- ###
 def get_zarrbasedirs(ensemblepath, runids): 
@@ -54,13 +54,13 @@ ensemble.EnsembleMassMoments(zarrs=zarrs, setup=setup, gbxs=gbxs,
                               npzdir=npzdir, savenpz=savenpz,
                               timerange=timerange)
 
-ensemble.EnsembleRaindropMassMoments(zarrs=zarrs, setup=setup, gbxs=gbxs,
-                                npzdir=npzdir, savenpz=savenpz, 
-                                timerange=timerange)        
+# ensemble.EnsembleRaindropMassMoments(zarrs=zarrs, setup=setup, gbxs=gbxs,
+#                                 npzdir=npzdir, savenpz=savenpz, 
+#                                 timerange=timerange)        
                
-ensemble.EnsembleSurfPrecip(zarrs=zarrs, setup=setup, gbxs=gbxs,
-                            npzdir=npzdir, savenpz=savenpz,
-                            timerange=timerange)
+# ensemble.EnsembleSurfPrecip(zarrs=zarrs, setup=setup, gbxs=gbxs,
+#                             npzdir=npzdir, savenpz=savenpz,
+#                             timerange=timerange)
                             
 ensemble.EnsemblePrecipEstimateFromSDs(zarrs=zarrs, gbxs=gbxs,
                                        npzdir=npzdir, savenpz=savenpz, 

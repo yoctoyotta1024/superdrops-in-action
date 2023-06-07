@@ -83,13 +83,19 @@ class EnsembleMassMoments:
     return self.npzdir+"/ensemb"+key+".npz"
 
   def massmoms_fromzarr(self, zarr, setup, gbxs, timerange):
-    
+
+    keyconv = {
+      "mom0": "massmom0",
+      "mom1": "massmom1",
+      "mom2": "massmom2"
+    }
+
     ntime, ndims = setup["ntime"], gbxs["ndims"]
     time = pyzarr.get_rawdataset(zarr)["time"].values
     nsupers = pyzarr.massmom_fromzarr(zarr, ntime, ndims, "nsupers")
-    mom0 = pyzarr.massmom_fromzarr(zarr, ntime, ndims, "mom0")
-    mom1 = pyzarr.massmom_fromzarr(zarr, ntime, ndims, "mom1")
-    mom2 = pyzarr.massmom_fromzarr(zarr, ntime, ndims, "mom2")
+    mom0 = pyzarr.massmom_fromzarr(zarr, ntime, ndims, keyconv["mom0"])
+    mom1 = pyzarr.massmom_fromzarr(zarr, ntime, ndims, keyconv["mom1"])
+    mom2 = pyzarr.massmom_fromzarr(zarr, ntime, ndims, keyconv["mom2"])
   
     data = [nsupers, mom0, mom1, mom2]
     data = data_in_timerange(data, time, timerange)
