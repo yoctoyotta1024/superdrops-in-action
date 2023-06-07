@@ -1,3 +1,4 @@
+# file: pyzarr.py
 ### functions involved in handling zarr dataset and
 ### txt files from SDM model output ###
 
@@ -44,6 +45,12 @@ def var3d_fromzarr(ds, ndims, key):
   [y, x, z] from zarr dataset "ds" '''
   
   return np.reshape(ds[key].values, ndims) 
+
+def reshapevar_fromzarr(ds, reshape, key):
+  '''' returns variable "key" from zarr dataset
+  "ds" with dims given by "reshape" '''
+  
+  return np.reshape(ds[key].values, reshape) 
 
 def massmom_fromzarr(dataset, ntime, ndims, massmom):
   '''' opens zarr dataset "ds" and returns 
@@ -250,11 +257,11 @@ class GridBoxes:
   in each gridbox as well as 2D (z,x) meshgrids '''
 
   def __init__(self, dataset, grid, ntime):
-    
-    
+     
     self.grid = grid
     self.gbxvols = np.reshape(self.grid["gbxvols"], self.grid["ndims"])
-    
+    self.gbxareas = self.gbxvols / np.diff(self.grid["zhalf"])[None, None, :] # x-y plane horizontal areas
+
     try:
       ds = get_rawdataset(dataset)
       self.gbxindex = var3d_fromzarr(ds, self.grid["ndims"], "gbxindex")
@@ -329,6 +336,39 @@ class Raindrops:
       return self.coord1
     elif key == "coord2":
       return self.coord2
+    else:
+      err = "no known return provided for "+key+" key"
+      raise ValueError(err)
+
+class SurfPrecip:
+
+  def __init__(self, dataset, ntime, gbxs):
+    
+    ds = get_rawdataset(dataset)
+    deltat = np.mean(np.diff(ds["time"].values)) / 60 / 60 # [hrs]
+    
+    reshape = [ntime] + list(gbxs["ndims"])[0:2] # dims [time, x, y]
+    self.surfpp = reshapevar_fromzarr(ds, reshape, "surfpp") # [mm]
+    
+    self.rate = self.surfpp / deltat # [mm/hr]
+    self.accum = np.cumsum(self.surfpp, axis=(0)) # [mm]
+
+    gbxareas = gbxs.gbxareas[:,:,0] # areas of surface gbxs
+    scale_area_factor = gbxareas / np.sum(gbxareas) # total area of surface ( = gbxs["domainarea"])
+    self.totrate = np.sum(self.rate * scale_area_factor, axis=(1,2))
+    self.totaccum = np.sum(self.accum * scale_area_factor, axis=(1,2)) 
+
+  def __getitem__(self, key):
+    if key == "surfpp":
+      return self.surfpp
+    elif key == "rate":
+      return self.rate
+    elif key == "accum":
+      return self.accum
+    elif key == "totrate":
+      return self.totrate
+    elif key == "totaccum":
+      return self.totaccum
     else:
       err = "no known return provided for "+key+" key"
       raise ValueError(err)

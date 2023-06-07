@@ -1,3 +1,4 @@
+#file: ensemblestats.py
 import sys
 import numpy as np
 from pathlib import Path 
@@ -55,12 +56,20 @@ ensemble.EnsembleMassMoments(zarrs=zarrs, setup=setup, gbxs=gbxs,
                               timerange=timerange)
 
 ensemble.EnsembleRainMassMoments(zarrs=zarrs, setup=setup, gbxs=gbxs,
-                            npzdir=npzdir, savenpz=savenpz, 
-                            timerange=timerange, rlim=rainrlim)                       
+                                npzdir=npzdir, savenpz=savenpz, 
+                                timerange=timerange)                       
 
-ensemble.EnsemblePrecip(zarrs=zarrs, setup=setup, gbxs=gbxs,
-                          npzdir=npzdir, savenpz=savenpz, 
-                          timerange=timerange)
+ensemble.EnsemblePrecipEstimateFromSDs(zarrs=zarrs, gbxs=gbxs,
+                                       npzdir=npzdir, savenpz=savenpz, 
+                                       timerange=timerange)
+ensemble.EnsembleSurfPrecip(zarrs=zarrs, setup=setup, gbxs=gbxs,
+                            npzdir=npzdir, savenpz=savenpz,
+                            timerange=timerange)
+                            
+rainrlim = 40 # rlim for defining raindrops as r >= rlim
+ensemble.EnsembleRainMassMomsFromSDs(zarrs=zarrs, setup=setup, gbxs=gbxs,
+                                     npzdir=npzdir, savenpz=savenpz, 
+                                     timerange=timerange, rlim=rainrlim)                       
 ### ---------------------------------------------------------------- ###
 
 
