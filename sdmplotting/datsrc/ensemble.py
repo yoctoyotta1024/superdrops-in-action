@@ -113,7 +113,7 @@ class EnsembleMassMoments:
                 } 
     return MassMoms
 
-class EnsembleRainMassMoments:
+class EnsembleRaindropMassMoments:
   def __init__(self, zarrs=[], setup="", gbxs="", npzdir="",
                 savenpz=False, fromnpz=False,
                 timerange=[0, np.inf]):
@@ -137,23 +137,23 @@ class EnsembleRainMassMoments:
                                                        gbxs, timerange)
         if savenpz:
           Path(self.npzdir).mkdir(exist_ok=True) 
-          save_npz(self.MassMoms, self.npzfile, "rain mass moments")
+          save_npz(self.MassMoms, self.npzfile, "raindrop mass moments")
 
   def get_massmoms(self):
     return self.MassMoms
 
   def npzfile(self, key):
-    return self.npzdir+"/ensemb_rain"+key+".npz"
+    return self.npzdir+"/ensemb_raindrop"+key+".npz"
 
   def massmoms_fromzarr(self, zarr, setup, gbxs, timerange):
 
     ntime, ndims = setup["ntime"], gbxs["ndims"]
     time = pyzarr.get_rawdataset(zarr)["time"].values
-    r0 = pyzarr.massmom_fromzarr(zarr, ntime, ndims, "rainmom0")
-    r1 = pyzarr.massmom_fromzarr(zarr, ntime, ndims, "rainmom1")
-    rainmom0, rainmom1 = data_in_timerange([r0, r1], time, timerange)
+    m0 = pyzarr.massmom_fromzarr(zarr, ntime, ndims, "rainmom0")
+    m1 = pyzarr.massmom_fromzarr(zarr, ntime, ndims, "rainmom1")
+    mom0, mom1 = data_in_timerange([m0, m1], time, timerange)
   
-    return [rainmom0, rainmom1]
+    return [mom0, mom1]
 
   def ensemb_from_zarrs(self, zarrs, setup, gbxs, timerange):
       
@@ -275,7 +275,7 @@ class EnsemblePrecipEstimateFromSDs:
                       "totaccum":  EnsembStats(accums, axis=0)} 
     return PrecipEstimate
 
-class EnsembleRainMassMomsFromSDs:
+class EnsembleRaindropMassMomsFromSDs:
   def __init__(self, zarrs=[], setup="", gbxs="", npzdir="",
                 savenpz=False, fromnpz=False,
                 timerange=[0, np.inf], rlim=40):
@@ -302,19 +302,19 @@ class EnsembleRainMassMomsFromSDs:
                                                         gbxs, timerange)
         if savenpz:
           Path(self.npzdir).mkdir(exist_ok=True) 
-          save_npz(self.MassMoms, self.npzfile, "rain mass moments")
+          save_npz(self.MassMoms, self.npzfile, "raindrop mass moments")
 
   def get_massmoms(self):
     return self.MassMoms
 
   def npzfile(self, key):
-    return self.npzdir+"/ensemb_rainestimate"+key+".npz"
+    return self.npzdir+"/ensemb_raindropfromSDs"+key+".npz"
 
-  def raindata(self, data, reshape):
+  def raindropsum(self, data, reshape):
     sumrain = np.reshape(ak.sum(data, axis=1), reshape)
     return ak.to_numpy(sumrain, allow_missing=False)
 
-  def calc_rainmassmoms(self, eps, radius, m_sol, SDprops, ntime, ndims):
+  def calc_raindrop_massmoms(self, eps, radius, m_sol, SDprops, ntime, ndims):
     '''calulate mass moments from superdroplets 
     for raindrops, ie. only including superdrops with r >= rlim '''
     reshape = [np.uint64(ntime)]+[np.uint64(n) for n in ndims]
@@ -324,14 +324,14 @@ class EnsembleRainMassMomsFromSDs:
     mass = SDprops.mass(ak.where(israin, radius, 0.0),
                         ak.where(israin, m_sol, 0.0))
 
-    nsupers = self.raindata(israin, reshape) 
-    mom0 = self.raindata(eps, reshape)  
-    mom1 = self.raindata(eps*mass, reshape)  
-    mom2 = self.raindata(eps*mass*mass, reshape)  
+    nsupers = self.raindropsum(israin, reshape) 
+    mom0 = self.raindropsum(eps, reshape)  
+    mom1 = self.raindropsum(eps*mass, reshape)  
+    mom2 = self.raindropsum(eps*mass*mass, reshape)  
     
     return [nsupers, mom0, mom1, mom2]
 
-  def rainmassmoms_fromzarr(self, zarr, setup, gbxs):
+  def raindropmassmoms_fromzarr(self, zarr, setup, gbxs, timerange):
     ntime, ndims = setup["ntime"], gbxs["ndims"]
     SDprops = CommonSuperdropProperties(setup["RHO_L"], setup["RHO_SOL"],
                                     setup["MR_SOL"], setup["IONIC"])
@@ -342,8 +342,12 @@ class EnsembleRainMassMomsFromSDs:
     eps = pyzarr.raggedvar_fromzarr(ds, nsupers_raggedcount, "eps")
     m_sol = pyzarr.raggedvar_fromzarr(ds, nsupers_raggedcount, "m_sol")
    
-    massmoms = self.calc_rainmassmoms(eps, radius, m_sol,
+    massmoms = self.calc_raindropmassmoms(eps, radius, m_sol,
                                       SDprops, ntime, ndims)
+    
+    time = pyzarr.get_rawdataset(zarr)["time"].values
+    massmoms = data_in_timerange(massmoms, time, timerange)
+    
     return massmoms
 
   def ensemb_massmoms_from_zarrs(self, zarrs, setup, gbxs, timerange):
@@ -351,14 +355,11 @@ class EnsembleRainMassMomsFromSDs:
     ensemble_nsupers, ensemble_mom0 = [], []
     ensemble_mom1, ensemble_mom2 = [], []
     for zarr in zarrs:
-      data = self.rainmassmoms_fromzarr(zarr, setup, gbxs)
-      time = pyzarr.get_rawdataset(zarr)["time"].values
-
-      nsupers, mom0, mom1, mom2 = data_in_timerange(data, time, timerange)
-      ensemble_nsupers.append(nsupers) 
-      ensemble_mom0.append(mom0) 
-      ensemble_mom1.append(mom1) 
-      ensemble_mom2.append(mom2) 
+      data = self.raindropmassmoms_fromzarr(zarr, setup, gbxs, timerange)
+      ensemble_nsupers.append(data[0]) 
+      ensemble_mom0.append(data[1]) 
+      ensemble_mom1.append(data[2]) 
+      ensemble_mom2.append(data[3]) 
 
     MassMoms = {"nsupers": EnsembStats(ensemble_nsupers, axis=(0,2)), # stats avg over time and y dims
                 "mom0":  EnsembStats(ensemble_mom0, axis=(0,2)),
