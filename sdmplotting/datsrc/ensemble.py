@@ -237,8 +237,8 @@ class EnsemblePrecipEstimateFromSDs:
     loss from domain [mm/hr] '''
 
     self.npzdir = npzdir
-    self.PrecipEstimate = {"rate":  None, # [mm/hr]
-                            "accum":  None} # [mm]
+    self.PrecipEstimate = {"totrate":  None, # [mm/hr]
+                            "totaccum":  None} # [mm]
 
     if savenpz and fromnpz:
       err = "cannot save and load data from npzfile in same instance"
@@ -271,8 +271,8 @@ class EnsemblePrecipEstimateFromSDs:
       rates.append(rate) # [mm/hr]
       accums.append(accum) # [mm]
     
-    PrecipEstimate = {"rate": EnsembStats(rates, axis=0), 
-                      "accum":  EnsembStats(accums, axis=0)} 
+    PrecipEstimate = {"totrate": EnsembStats(rates, axis=0), 
+                      "totaccum":  EnsembStats(accums, axis=0)} 
     return PrecipEstimate
 
 class EnsembleRainMassMomsFromSDs:

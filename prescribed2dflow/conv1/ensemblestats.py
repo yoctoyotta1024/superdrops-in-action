@@ -74,7 +74,9 @@ ensemble.EnsembleRainMassMomsFromSDs(zarrs=zarrs, setup=setup, gbxs=gbxs,
 
 
 ### -------------- load ensemble stats From npz files -------------- ###
-# mmmoms = ensemble.EnsembleMassMoments(npzdir=npzdir, fromnpz=True).get_massmoms()                     
-# precip = ensemble.EnsemblePrecip(npzdir=npzdir, fromnpz=True).get_precip()
-# rainmmmoms = ensemble.EnsembleRainMassMoments(npzdir=npzdir, fromnpz=True).get_massmoms()
+# massmoms = ensemble.EnsembleMassMoments(npzdir=path2npz, fromnpz=True).get_massmoms()                     
+# rainmassmoms = ensemble.EnsembleRainMassMoments(npzdir=path2npz, fromnpz=True).get_massmoms()
+# rainmassmoms2 = ensemble.EnsembleRainMassMomsFromSDs(npzdir=path2npz, fromnpz=True).get_massmoms()                     
+# precip = ensemble.EnsembleSurfPrecip(npzdir=path2npz, fromnpz=True).get_precip()
+# precipestimate = ensemble.EnsemblePrecipEstimateFromSDs(npzdir=path2npz, fromnpz=True).get_precip_estimate()
 ### ---------------------------------------------------------------- ###
