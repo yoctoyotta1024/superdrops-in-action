@@ -10,10 +10,9 @@ from sdmplotting.datsrc import *
 from sdmplotting.pltsrc import *
 from sdmplotting.datsrc.sdprops import *
 
-exp = "n32"
+exp = "n8_v2"
 runids = range(0,10,1)
 timerange = [0, 14400]
-rainrlim = 40 # rlim for defining raindrops as r >= rlim
 
 basepath = "/work/mh1126/m300950/prescribed2dflow/conv1/"
 path2ensemble = basepath+"/bin/"+exp+"/"

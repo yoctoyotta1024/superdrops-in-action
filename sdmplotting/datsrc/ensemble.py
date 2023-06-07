@@ -82,28 +82,29 @@ class EnsembleMassMoments:
   def npzfile(self, key):
     return self.npzdir+"/ensemb"+key+".npz"
 
-  def massmoms_fromzarr(self, zarr, setup, gbxs):
+  def massmoms_fromzarr(self, zarr, setup, gbxs, timerange):
     
     ntime, ndims = setup["ntime"], gbxs["ndims"]
+    time = pyzarr.get_rawdataset(zarr)["time"].values
     nsupers = pyzarr.massmom_fromzarr(zarr, ntime, ndims, "nsupers")
     mom0 = pyzarr.massmom_fromzarr(zarr, ntime, ndims, "mom0")
     mom1 = pyzarr.massmom_fromzarr(zarr, ntime, ndims, "mom1")
     mom2 = pyzarr.massmom_fromzarr(zarr, ntime, ndims, "mom2")
   
-    return [nsupers, mom0, mom1, mom2]
+    data = [nsupers, mom0, mom1, mom2]
+    data = data_in_timerange(data, time, timerange)
+
+    return data
 
   def ensemb_from_zarrs(self, zarrs, setup, gbxs, timerange):
       
     ensemble_nsupers, ensemble_mom0, ensemble_mom1, ensemble_mom2 = [], [], [], []
     for zarr in zarrs:
-      time = pyzarr.get_rawdataset(zarr)["time"].values
-      data = self.massmoms_fromzarr(zarr, setup, gbxs)
-      nsupers, mom0, mom1, mom2 = data_in_timerange(data, time, timerange)
-
-      ensemble_nsupers.append(nsupers) 
-      ensemble_mom0.append(mom0) 
-      ensemble_mom1.append(mom1) 
-      ensemble_mom2.append(mom2) 
+      data = self.massmoms_fromzarr(zarr, setup, gbxs, timerange)
+      ensemble_nsupers.append(data[0]) 
+      ensemble_mom0.append(data[1]) 
+      ensemble_mom1.append(data[2]) 
+      ensemble_mom2.append(data[3]) 
 
     MassMoms = {"nsupers": EnsembStats(ensemble_nsupers, axis=(0,2)), # stats avg over time and y dims
                 "mom0":  EnsembStats(ensemble_mom0, axis=(0,2)),
@@ -142,29 +143,28 @@ class EnsembleRainMassMoments:
     return self.MassMoms
 
   def npzfile(self, key):
-    return self.npzdir+"/ensembrain"+key+".npz"
+    return self.npzdir+"/ensemb_rain"+key+".npz"
 
-  def massmoms_fromzarr(self, zarr, setup, gbxs):
+  def massmoms_fromzarr(self, zarr, setup, gbxs, timerange):
 
     ntime, ndims = setup["ntime"], gbxs["ndims"]
-    rainmom0 = pyzarr.massmom_fromzarr(zarr, ntime, ndims, "rainmom0")
-    rainmom1 = pyzarr.massmom_fromzarr(zarr, ntime, ndims, "rainmom1")
+    time = pyzarr.get_rawdataset(zarr)["time"].values
+    r0 = pyzarr.massmom_fromzarr(zarr, ntime, ndims, "rainmom0")
+    r1 = pyzarr.massmom_fromzarr(zarr, ntime, ndims, "rainmom1")
+    rainmom0, rainmom1 = data_in_timerange([r0, r1], time, timerange)
   
     return [rainmom0, rainmom1]
 
   def ensemb_from_zarrs(self, zarrs, setup, gbxs, timerange):
       
-    ensemble_mom0, ensemble_mom1 = [], []
+    mom0s, mom1s = [], []
     for zarr in zarrs:
-      data = self.massmoms_fromzarr(zarr, setup, gbxs)
-      time = pyzarr.get_rawdataset(zarr)["time"].values
-      mom0, mom1 = data_in_timerange(data, time, timerange)
+      data = self.massmoms_fromzarr(zarr, setup, gbxs, timerange) 
+      mom0s.append(data[0]) 
+      mom1s.append(data[1]) 
 
-      ensemble_mom0.append(mom0) 
-      ensemble_mom1.append(mom1) 
-
-    MassMoms = {"mom0":  EnsembStats(ensemble_mom0, axis=(0,2)), # stats avg over time and y dims
-                "mom1":  EnsembStats(ensemble_mom1, axis=(0,2)),
+    MassMoms = {"mom0":  EnsembStats(mom0s, axis=(0,2)), # stats avg over time and y dims
+                "mom1":  EnsembStats(mom1s, axis=(0,2)),
                 } 
     return MassMoms
 
@@ -193,7 +193,7 @@ class EnsembleSurfPrecip:
       self.Precip = self.ensemb_from_zarrs(zarrs, setup, gbxs, timerange)
       if savenpz:
         Path(self.npzdir).mkdir(exist_ok=True) 
-        self.save_ensemb_npzfile()
+        save_npz(self.Precip, self.npzfile, "surf precip ") 
 
   def get_precip(self):
     return self.Precip
@@ -201,22 +201,29 @@ class EnsembleSurfPrecip:
   def npzfile(self, key):
     return self.npzdir+"/ensemb_precip"+key+".npz"
   
-  def save_ensemb_npzfile(self):
-    save_npz(self.Precip, self.npzfile, "surf precip ")
+  def precip_fromzarr(self, zarr, setup, gbxs, timerange):
+    
+    time = pyzarr.get_rawdataset(zarr)["time"].values
+    spp = pyzarr.SurfPrecip(zarr, setup["ntime"], gbxs)
+    data = [spp.rate, spp.accum, spp.totrate, spp.totaccum]
+    data = data_in_timerange(data, time, timerange)
+
+    return data
 
   def ensemb_from_zarrs(self, zarrs, setup, gbxs, timerange):
       
-    ensemble_ = [], [], [], []
+    rates, accums, totrates, totaccums = [], [], [], []
     for zarr in zarrs:
-      time = pyzarr.get_rawdataset(zarr)["time"].values
-      spp = pyzarr.SurfPrecip(zarr, setup["ntime"], gbxs)
-      data = [spp.rate, spp.accum, spp.totrate, spp.totaccum]
-      rate, accum, totrate, totaccum= data_in_timerange(data, time, timerange)
+      data = self.precip_fromzarr(zarr, setup, gbxs, timerange)
+      rates.append(data[0])
+      accums.append(data[1])
+      totrates.append(data[2])
+      totaccums.append(data[3])
 
-    Precip = {"rate":  rate, # avg over ensemble runs (and y dim)
-              "accum": accum,
-              "totrate": totrate,
-              "totaccum": totaccum
+    Precip = {"rate": EnsembStats(rates, axis=(0,2)), # stats avg over time and y dims 
+              "accum": EnsembStats(accums, axis=(0,2)),
+              "totrate": EnsembStats(totrates, axis=(0)),
+              "totaccum": EnsembStats(totaccums, axis=(0))
               }
 
     return Precip
@@ -251,7 +258,7 @@ class EnsemblePrecipEstimateFromSDs:
     return self.PrecipEstimate
    
   def npzfile(self, key):
-    return self.npzdir+"/ensemb_precip_estimate"+key+".npz"
+    return self.npzdir+"/ensemb_precip_estimate_"+key+".npz"
    
   def ensemb_ppestimate_from_zarrs(self, zarrs, gbxs, timerange):
       
