@@ -3,7 +3,9 @@
 
 HOMEdir = "/home/m/m300950"
 path2sds = HOMEdir+"/superdrops_in_action/"
-path2build = "/work/mh1126/m300950/prescribed2dflow/conc1e10_res20/build/"
+# path2build = "/work/mh1126/m300950/prescribed2dflow/conc1e10_res20/build/"
+path2build = "/home/m/m300950/CLEO/build/"
+
 
 expdir = "/conc1e10_res20/"
 savedir = path2sds+"prescribed2dflow/convstudy/"+expdir+"/n8/run0/"
@@ -13,10 +15,14 @@ print("builddir: "+path2build+"\nsavedir: "+savedir)
 class DatasetPaths:
   def __init__(self):
         
-    path2dataset = path2build+"../bin/n8/"
-    self.gridfile = path2build+"/share/dimlessGBxbounds.dat"
-    self.setuptxt = path2dataset+"/run0setup.txt"
-    self.dataset = path2dataset+"/run0SDMdata.zarr"
+    path2dataset = path2build+"/bin/"
+    self.gridfile = path2build+"/share/dimlessGBxboundaries.dat"
+    self.setuptxt = path2dataset+"/setup.txt"
+    self.dataset = path2dataset+"/SDMdata.zarr"
+    # path2dataset = path2build+"../bin/n8/"
+    # self.gridfile = path2build+"/share/dimlessGBxbounds.dat"
+    # self.setuptxt = path2dataset+"/run0setup.txt"
+    # self.dataset = path2dataset+"/run0SDMdata.zarr"
      
     print("dataset: "+self.dataset,
           "\ngridfile: "+self.gridfile,

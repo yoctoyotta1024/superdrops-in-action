@@ -14,7 +14,7 @@ def plot_domainmassmoments(fig, axs, time, massmoms):
   domaineffmass = np.sum(massmoms.mom2, axis=(1,2,3)) / np.sum(massmoms.mom1, axis=(1,2,3))
   l3 = axs[3].plot(time.mins, domaineffmass)
 
-  axs[0].set_ylabel("$\u03BB^{m}_{0}$, number of  superdroplets")
+  axs[0].set_ylabel("$\u03BB^{m}_{0}$, number of  droplets")
   axs[1].set_ylabel("$\u03BB^{m}_{1}$, total droplet mass /g")
   axs[2].set_ylabel("$\u03BB^{m}_{2}$ ~Reflectivity /g$^2$")
   axs[3].set_ylabel("$\u03BB^{m}_{2}$ / $\u03BB^{m}_{1}$, droplet effective mass /g")
