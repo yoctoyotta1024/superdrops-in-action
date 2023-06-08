@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH --job-name=
+#SBATCH --job-name=n8_runmany
 #SBATCH --partition=compute
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=128
@@ -8,11 +8,11 @@
 #SBATCH --mail-user=clara.bayley@mpimet.mpg.de
 #SBATCH --mail-type=FAIL
 #SBATCH --account=mh1126
-#SBATCH --output=
-#SBATCH --error=
+#SBATCH --output=/home/m/m300950/superdrops_in_action/prescribed2dflow/convstudy//temp//n8_runmany_out.%j.out
+#SBATCH --error=/home/m/m300950/superdrops_in_action/prescribed2dflow/convstudy//temp//n8_runmany_err.%j.out
 
-path2build=/work/mh1126/m300950/prescribed2dflow/conc1e10_res20/build/
-configdir=/home/m/m300950/superdrops_in_action/prescribed2dflow/convstudy/temp/
+path2build=/work/mh1126/m300950/prescribed2dflow/conc1e7_res20/build/
+configdir=/home/m/m300950/superdrops_in_action/prescribed2dflow/convstudy//temp/
 experimentid=/n8
 constsfile=/home/m/m300950/CLEO/libs/claras_SDconstants.hpp
 

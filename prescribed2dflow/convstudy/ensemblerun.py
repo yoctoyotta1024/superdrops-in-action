@@ -15,16 +15,16 @@ isgenbinaries = True # create gridbox boundaries, thermodynamics binaries
 isgenSDbinaries = True # create SD binaries
 isfigures = [True, True]
 
-runids = range(0,10,1) # numbers of for initial SD conditions
+runids = range(0,15,1) # numbers of for initial SD conditions
 experimentids = { # number of SDs per GBx initially (in gbxs with SDs)
-   "n8_v3": 8,
+   "n8": 8,
 }
 sumbit_individruns = False # submit each run of an experiment as seperate SLURM job
 
 ### ---------------------------------------------------------------- ###
 ### paths and filenames for inputs and outputs
 currentdir = "/home/m/m300950/superdrops_in_action/prescribed2dflow/convstudy/"
-path2build = "/work/mh1126/m300950/prescribed2dflow/conc1e10_res20/build/"
+path2build = "/work/mh1126/m300950/prescribed2dflow/conc1e7_res20/build/"
 binariespath = path2build+"/share/"
 
 constsfile = path2CLEO+"libs/claras_SDconstants.hpp"
@@ -54,7 +54,7 @@ radiigen             = iSDs.SampleDryradiiGen(rspan, randomr)
 geomeans             = [0.02e-6, 0.15e-6]               
 geosigs              = [1.4, 1.6]                    
 scalefacs            = [6e6, 4e6]
-numconc              = np.sum(scalefacs)*1000
+numconc              = np.sum(scalefacs)#*1000
 radiiprobdist        = rprobs.LnNormal(geomeans, geosigs, scalefacs)
 
 ### input parameters for thermodynamic profiles
