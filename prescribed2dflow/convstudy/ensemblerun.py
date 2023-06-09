@@ -11,35 +11,37 @@ from pySD.initsuperdropsbinary_src import radiiprobdistribs as rprobs
 
 from ensemblerun_src import *
 
-isgenbinaries = True # create gridbox boundaries, thermodynamics binaries
+isgenbinaries = False # create gridbox boundaries, thermodynamics binaries
 isgenSDbinaries = True # create SD binaries
 isfigures = [True, True]
 
-runids = range(0,15,1) # numbers of for initial SD conditions
+runids = range(0, 15, 1) # numbers of for initial SD conditions
+expdir = "/conc1e9_res25/"
 experimentids = { # number of SDs per GBx initially (in gbxs with SDs)
-   "n8": 8,
+   "n16": 16,
 }
 sumbit_individruns = False # submit each run of an experiment as seperate SLURM job
 
 ### ---------------------------------------------------------------- ###
 ### paths and filenames for inputs and outputs
 currentdir = "/home/m/m300950/superdrops_in_action/prescribed2dflow/convstudy/"
-path2build = "/work/mh1126/m300950/prescribed2dflow/conc1e7_res20/build/"
-binariespath = path2build+"/share/"
+path2build = "/work/mh1126/m300950/prescribed2dflow/build/"
+# path2build = "/work/mh1126/m300950/prescribed2dflow//build/"
+binariespath = path2build+"/share/"+expdir+"/"
 
 constsfile = path2CLEO+"libs/claras_SDconstants.hpp"
 gridfile =  binariespath+"/dimlessGBxbounds.dat" # note this should match config.txt
 thermofiles =  binariespath+"/dimless.dat" # note this should match config.txt
 configfile = currentdir+"/convconfig.txt"
 
-savefigpath = currentdir+"/conc1e10_res20/"
-binpath = path2build+"../bin/"
+savefigpath = currentdir+"/"+expdir+"/"
+binpath = path2build+"../"+expdir+"/"
 tempdir = currentdir+"/temp/"
 
 ### input parameters for gridbox boundaries
-zgrid                = [0, 1500, 20]
-xgrid                = [0, 1500, 20]
-ygrid                = np.asarray([0, 20])
+zgrid                = [0, 1500, 25]
+xgrid                = [0, 1500, 25]
+ygrid                = np.asarray([0, 25])
 
 ### input parameters for superdroplets
 zlim                 = 400
@@ -54,7 +56,7 @@ radiigen             = iSDs.SampleDryradiiGen(rspan, randomr)
 geomeans             = [0.02e-6, 0.15e-6]               
 geosigs              = [1.4, 1.6]                    
 scalefacs            = [6e6, 4e6]
-numconc              = np.sum(scalefacs)#*1000
+numconc              = np.sum(scalefacs)*100
 radiiprobdist        = rprobs.LnNormal(geomeans, geosigs, scalefacs)
 
 ### input parameters for thermodynamic profiles

@@ -3,26 +3,25 @@
 
 HOMEdir = "/home/m/m300950"
 path2sds = HOMEdir+"/superdrops_in_action/"
-# path2build = "/work/mh1126/m300950/prescribed2dflow/conc1e10_res20/build/"
-path2build = "/home/m/m300950/CLEO/build/"
+path2build = "/work/mh1126/m300950/prescribed2dflow/build/"
+#path2build = "/home/m/m300950/CLEO/build/"
 
-
-expdir = "/conc1e10_res20/"
-savedir = path2sds+"prescribed2dflow/convstudy/"+expdir+"/n8/run0/"
+expdir, rundir = "/conc1e9_res25/", "/n8/run0"
+savedir = path2sds+"prescribed2dflow/convstudy/"+expdir+rundir+"/"
 # savedir = path2sds+"prescribed2dflow/convstudy/"+expdir+"/compareplots/"
 print("builddir: "+path2build+"\nsavedir: "+savedir)
 
 class DatasetPaths:
   def __init__(self):
         
-    path2dataset = path2build+"/bin/"
-    self.gridfile = path2build+"/share/dimlessGBxboundaries.dat"
-    self.setuptxt = path2dataset+"/setup.txt"
-    self.dataset = path2dataset+"/SDMdata.zarr"
-    # path2dataset = path2build+"../bin/n8/"
-    # self.gridfile = path2build+"/share/dimlessGBxbounds.dat"
-    # self.setuptxt = path2dataset+"/run0setup.txt"
-    # self.dataset = path2dataset+"/run0SDMdata.zarr"
+    # path2dataset = path2build+"/bin/"
+    # self.gridfile = path2build+"/share/dimlessGBxboundaries.dat"
+    # self.setuptxt = path2dataset+"/setup.txt"
+    # self.dataset = path2dataset+"/SDMdata.zarr"
+    path2dataset = path2build+"../"+expdir+rundir
+    self.gridfile = path2build+"/share/"+expdir+"/dimlessGBxbounds.dat"
+    self.setuptxt = path2dataset+"setup.txt"
+    self.dataset = path2dataset+"SDMdata.zarr"
      
     print("dataset: "+self.dataset,
           "\ngridfile: "+self.gridfile,
@@ -30,9 +29,10 @@ class DatasetPaths:
 
 class EnsembPaths:
   def __init__(self):
-      
-    self.path2ensemb = path2build+"../bin/"+exp+"/ensemb/" 
-    self.gridfile = path2build+"/share/dimlessGBxbounds.dat"
+    
+    exp = "/n8/"
+    self.path2ensemb = path2build+"../"+expdir+exp+"/ensemb/" 
+    self.gridfile = path2build+"/share/"+expdir+"/dimlessGBxbounds.dat"
     self.setuptxt = self.path2ensemb+"../run0setup.txt"
     
     print("ensembdir: "+self.path2ensemb,
@@ -48,9 +48,9 @@ class ExperimentsPaths:
     self.saveexpsdir, self.ensembdirs = {}, {}
     for exp in self.exps:
       self.saveexpsdir[exp] = path2sds+"prescribed2dflow/convstudy/"+expdir+exp+"/"
-      self.ensembdirs[exp] = path2build+"../bin/"+expdir+exp+"/ensemb/" 
+      self.ensembdirs[exp] = path2build+"../"+expdir+exp+"/ensemb/" 
     
-    self.gridfile = path2build+"/share/dimlessGBxbounds.dat"
+    self.gridfile = path2build+"/share/"+expdir+"/dimlessGBxbounds.dat"
     self.setuptxt = self.ensembdirs[self.exps[0]]+"../run0setup.txt" # use setuptxt from 1st run of 1st experiment
 
     print("experiments: ",self.exps,
