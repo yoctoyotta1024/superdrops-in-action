@@ -22,7 +22,6 @@ gridfile = basepath+"/../build/share/"+expdir+"/dimlessGBxbounds.dat"
 
 npzdir = path2ensemble+"/ensemb/"
 savenpz = True
-savefigpath = path2sds+"prescribed2dflow/convstudy/"+expdir+"/"+exp+"/ensemb/"
 
 ### ------------------------ helper funcs -------------------------- ###
 def get_zarrbasedirs(ensemblepath, runids): 
@@ -45,7 +44,7 @@ def make_paths(paths):
 
 ### -------------- save npz files for ensemble stats --------------- ###
 zarrs, setuptxt = get_zarrbasedirs(path2ensemble, runids)
-make_paths([npzdir, savefigpath])
+make_paths([npzdir])
 
 ### setup, superdroplet properties and grid
 setup = pysetuptxt.setuptxt2dict(setuptxt, nattrs=3, isprint=False)
