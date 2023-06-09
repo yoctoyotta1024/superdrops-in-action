@@ -52,7 +52,8 @@ def plot_meantimeseries_with_shading(ax, time, mean, err,
 def plot_precip(fig, axs, time, precip, iqr, color=None):
   
   lines = []
-  for k, key in enumerate(["rate", "accum"]):
+  for k, key in enumerate(["totrate", "accum"]):
+    
 
     mean, err = precip[key].mean, precip[key].stderr
     
