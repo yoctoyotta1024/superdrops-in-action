@@ -10,7 +10,7 @@ from sdmplotting.datsrc import *
 from sdmplotting.pltsrc import *
 from sdmplotting.datsrc.sdprops import *
 
-exp = "n16"
+exp = "n32"
 expdir = "/conc1e9_res25/"
 runids = range(0,15,1)
 timerange = [0, 14400]
