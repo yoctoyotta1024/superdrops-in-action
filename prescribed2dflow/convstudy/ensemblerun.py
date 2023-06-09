@@ -11,7 +11,7 @@ from pySD.initsuperdropsbinary_src import radiiprobdistribs as rprobs
 
 from ensemblerun_src import *
 
-isgenbinaries = True # create gridbox boundaries, thermodynamics binaries
+isgenbinaries = False # create gridbox boundaries, thermodynamics binaries
 isgenSDbinaries = True # create SD binaries
 isfigures = [True, True]
 
