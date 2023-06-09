@@ -10,9 +10,9 @@ from sdmplotting.datsrc import *
 from sdmplotting.pltsrc import *
 from sdmplotting.datsrc.sdprops import *
 
-exp = "n64"
+exp = "n128"
 expdir = "/conc1e9_res25/"
-runids = range(0,15,1)
+runids = range(0,10,1)
 timerange = [0, 14400]
 cloudmasst0 = 900 # time to use to define initial cloud mass for t10 time
 
