@@ -106,7 +106,7 @@ class EnsembleMassMoments:
       ensemble_mom1.append(data[2]) 
       ensemble_mom2.append(data[3]) 
 
-    MassMoms = {"nsupers": EnsembStats(ensemble_nsupers, axis=(0,2)), # stats avg over time and y dims
+    MassMoms = {"nsupers": EnsembStats(ensemble_nsupers, axis=(0,2)), # stats avg over runs and y dims
                 "mom0":  EnsembStats(ensemble_mom0, axis=(0,2)),
                 "mom1":  EnsembStats(ensemble_mom1, axis=(0,2)),
                 "mom2":  EnsembStats(ensemble_mom2, axis=(0,2))
@@ -163,7 +163,7 @@ class EnsembleRaindropMassMoments:
       mom0s.append(data[0]) 
       mom1s.append(data[1]) 
 
-    MassMoms = {"mom0":  EnsembStats(mom0s, axis=(0,2)), # stats avg over time and y dims
+    MassMoms = {"mom0":  EnsembStats(mom0s, axis=(0,2)), # stats avg over runs and y dims
                 "mom1":  EnsembStats(mom1s, axis=(0,2)),
                 } 
     return MassMoms
@@ -220,13 +220,86 @@ class EnsembleSurfPrecip:
       totrates.append(data[2])
       totaccums.append(data[3])
 
-    Precip = {"rate": EnsembStats(rates, axis=(0,2)), # stats avg over time and y dims 
+    Precip = {"rate": EnsembStats(rates, axis=(0,2)), # stats avg over runs and y dims 
               "accum": EnsembStats(accums, axis=(0,2)),
               "totrate": EnsembStats(totrates, axis=(0)),
               "totaccum": EnsembStats(totaccums, axis=(0))
               }
 
     return Precip
+
+class EnsembleRainTimes:
+  def __init__(self, zarrs=[], setup="", gbxs="", npzdir="",
+                savenpz=False, fromnpz=False, t0=900):
+    ''' return average statistics for an ensemble
+    of datasets for the t10 and t40 rain initiaion times'''
+
+    self.npzdir = npzdir
+    self.t0 = t0 # time to use for initial cloud mass
+    self.RainTimes = {
+    "t10":  None,
+    "t40": None,
+    }
+
+    if savenpz and fromnpz:
+      err = "cannot save and load data from npzfile in same instance"
+      raise ValueError(err)
+    if fromnpz:
+      self.RainTimes = statsdict_from_npzfile(self.RainTimes, self.npzfile)
+    else: 
+      self.RainTimes = self.ensemb_from_zarrs(zarrs, setup, gbxs)
+      if savenpz:
+        Path(self.npzdir).mkdir(exist_ok=True) 
+        save_npz(self.RainTimes, self.npzfile, "surf precip ") 
+
+  def get_raintimes(self):
+    return self.RainTimes
+
+  def npzfile(self, key):
+    return self.npzdir+"/ensemb_rain"+key+".npz"
+  
+  def percent_rainmass(self, time, zarr, ntime, ndims):
+    ''' return % of initial cloud mass (droplet mass at
+    time t=self.t0) that is in raindrops '''
+
+    t0i = np.argmin(abs(time-self.t0)) # index of time when t=t0
+    m1 = pyzarr.massmom_fromzarr(zarr, ntime, ndims, "mom1") 
+    cloudmass0 = np.sum(m1[t0i, :, :, :]) # 
+
+    rainm1 = pyzarr.massmom_fromzarr(zarr, ntime, ndims, "rainmom1")  
+    rainmass = np.sum(rainm1, axis=(1,2,3)) # sum over spatial dims
+
+    return rainmass / cloudmass0 * 100
+
+  def raintimes_fromzarr(self, zarr, setup, gbxs):
+     
+    time = pyzarr.get_rawdataset(zarr)["time"].values
+    prain = self.percent_rainmass(time, zarr, setup["ntime"], gbxs["ndims"])
+
+    pa10 = prain[np.where(prain>=10.0)][0] # value of prain at first instance when rainmass >= 10% cloudmass0
+    ia = np.argmin(abs(prain-pa10)) # index of pa10
+    p10 = np.amin([abs(prain[i]-10) for i in [ia, ia-1]]) # value of prain closer to 10% out of prain[ia] and prain[ia-1]
+    t10 = time[np.argmin(abs(prain-p10))]
+
+    prain_nonzero = prain[np.where(prain>0.0)] # rainmass > 0 (ie. drop > rlim=40microns exists)
+    p40 = prain_nonzero[0] # value of prain at first instance when > 0
+    t40 = time[np.argmin(abs(prain-p40))] 
+
+    return [t10, t40]
+
+  def ensemb_from_zarrs(self, zarrs, setup, gbxs):
+      
+    t10s, t40s = [], []
+    for zarr in zarrs:
+      data = self.raintimes_fromzarr(zarr, setup, gbxs)
+      t10s.append(data[0])
+      t40s.append(data[1])
+
+    RainTimes = {"t10": EnsembStats(t10s, axis=0),
+                "t40": EnsembStats(t40s, axis=0)
+                }
+
+    return RainTimes
 
 class EnsemblePrecipEstimateFromSDs:
   def __init__(self, zarrs=[], gbxs="", npzdir="",

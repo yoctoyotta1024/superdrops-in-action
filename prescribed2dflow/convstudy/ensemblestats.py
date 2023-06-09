@@ -10,10 +10,11 @@ from sdmplotting.datsrc import *
 from sdmplotting.pltsrc import *
 from sdmplotting.datsrc.sdprops import *
 
-exp = "n4"
+exp = "n16"
+expdir = "/conc1e9_res25/"
 runids = range(0,15,1)
 timerange = [0, 14400]
-expdir = "/conc1e9_res25/"
+cloudmasst0 = 900 # time to use to define initial cloud mass for t10 time
 
 basepath = "/work/mh1126/m300950/prescribed2dflow/"+expdir
 path2ensemble = basepath+"/"+exp+"/"
@@ -62,7 +63,11 @@ ensemble.EnsembleRaindropMassMoments(zarrs=zarrs, setup=setup, gbxs=gbxs,
 ensemble.EnsembleSurfPrecip(zarrs=zarrs, setup=setup, gbxs=gbxs,
                             npzdir=npzdir, savenpz=savenpz,
                             timerange=timerange)
-                            
+
+ensemble.EnsembleRainTimes(zarrs=zarrs, setup=setup, gbxs=gbxs,
+                           npzdir=npzdir, savenpz=savenpz,
+                           t0=cloudmasst0)     
+            
 # ensemble.EnsemblePrecipEstimateFromSDs(zarrs=zarrs, gbxs=gbxs,
 #                                        npzdir=npzdir, savenpz=savenpz, 
 #                                        timerange=timerange)
@@ -76,9 +81,10 @@ ensemble.EnsembleSurfPrecip(zarrs=zarrs, setup=setup, gbxs=gbxs,
 
 
 ### -------------- load ensemble stats From npz files -------------- ###
-# massmoms = ensemble.EnsembleMassMoments(npzdir=path2npz, fromnpz=True).get_massmoms()                     
-# rainmassmoms = ensemble.EnsembleRainMassMoments(npzdir=path2npz, fromnpz=True).get_massmoms()
-# rainmassmoms2 = ensemble.EnsembleRainMassMomsFromSDs(npzdir=path2npz, fromnpz=True).get_massmoms()                     
-# precip = ensemble.EnsembleSurfPrecip(npzdir=path2npz, fromnpz=True).get_precip()
-# precipestimate = ensemble.EnsemblePrecipEstimateFromSDs(npzdir=path2npz, fromnpz=True).get_precip_estimate()
+# massmoms = ensemble.EnsembleMassMoments(npzdir=nnpzdir, fromnpz=True).get_massmoms()                     
+# rainmassmoms = ensemble.EnsembleRainMassMoments(npzdir=nnpzdir, fromnpz=True).get_massmoms()
+# raintimes = ensemble.EnsembleRainTimes(npzdir=npzdir, fromnpz=True).get_raintimes()                     
+# precip = ensemble.EnsembleSurfPrecip(npzdir=nnpzdir, fromnpz=True).get_precip()
+# precipestimate = ensemble.EnsemblePrecipEstimateFromSDs(npzdir=nnpzdir, fromnpz=True).get_precip_estimate()
+# rainmassmoms2 = ensemble.EnsembleRainMassMomsFromSDs(npzdir=nnpzdir, fromnpz=True).get_massmoms()                     
 ### ---------------------------------------------------------------- ###

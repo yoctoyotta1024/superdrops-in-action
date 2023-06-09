@@ -49,12 +49,11 @@ def plot_meantimeseries_with_shading(ax, time, mean, err,
   
   return l
 
-def plot_precip(fig, axs, time, precip, iqr, color=None):
+def plot_totprecip(fig, axs, time, precip, iqr, color=None):
   
   lines = []
-  for k, key in enumerate(["totrate", "accum"]):
+  for k, key in enumerate(["totrate", "totaccum"]):
     
-
     mean, err = precip[key].mean, precip[key].stderr
     
     if iqr:
