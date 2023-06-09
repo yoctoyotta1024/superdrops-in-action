@@ -36,16 +36,16 @@ def massmom1dsnapshots(fig, axs, t2plts, time, massmom, norm, zfull,
 
 def plot_meantimeseries_with_shading(ax, time, mean, err,
                                     q1=[], q3=[], color=None,
-                                    linestyle="-", alpha=0.5):
+                                    linestyle="-", alpha=0.3):
 
   l = ax.plot(time, mean, color=color, linestyle=linestyle)[0]
   ax.fill_between(time, mean-err, mean+err, alpha=alpha,
                   edgecolor=None, facecolor=color)
   
   if np.any(q1):
-    ax.plot(time, q1, color=color, linestyle="--", alpha=alpha)
+    ax.plot(time, q1, color=color, linestyle="--", linewidth=0.6)
   if np.any(q3):
-    ax.plot(time, q3, color=color, linestyle="--", alpha=alpha)
+    ax.plot(time, q3, color=color, linestyle="--", linewidth=0.6)
   
   return l
 

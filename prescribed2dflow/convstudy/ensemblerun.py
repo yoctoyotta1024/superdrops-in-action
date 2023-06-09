@@ -12,15 +12,15 @@ from pySD.initsuperdropsbinary_src import radiiprobdistribs as rprobs
 from ensemblerun_src import *
 
 isgenbinaries = False # create gridbox boundaries, thermodynamics binaries
-isgenSDbinaries = True # create SD binaries
-isfigures = [True, True]
+isgenSDbinaries = False # create SD binaries
+isfigures = [False, False]
 
 runids = range(0, 15, 1) # numbers of for initial SD conditions
 expdir = "/conc1e9_res25/"
 experimentids = { # number of SDs per GBx initially (in gbxs with SDs)
-   "n256": 256,
+   "n1": 1,
 }
-sumbit_individruns = True # submit each run of an experiment as seperate SLURM job
+sumbit_individruns = False # submit each run of an experiment as seperate SLURM job
 
 ### ---------------------------------------------------------------- ###
 ### paths and filenames for inputs and outputs
