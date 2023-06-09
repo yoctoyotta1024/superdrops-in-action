@@ -2,7 +2,6 @@
 #SBATCH --job-name=n8_runmany
 #SBATCH --partition=compute
 #SBATCH --nodes=1
-#SBATCH --ntasks-per-node=128
 #SBATCH --mem=30G
 #SBATCH --time=08:00:00
 #SBATCH --mail-user=clara.bayley@mpimet.mpg.de
