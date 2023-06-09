@@ -17,5 +17,5 @@ docs/source/_autosummary
 verticalresolution_experiment/plots
 prescribed2dflow/ssvar/ss*
 prescribed2dflow/ssvar/temp
-prescribed2dflow/convstudy/conv1
-prescribed2dflow/convstudy/conc1e10_res20
+prescribed2dflow/convstudy/temp
+prescribed2dflow/convstudy/conc*
