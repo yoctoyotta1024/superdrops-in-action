@@ -18,7 +18,7 @@ isfigures = [True, True]
 runids = range(0, 15, 1) # numbers of for initial SD conditions
 expdir = "/conc1e9_res25/"
 experimentids = { # number of SDs per GBx initially (in gbxs with SDs)
-   "n16": 16,
+   "n4": 4,
 }
 sumbit_individruns = False # submit each run of an experiment as seperate SLURM job
 

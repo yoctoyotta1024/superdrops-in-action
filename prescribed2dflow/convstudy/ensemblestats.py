@@ -10,17 +10,18 @@ from sdmplotting.datsrc import *
 from sdmplotting.pltsrc import *
 from sdmplotting.datsrc.sdprops import *
 
-exp = "n1024"
-runids = range(0,10,1)
+exp = "n8"
+runids = range(0,15,1)
 timerange = [0, 14400]
+expdir = "/conc1e9_res25/"
 
-basepath = "/work/mh1126/m300950/prescribed2dflow/conc1e10_res20/"
-path2ensemble = basepath+"/bin/"+exp+"/"
-gridfile = basepath+"/build/share/dimlessGBxbounds.dat"
+basepath = "/work/mh1126/m300950/prescribed2dflow/"+expdir
+path2ensemble = basepath+"/"+exp+"/"
+gridfile = basepath+"/../build/share/"+expdir+"/dimlessGBxbounds.dat"
 
 npzdir = path2ensemble+"/ensemb/"
 savenpz = True
-savefigpath = path2sds+"prescribed2dflow/convstudy/conc1e10_res20/"+exp+"/ensemb/"
+savefigpath = path2sds+"prescribed2dflow/convstudy/"+expdir+"/"+exp+"/ensemb/"
 
 ### ------------------------ helper funcs -------------------------- ###
 def get_zarrbasedirs(ensemblepath, runids): 
@@ -54,22 +55,22 @@ ensemble.EnsembleMassMoments(zarrs=zarrs, setup=setup, gbxs=gbxs,
                               npzdir=npzdir, savenpz=savenpz,
                               timerange=timerange)
 
-# ensemble.EnsembleRaindropMassMoments(zarrs=zarrs, setup=setup, gbxs=gbxs,
-#                                 npzdir=npzdir, savenpz=savenpz, 
-#                                 timerange=timerange)        
+ensemble.EnsembleRaindropMassMoments(zarrs=zarrs, setup=setup, gbxs=gbxs,
+                                npzdir=npzdir, savenpz=savenpz, 
+                                timerange=timerange)        
                
-# ensemble.EnsembleSurfPrecip(zarrs=zarrs, setup=setup, gbxs=gbxs,
-#                             npzdir=npzdir, savenpz=savenpz,
-#                             timerange=timerange)
+ensemble.EnsembleSurfPrecip(zarrs=zarrs, setup=setup, gbxs=gbxs,
+                            npzdir=npzdir, savenpz=savenpz,
+                            timerange=timerange)
                             
-ensemble.EnsemblePrecipEstimateFromSDs(zarrs=zarrs, gbxs=gbxs,
-                                       npzdir=npzdir, savenpz=savenpz, 
-                                       timerange=timerange)
+# ensemble.EnsemblePrecipEstimateFromSDs(zarrs=zarrs, gbxs=gbxs,
+#                                        npzdir=npzdir, savenpz=savenpz, 
+#                                        timerange=timerange)
 
-rainrlim = 40 # rlim for defining raindrops as r >= rlim
-ensemble.EnsembleRaindropMassMomsFromSDs(zarrs=zarrs, setup=setup, gbxs=gbxs,
-                                     npzdir=npzdir, savenpz=savenpz, 
-                                     timerange=timerange, rlim=rainrlim)                       
+# rainrlim = 40 # rlim for defining raindrops as r >= rlim
+# ensemble.EnsembleRaindropMassMomsFromSDs(zarrs=zarrs, setup=setup, gbxs=gbxs,
+#                                      npzdir=npzdir, savenpz=savenpz, 
+#                                      timerange=timerange, rlim=rainrlim)                       
 ### ---------------------------------------------------------------- ###
 
 
