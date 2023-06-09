@@ -6,7 +6,7 @@ path2sds = HOMEdir+"/superdrops_in_action/"
 path2build = "/work/mh1126/m300950/prescribed2dflow/build/"
 #path2build = "/home/m/m300950/CLEO/build/"
 
-expdir, rundir = "/conc1e9_res25/", "/n8/run0"
+expdir, rundir = "/conc1e9_res25/", "/n8/run2"
 savedir = path2sds+"prescribed2dflow/convstudy/"+expdir+rundir+"/"
 # savedir = path2sds+"prescribed2dflow/convstudy/"+expdir+"/compareplots/"
 print("builddir: "+path2build+"\nsavedir: "+savedir)

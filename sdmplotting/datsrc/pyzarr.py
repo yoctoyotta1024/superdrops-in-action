@@ -168,6 +168,27 @@ class MassMoments:
       err = "no known return provided for "+key+" key"
       raise ValueError(err)
 
+class RainMassMoments:
+
+  def __init__(self, dataset, setup, ndims):
+    
+    ds = get_rawdataset(dataset)
+    ntime = setup["ntime"]
+    
+    self.mom0 = var4d_fromzarr(ds, ntime, ndims, "rainmom0")               # number of droplets in gbxs over time
+    self.mom1 = var4d_fromzarr(ds, ntime, ndims, "rainmom1")               # total mass of droplets in gbxs over time
+
+    self.mom1_units = ds["mom1"].units                                       # probably grams
+
+  def __getitem__(self, key):
+    if key == "mom0":
+      return self.mom0
+    elif key == "mom1":
+      return self.mom1
+    else:
+      err = "no known return provided for "+key+" key"
+      raise ValueError(err)
+
 class Thermodata:
 
   def __init__(self, dataset, setup, ndims):
