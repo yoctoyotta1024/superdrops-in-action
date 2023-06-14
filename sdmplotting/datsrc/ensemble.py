@@ -232,13 +232,15 @@ class EnsembleRainTimes:
   def __init__(self, zarrs=[], setup="", gbxs="", npzdir="",
                 savenpz=False, fromnpz=False, t0=900):
     ''' return average statistics for an ensemble
-    of datasets for the t10 and t40 rain initiaion times'''
+    of datasets for the t10 and t40 raindrop formation 
+    times and tpp (first precip at surface) time'''
 
     self.npzdir = npzdir
     self.t0 = t0 # time to use for initial cloud mass
     self.RainTimes = {
     "t10":  None,
     "t40": None,
+    "tpp": None,
     }
 
     if savenpz and fromnpz:
@@ -275,6 +277,7 @@ class EnsembleRainTimes:
      
     time = pyzarr.get_rawdataset(zarr)["time"].values
     prain = self.percent_rainmass(time, zarr, setup["ntime"], gbxs["ndims"])
+    totaccum = pyzarr.SurfPrecip(zarr, setup["ntime"], gbxs)["totaccum"]
 
     pa10 = prain[np.where(prain>=10.0)][0] # value of prain at first instance when rainmass >= 10% cloudmass0
     ia = np.argmin(abs(prain-pa10)) # index of pa10
@@ -285,18 +288,24 @@ class EnsembleRainTimes:
     p40 = prain_nonzero[0] # value of prain at first instance when > 0
     t40 = time[np.argmin(abs(prain-p40))] 
 
-    return [t10, t40]
+    surfpp_nonzero = totaccum[np.where(totaccum>0.0)] # surface precip > 0 (ie. drop detected with zcoord < 0)
+    spp = surfpp_nonzero[0]
+    tpp = time[np.argmin(abs(prain-spp))]  # value of time at first instance when surfpp > 0
+
+    return [t10, t40, tpp]
 
   def ensemb_from_zarrs(self, zarrs, setup, gbxs):
       
-    t10s, t40s = [], []
+    t10s, t40s, tpps = [], [], []
     for zarr in zarrs:
       data = self.raintimes_fromzarr(zarr, setup, gbxs)
       t10s.append(data[0])
       t40s.append(data[1])
+      tpps.append(data[2])
 
     RainTimes = {"t10": EnsembStats(t10s, axis=0),
-                "t40": EnsembStats(t40s, axis=0)
+                "t40": EnsembStats(t40s, axis=0),
+                "tpp": EnsembStats(tpps, axis=0)
                 }
 
     return RainTimes

@@ -6,7 +6,7 @@ path2sds = HOMEdir+"/superdrops_in_action/"
 path2build = "/work/mh1126/m300950/prescribed2dflow/build/"
 #path2build = "/home/m/m300950/CLEO/build/"
 
-expdir, rundir = "/conc1e9_res50/", "/n2/run14"
+expdir, rundir = "/conc1e9_res25/", "/n2/run14"
 # savedir = path2sds+"prescribed2dflow/convstudy/"+expdir+rundir+"/"
 savedir = path2sds+"prescribed2dflow/convstudy/"+expdir+"/compareplots/"
 print("builddir: "+path2build+"\nsavedir: "+savedir)
@@ -42,8 +42,7 @@ class EnsembPaths:
 class ExperimentsPaths:
   def __init__(self):
     
-    # self.exps = ["n2", "n4", "n8", "n16", "n32", "n64", "n128", "n512"]
-    self.exps = ["n2", "n4", "n8", "n16", "n32", "n512"]
+    self.exps = ["n2", "n4", "n8", "n16", "n32", "n64", "n128", "n256", "n512"]
     self.nruns = 15
 
     self.saveexpsdir, self.ensembdirs = {}, {}
