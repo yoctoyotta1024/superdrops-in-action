@@ -19,3 +19,5 @@ prescribed2dflow/ssvar/ss*
 prescribed2dflow/ssvar/temp
 prescribed2dflow/convstudy/temp
 prescribed2dflow/convstudy/conc*
+prescribed2dflow/convstudy/comptimes
+prescribed2dflow/convstudy/presplots
