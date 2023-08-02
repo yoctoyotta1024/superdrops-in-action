@@ -3,7 +3,7 @@
 
 HOMEdir = "/home/m/m300950"
 path2sds = HOMEdir+"/superdrops_in_action/"
-path2build = "/home/m/m300950/CLEO/example/build/"
+path2build = "/home/m/m300950/CLEO/build/"
 
 # expdir, rundir = "/conc1e7_res100x50_7hrs/", "/n2/run14"
 savedir = path2sds+"/quickplots/plots/"
