@@ -1,8 +1,9 @@
 # Script creates the data and
 # plots the same plots as in Figure 5 of
 # "On the CCN (de)activation nonlinearities"
-# S. Arabas and S. Shima 2017 to check radius
-# growth due to condensation is correct
+# S. Arabas and S. Shima 2017 to check
+# radius growth/shrinking due to
+# condensation/evaporation is correct
 
 # To create build dir:
 # CXX=[compiler choice] cmake -S [path2CLEO] -B ./build
@@ -15,13 +16,14 @@ import numpy as np
 import matplotlib.pyplot as plt
 from pathlib import Path
 
-# path2CLEO = "/Users/yoctoyotta1024/Documents/b1_springsummer2023/CLEO/"
-# apath = "/Users/yoctoyotta1024/Documents/b1_springsummer2023/superdrops_in_action/"
-path2CLEO = "/home/m/m300950/CLEO/"
-apath = "/home/m/m300950/superdrops_in_action/"
+path2CLEO = sys.argv[1]
+path2action = sys.argv[2]
+configfile = sys.argv[3]
+path2valids = sys.argv[2]+"validations/"
+
 sys.path.append(path2CLEO)                           # for imports from pySD package
-sys.path.append(apath+"sdmplotting/")
-sys.path.append(apath+"validations/")
+sys.path.append(path2action+"sdmplotting/")
+sys.path.append(path2valids)
 
 from pySD import editconfigfile
 from pySD.initsuperdropsbinary_src import *
@@ -33,10 +35,9 @@ from validsrc import condensationcurves as ccs
 ############### INPUTS ##################
 # path and filenames for creating SD
 # initial conditions and for running model
-buildpath = apath+"validations/arabas_shima_2017/build/"
-binpath = buildpath+"bin/"
 constsfile = path2CLEO+"libs/claras_SDconstants.hpp"
-configfile = apath+"validations/arabas_shima_2017/arabasconfig.txt"
+buildpath = path2valids+"arabas_shima_2017/build/"
+binpath = buildpath+"bin/"
 initSDsfile = binpath+"arabas_dimlessSDsinit.dat"
 gridfile = binpath+"arabas_dimlessGBxboundaries.dat"
 

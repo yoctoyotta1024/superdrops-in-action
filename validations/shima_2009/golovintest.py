@@ -15,13 +15,14 @@ import numpy as np
 import matplotlib.pyplot as plt
 from pathlib import Path
 
-# path2CLEO = "/Users/yoctoyotta1024/Documents/b1_springsummer2023/CLEO/"
-# apath = "/Users/yoctoyotta1024/Documents/b1_springsummer2023/superdrops_in_action/"
-path2CLEO = "/home/m/m300950/CLEO/"
-apath = "/home/m/m300950/superdrops_in_action/"
+path2CLEO = sys.argv[1]
+path2action = sys.argv[2]
+configfile = sys.argv[3]
+path2valids = sys.argv[2]+"validations/"
+
 sys.path.append(path2CLEO)                           # for imports from pySD package
-sys.path.append(apath+"sdmplotting/")
-sys.path.append(apath+"validations/")
+sys.path.append(path2action+"sdmplotting/")
+sys.path.append(path2valids)
 
 from pySD.thermobinary_src import read_thermodynamics as rthermo
 from pySD.thermobinary_src import create_thermodynamics as cthermo
@@ -35,10 +36,9 @@ from validsrc.golovin_figure import golovin_validation_figure
 ############### INPUTS ##################
 # path and filenames for creating SD
 # initial conditions and for running model
-buildpath = apath+"validations/shima_2009/build/"
-binpath = buildpath+"bin/"
 constsfile = path2CLEO+"libs/claras_SDconstants.hpp"
-configfile = apath+"validations/shima_2009/golovinconfig.txt"
+buildpath = path2valids+"shima_2009/build/"
+binpath = buildpath+"bin/"
 initSDsfile = binpath+"golovin_dimlessSDsinit.dat"
 gridfile = binpath+"golovin_dimlessGBxboundaries.dat"
 thermofile = binpath+"dimlessthermodynamics.dat"
