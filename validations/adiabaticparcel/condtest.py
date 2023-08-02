@@ -5,7 +5,7 @@
 # example of cusp birfucation
 
 # To create build dir:
-# CXX=[compiler choice] cmake -S [path2CLEO] -B ./build
+# CXX=[compiler choice] cmake -S [path2CLEO] -B ./build [kokkos flags]
 # e.g. CXX=g++-13 CC=gcc-13 cmake -S ../../../CLEO/ -B ./build
 # or CXX=g++-13 CC=gcc-13 cmake -S ../../../CLEO/ -B ./build -DKokkos_ENABLE_OPENMP=ON -DKokkos_ARCH_NATIVE=ON
 
@@ -15,13 +15,14 @@ import numpy as np
 import matplotlib.pyplot as plt
 from pathlib import Path
 
-# path2CLEO = "/Users/yoctoyotta1024/Documents/b1_springsummer2023/CLEO/"
-# apath = "/Users/yoctoyotta1024/Documents/b1_springsummer2023/superdrops_in_action/"
-path2CLEO = "/home/m/m300950/CLEO/"
-apath = "/home/m/m300950/superdrops_in_action/"
+path2CLEO = sys.argv[1]
+path2action = sys.argv[2]
+configfile = sys.argv[3]
+path2valids = sys.argv[2]+"validations/"
+
 sys.path.append(path2CLEO)                           # for imports from pySD package
-sys.path.append(apath+"sdmplotting/")
-sys.path.append(apath+"validations/")
+sys.path.append(path2action+"sdmplotting/")
+sys.path.append(path2valids)
 
 from pySD.initsuperdropsbinary_src import *
 from pySD.gbxboundariesbinary_src import read_gbxboundaries as rgrid
@@ -32,10 +33,9 @@ from validsrc import individSDs
 
 ############### INPUTS ##################
 # path and filenames for creating SD initial conditions and for running model
-buildpath = apath+"validations/adiabaticparcelcondensation/build/"
-binpath = buildpath+"bin/"
 constsfile = path2CLEO+"libs/claras_SDconstants.hpp"
-configfile = apath+"validations/adiabaticparcelcondensation/condconfig.txt"
+buildpath = path2valids+"adiabaticparcel/build/"
+binpath = buildpath+"bin/"
 initSDsfile = binpath+"cond_dimlessSDsinit.dat"
 gridfile = binpath+"cond_dimlessGBxboundaries.dat"
 
@@ -129,7 +129,7 @@ ndrops2plot = setup["totnsupers0"]
 radii = pyzarr.attrtimeseries_for_superdropssample(
     sddata, "radius", ndrops2plot, minid, maxid)
 fig, ax = individSDs.individ_radiusgrowths_figure(time, radii)
-savename = "cond_SDsradiigrowth.png"
+savename = "cond_SDgrowth.png"
 fig.savefig(binpath+savename, dpi=400,
             bbox_inches="tight", facecolor='w', format="png")
 print("Figure .png saved as: "+binpath+savename)
