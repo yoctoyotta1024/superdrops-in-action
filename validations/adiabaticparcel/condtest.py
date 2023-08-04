@@ -105,8 +105,8 @@ Path(buildpath).mkdir(exist_ok=True)
 os.chdir(buildpath)
 os.system('pwd')
 os.system('rm -rf '+dataset)
-os.system("make clean && make -j 16 cond0D")
-os.system(buildpath+'src/cond0D ' + configfile+' '+constsfile)
+os.system("make clean && make -j 16 adiabatic0D")
+os.system(buildpath+'src/adiabatic0D ' + configfile+' '+constsfile)
 
 # 3. load and plot results
 # read in constants and intial setup from setup .txt file

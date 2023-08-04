@@ -108,7 +108,7 @@ os.system("pwd")
 for run_num in range(len(monors)*len(paramslist)):
     dataset = binpath+"arabassol"+str(run_num)+".zarr"
     os.system("rm -rf "+dataset)
-os.system("make clean && make -j 16 cond0D")
+os.system("make clean && make -j 16 adiabatic0D")
 
 # 2a. create file with gridbox boundaries
 Path(binpath).mkdir(parents=True, exist_ok=True)
@@ -154,7 +154,7 @@ for i in range(len(monors)):
         editconfigfile.edit_config_params(configfile, params)
 
         # 4. run model
-        os.system(buildpath+'src/cond0D ' +
+        os.system(buildpath+'src/adiabatic0D ' +
                   configfile+' '+constsfile)
 
         # 5. load results
