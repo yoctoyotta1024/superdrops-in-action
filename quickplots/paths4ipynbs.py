@@ -4,9 +4,10 @@
 HOMEdir = "/home/m/m300950"
 path2sds = HOMEdir+"/superdrops_in_action/"
 path2build = "/home/m/m300950/CLEO/build/"
+datalabel = "_longkernel"
+savelab = datalabel[1:]+"_"
 
-# expdir, rundir = "/conc1e7_res100x50_7hrs/", "/n2/run14"
-savedir = path2sds+"/quickplots/plots/"
+savedir = path2sds+"/quickplots/plots/"+savelab
 print("builddir: "+path2build+"\nsavedir: "+savedir)
 
 class DatasetPaths:
@@ -14,8 +15,8 @@ class DatasetPaths:
         
     path2dataset = path2build+"/bin/"
     self.gridfile = path2build+"/share/dimlessGBxboundaries.dat"
-    self.setuptxt = path2dataset+"/setup.txt"
-    self.dataset = path2dataset+"/SDMdata.zarr"
+    self.setuptxt = path2dataset+"/setup"+datalabel+".txt"
+    self.dataset = path2dataset+"/SDMdata"+datalabel+".zarr"
     
     print("dataset: "+self.dataset,
           "\ngridfile: "+self.gridfile,
