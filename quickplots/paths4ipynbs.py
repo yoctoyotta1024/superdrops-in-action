@@ -4,8 +4,9 @@
 HOMEdir = "/home/m/m300950"
 path2sds = HOMEdir+"/superdrops_in_action/"
 path2build = "/home/m/m300950/CLEO/build/"
-datalabel = "_longkernel"
-savelab = datalabel[1:]+"_"
+binsubfolder = "djvalid/"
+datalabel = "_djvalid"
+savelab = binsubfolder+datalabel[1:]
 
 savedir = path2sds+"/quickplots/plots/"+savelab
 print("builddir: "+path2build+"\nsavedir: "+savedir)
@@ -13,7 +14,7 @@ print("builddir: "+path2build+"\nsavedir: "+savedir)
 class DatasetPaths:
   def __init__(self):
         
-    path2dataset = path2build+"/bin/"
+    path2dataset = path2build+"/bin/"+binsubfolder
     self.gridfile = path2build+"/share/dimlessGBxboundaries.dat"
     self.setuptxt = path2dataset+"/setup"+datalabel+".txt"
     self.dataset = path2dataset+"/SDMdata"+datalabel+".zarr"
