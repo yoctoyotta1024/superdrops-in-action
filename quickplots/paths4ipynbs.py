@@ -4,8 +4,8 @@
 HOMEdir = "/home/m/m300950"
 path2sds = HOMEdir+"/superdrops_in_action/"
 path2build = "/home/m/m300950/CLEO/build/"
-binsubfolder = "djtest/"
-datalabel = "_djtest"
+binsubfolder = "djvalid/"
+datalabel = "_coalbu"
 savelab = binsubfolder+datalabel[1:]
 
 savedir = path2sds+"/quickplots/plots/"+savelab
