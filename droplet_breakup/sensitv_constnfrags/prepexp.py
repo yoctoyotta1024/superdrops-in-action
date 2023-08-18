@@ -108,12 +108,24 @@ gen_initSDs = True
 fs = configfile_for_nfragsX(path2build, path2out, configtemplate,
                                    nsupers, nfrags, runn)
 
-zgrid = [0, 100, 100]      # evenly spaced zhalf coords [zmin, zmax, zdelta] [m]
-xgrid = [0, 100, 100]     # evenly spaced xhalf coords [m]
-ygrid = np.array([0, 100])  # array of yhalf coords [m]
+
 
 savefigpath = path2build+"bin/"
+
+### --- 0-D domain --- ###
+zgrid = np.array([0, 100])  # array of zhalf coords [m]
+xgrid = np.array([0, 100])  # array of xhalf coords [m]
+ygrid = np.array([0, 100])  # array of yhalf coords [m]
 cgrid.write_gridboxboundaries_binary(fs["gridfile"],
                                      zgrid, xgrid, ygrid, constsfile)
 rgrid.print_domain_info(constsfile, fs["gridfile"])
 rgrid.plot_gridboxboundaries(constsfile, fs["gridfile"], savefigpath, True)
+
+### --- Constant, Uniform Thermodynamics --- ###
+tdyng = thermogen.ConstUniformThermo(100000.0, 273.15, None,
+                                     0.0, 0.0, 0.0,
+                                     0.0, relh=95.0,
+                                     constsfile=constsfile)
+cthermo.write_thermodynamics_binary(fs["thermofiles"], tdyng,
+                                    fs["configfile"], constsfile,
+                                    fs["gridfile"])
