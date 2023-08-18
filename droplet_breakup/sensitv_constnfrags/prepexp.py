@@ -130,10 +130,29 @@ cthermo.write_thermodynamics_binary(fs["thermofiles"], tdyng,
                                     fs["gridfile"])
 
 if genSDs:
+  rspan                = [1e-9, 9e-4]                 # min and max range of radii to sample [m]
+  radiigen = iSDs.SampleDryradiiGen(rspan, True)   # radii are sampled from rspan [m]
+
+  reff                 = 7e-6                     # effective radius [m]
+  nueff                = 0.08                     # effective variance 
+  rdist1 = rprobs.ClouddropsHansenGamma(reff, nueff)
+  nrain                = 3000                         # raindrop concentration [m^-3]
+  qrain                = 0.9                          # rainwater content [g/m^3]
+  dvol                 = 8e-4                         # mean volume diameter [m]
+  rdist2 = rprobs.RaindropsGeoffroyGamma(nrain, qrain, dvol)
+  numconc = 1e8 # [m^3]
+  distribs = [rdist1, rdist2]
+  scalefacs = [1000, 1]
+  radiiprobdist = rprobs.CombinedRadiiProbDistribs(distribs, scalefacs)
+
+  coord3gen            = None                        # do not generate superdroplet coords
+  coord1gen            = None                        
+  coord2gen            = None                        
+
   for runn in runnums:
     initattrsgen = iSDs.InitManyAttrsGen(radiigen, radiiprobdist,
                                         coord3gen, coord1gen, coord2gen)
-    csupers.write_initsuperdrops_binary(initSDsfile, initattrsgen, 
-                                      configfile, constsfile,
-                                      gridfile, nsupers, numconc)
+    csupers.write_initsuperdrops_binary(fs["initSDsfile"], initattrsgen, 
+                                        fs["configfile"], constsfile,
+                                        fs["gridfile"], nsupers, numconc)
 
