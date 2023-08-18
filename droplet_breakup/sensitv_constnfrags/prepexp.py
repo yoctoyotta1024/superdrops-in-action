@@ -64,7 +64,7 @@ def configfile_for_nfragsX(path2build, path2out, configtemplate,
   nsd = str(nSDsvec)
   runn = str(runn)
   
-  configfile = "tmp/config_nsupers"+nsd+"_nfrags"+fgs+".txt"
+  configfile = "tmp/config_nsupers"+nsd+"_nfrags"+fgs+"_"+runn+".txt"
   gridfile = "share/dimlessGBxboundaries.dat" 
   initSDsfile = "share/dimlessSDsinit_nsupers"+nsd+"_"+runn+".dat"
   thermofiles = "share/dimlessthermo.dat"
@@ -99,18 +99,16 @@ executable = "runbreakup"
 
 nsupers = 2048
 nfrags = 5.2
-runn = 0
+runnums = [0, 1]
 configtemplate = "./configtemplate.txt"
 path2out = path2build+"../constnfrags/"
 
-gen_initSDs = True
+genSDs = True # generate inital SD conditions
+initfigspath = path2build+"bin/"
 
-fs = configfile_for_nfragsX(path2build, path2out, configtemplate,
-                                   nsupers, nfrags, runn)
-
-
-
-savefigpath = path2build+"bin/"
+for runn in runnums:
+  fs = configfile_for_nfragsX(path2build, path2out, configtemplate,
+                              nsupers, nfrags, runn)
 
 ### --- 0-D domain --- ###
 zgrid = np.array([0, 100])  # array of zhalf coords [m]
@@ -119,7 +117,8 @@ ygrid = np.array([0, 100])  # array of yhalf coords [m]
 cgrid.write_gridboxboundaries_binary(fs["gridfile"],
                                      zgrid, xgrid, ygrid, constsfile)
 rgrid.print_domain_info(constsfile, fs["gridfile"])
-rgrid.plot_gridboxboundaries(constsfile, fs["gridfile"], savefigpath, True)
+rgrid.plot_gridboxboundaries(constsfile, fs["gridfile"],
+                             initfigspath, True)
 
 ### --- Constant, Uniform Thermodynamics --- ###
 tdyng = thermogen.ConstUniformThermo(100000.0, 273.15, None,
@@ -129,3 +128,12 @@ tdyng = thermogen.ConstUniformThermo(100000.0, 273.15, None,
 cthermo.write_thermodynamics_binary(fs["thermofiles"], tdyng,
                                     fs["configfile"], constsfile,
                                     fs["gridfile"])
+
+if genSDs:
+  for runn in runnums:
+    initattrsgen = iSDs.InitManyAttrsGen(radiigen, radiiprobdist,
+                                        coord3gen, coord1gen, coord2gen)
+    csupers.write_initsuperdrops_binary(initSDsfile, initattrsgen, 
+                                      configfile, constsfile,
+                                      gridfile, nsupers, numconc)
+
