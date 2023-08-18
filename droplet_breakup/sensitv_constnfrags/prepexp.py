@@ -15,7 +15,6 @@ from pySD.gbxboundariesbinary_src import create_gbxboundaries as  cgrid
 from pySD.gbxboundariesbinary_src import read_gbxboundaries as rgrid
 from pySD.thermobinary_src import thermogen
 from pySD.thermobinary_src import create_thermodynamics as cthermo
-from pySD.thermobinary_src import read_thermodynamics as rthermo
 from pySD.initsuperdropsbinary_src import initattributes as iSDs
 from pySD.initsuperdropsbinary_src import radiiprobdistribs as rprobs 
 from pySD.initsuperdropsbinary_src import create_initsuperdrops as csupers 
@@ -104,33 +103,11 @@ configtemplate = "./configtemplate.txt"
 path2out = path2build+"../constnfrags/"
 
 genSDs = True # generate inital SD conditions
+plotfigs = True
 initfigspath = path2build+"bin/"
 
-for runn in runnums:
-  fs = configfile_for_nfragsX(path2build, path2out, configtemplate,
-                              nsupers, nfrags, runn)
-
-### --- 0-D domain --- ###
-zgrid = np.array([0, 100])  # array of zhalf coords [m]
-xgrid = np.array([0, 100])  # array of xhalf coords [m]
-ygrid = np.array([0, 100])  # array of yhalf coords [m]
-cgrid.write_gridboxboundaries_binary(fs["gridfile"],
-                                     zgrid, xgrid, ygrid, constsfile)
-rgrid.print_domain_info(constsfile, fs["gridfile"])
-rgrid.plot_gridboxboundaries(constsfile, fs["gridfile"],
-                             initfigspath, True)
-
-### --- Constant, Uniform Thermodynamics --- ###
-tdyng = thermogen.ConstUniformThermo(100000.0, 273.15, None,
-                                     0.0, 0.0, 0.0,
-                                     0.0, relh=95.0,
-                                     constsfile=constsfile)
-cthermo.write_thermodynamics_binary(fs["thermofiles"], tdyng,
-                                    fs["configfile"], constsfile,
-                                    fs["gridfile"])
-
 if genSDs:
-  rspan                = [1e-9, 9e-4]                 # min and max range of radii to sample [m]
+  rspan                = [2e-7, 2e-3]                 # min and max range of radii to sample [m]
   radiigen = iSDs.SampleDryradiiGen(rspan, True)   # radii are sampled from rspan [m]
 
   reff                 = 7e-6                     # effective radius [m]
@@ -142,17 +119,54 @@ if genSDs:
   rdist2 = rprobs.RaindropsGeoffroyGamma(nrain, qrain, dvol)
   numconc = 1e8 # [m^3]
   distribs = [rdist1, rdist2]
-  scalefacs = [1000, 1]
+  scalefacs = [10000, 1]
   radiiprobdist = rprobs.CombinedRadiiProbDistribs(distribs, scalefacs)
 
   coord3gen            = None                        # do not generate superdroplet coords
   coord1gen            = None                        
   coord2gen            = None                        
 
-  for runn in runnums:
+
+for runn in runnums:
+  ### --- generate configuration file --- ###
+  fs = configfile_for_nfragsX(path2build, path2out, configtemplate,
+                              nsupers, nfrags, runn)
+
+  if genSDs:
+    ### --- Initial SD Conditions --- ###
     initattrsgen = iSDs.InitManyAttrsGen(radiigen, radiiprobdist,
                                         coord3gen, coord1gen, coord2gen)
     csupers.write_initsuperdrops_binary(fs["initSDsfile"], initattrsgen, 
                                         fs["configfile"], constsfile,
                                         fs["gridfile"], nsupers, numconc)
+    rsupers.print_initSDs_infos(fs["initSDsfile"], fs["configfile"],
+                                constsfile, fs["gridfile"])
+
+    if plotfigs:
+      ### --- plot and save figure for initial SDs --- ###
+      rsupers.plot_initGBxsdistribs(fs["configfile"], constsfile, 
+                                  fs["initSDsfile"], fs["gridfile"],
+                                  initfigspath, True, "all",
+                                  endname="_"+str(runn))
+      
+### --- 0-D domain --- ###
+zgrid = np.array([0, 100])  # array of zhalf coords [m]
+xgrid = np.array([0, 100])  # array of xhalf coords [m]
+ygrid = np.array([0, 100])  # array of yhalf coords [m]
+cgrid.write_gridboxboundaries_binary(fs["gridfile"],
+                                     zgrid, xgrid, ygrid, constsfile)
+rgrid.print_domain_info(constsfile, fs["gridfile"])
+if plotfigs:
+      ### --- plot and save figure for GBxs --- ###
+      rgrid.plot_gridboxboundaries(constsfile, fs["gridfile"],
+                             initfigspath, True)
+      
+### --- Constant, Uniform Thermodynamics --- ###
+tdyng = thermogen.ConstUniformThermo(100000.0, 273.15, None,
+                                     0.0, 0.0, 0.0,
+                                     0.0, relh=95.0,
+                                     constsfile=constsfile)
+cthermo.write_thermodynamics_binary(fs["thermofiles"], tdyng,
+                                    fs["configfile"], constsfile,
+                                    fs["gridfile"])
 

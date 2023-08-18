@@ -98,6 +98,7 @@ initattrsgen = initattributes.InitManyAttrsGen(radiigen, radiiprobdist,
 create_initsuperdrops.write_initsuperdrops_binary(initSDsfile, initattrsgen,
                                                   configfile, constsfile,
                                                   gridfile, nsupers, numconc)
+rsupers.print_initSDs_infos(initSDsfile, configfile, constsfile, gridfile)
 
 if isfigures[0]:
     rgrid.plot_gridboxboundaries(constsfile, gridfile,
