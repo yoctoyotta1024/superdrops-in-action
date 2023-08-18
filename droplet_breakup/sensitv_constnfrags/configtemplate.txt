@@ -31,9 +31,9 @@ nfrags = [X]                              # expected number of fragments in (rea
 CONDTSTEP = 1                             # time between SD condensation events [s]
 COLLTSTEP = 1                             # time between SD collision events [s]
 MOTIONTSTEP = 30                          # time between SDM motion [s]
-COUPLTSTEP = 5400                         # time between thermodynamic couplings [s]
-OBSTSTEP = 30                             # time between SDM observations [s]
-T_END = 5400                              # time span of integration [s]
+COUPLTSTEP = 120                          # time between thermodynamic couplings [s]
+OBSTSTEP = 2                              # time between SDM observations [s]
+T_END = 120                               # time span of integration [s]
 
 # SDs parameters #
 nSDsvec = [N]                          # initial no. elements in SDs' vector (=total initial no. of SDs)

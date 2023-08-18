@@ -71,7 +71,6 @@ def get_initSDsfile_name(nsupers, runn):
 
   return "share/dimlessSDsinit_nsupers"+nsd+"_"+runn+".dat"
 
-
 def configfile_for_nfragsX(path2build, path2out, configtemplate,
                            nSDsvec, nfrags, runn):
   
@@ -79,7 +78,7 @@ def configfile_for_nfragsX(path2build, path2out, configtemplate,
   nsd = str(nSDsvec)
   runn = str(runn)
   
-  configfile = get_initSDsfile_name(nsupers, nfrags, runn) 
+  configfile = get_configfile_name(nsupers, nfrags, runn) 
   gridfile = "share/dimlessGBxboundaries.dat" 
   initSDsfile = get_initSDsfile_name(nsupers, runn) 
   thermofiles = "share/dimlessthermo.dat"
@@ -143,31 +142,31 @@ if genSDs:
   coord2gen            = None                        
 
 
-# for runn in runnums:
-#   ### --- generate configuration file --- ###
-#   fs = configfile_for_nfragsX(path2build, path2out, configtemplate,
-#                               nsupers, nfrags, runn)
+for runn in runnums:
+  ### --- generate configuration file --- ###
+  fs = configfile_for_nfragsX(path2build, path2out, configtemplate,
+                              nsupers, nfrags, runn)
 
-# ### --- 0-D domain --- ###
-# zgrid = np.array([0, 100])  # array of zhalf coords [m]
-# xgrid = np.array([0, 100])  # array of xhalf coords [m]
-# ygrid = np.array([0, 100])  # array of yhalf coords [m]
-# cgrid.write_gridboxboundaries_binary(fs["gridfile"],
-#                                      zgrid, xgrid, ygrid, constsfile)
-# rgrid.print_domain_info(constsfile, fs["gridfile"])
-# if plotfigs:
-#       ### --- plot and save figure for GBxs --- ###
-#       rgrid.plot_gridboxboundaries(constsfile, fs["gridfile"],
-#                              initfigspath, True)
+### --- 0-D domain --- ###
+zgrid = np.array([0, 10])  # array of zhalf coords [m]
+xgrid = np.array([0, 10])  # array of xhalf coords [m]
+ygrid = np.array([0, 10])  # array of yhalf coords [m]
+cgrid.write_gridboxboundaries_binary(fs["gridfile"],
+                                     zgrid, xgrid, ygrid, constsfile)
+rgrid.print_domain_info(constsfile, fs["gridfile"])
+if plotfigs:
+      ### --- plot and save figure for GBxs --- ###
+      rgrid.plot_gridboxboundaries(constsfile, fs["gridfile"],
+                             initfigspath, True)
       
-# ### --- Constant, Uniform Thermodynamics --- ###
-# tdyng = thermogen.ConstUniformThermo(100000.0, 273.15, None,
-#                                      0.0, 0.0, 0.0,
-#                                      0.0, relh=95.0,
-#                                      constsfile=constsfile)
-# cthermo.write_thermodynamics_binary(fs["thermofiles"], tdyng,
-#                                     fs["configfile"], constsfile,
-#                                     fs["gridfile"])
+### --- Constant, Uniform Thermodynamics --- ###
+tdyng = thermogen.ConstUniformThermo(100000.0, 273.15, None,
+                                     0.0, 0.0, 0.0,
+                                     0.0, relh=95.0,
+                                     constsfile=constsfile)
+cthermo.write_thermodynamics_binary(fs["thermofiles"], tdyng,
+                                    fs["configfile"], constsfile,
+                                    fs["gridfile"])
 
 for runn in runnums:
   ### --- generate configuration file --- ###
