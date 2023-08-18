@@ -12,8 +12,6 @@ executable = "runbreakup"
 def echo_and_sys(cmd):
   os.system("echo "+cmd)
   os.system(cmd)
-
+  
 cmd = "./build_compile.sh "+path2CLEO+" "+path2build+" "+executable
 echo_and_sys(cmd)
-
-# configfile=${HOME}/CLEO/src/config/config.txt

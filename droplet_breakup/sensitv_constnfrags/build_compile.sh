@@ -33,6 +33,7 @@ CXX=${gxx} CC=${gcc} cmake -S ${path2CLEO} -B ${path2build} ${kokkosflags}
 ### ensure these directories exist (it's a good idea for later use)
 mkdir ${path2build}bin
 mkdir ${path2build}share
+mkdir ${path2build}tmp
 
 ### compile CLEO
 cd ${path2build} && pwd 
