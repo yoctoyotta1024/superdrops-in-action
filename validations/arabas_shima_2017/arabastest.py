@@ -137,7 +137,7 @@ for i in range(len(monors)):
     create_initsuperdrops.write_initsuperdrops_binary(initSDsfile, initattrsgen,
                                                       configfile, constsfile,
                                                       gridfile, nsupers, numconc)
-    rsupers.print_initSDs_infos(initSDsfile, configfile, constsfile, gridfile)
+    read_initsuperdrops.print_initSDs_infos(initSDsfile, configfile, constsfile, gridfile)
     
     if isfigures[0]:
         read_initsuperdrops.plot_initGBxsdistribs(configfile, constsfile, initSDsfile,
