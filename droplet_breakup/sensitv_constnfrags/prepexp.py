@@ -117,7 +117,7 @@ if genSDs:
   qrain                = 0.9                          # rainwater content [g/m^3]
   dvol                 = 8e-4                         # mean volume diameter [m]
   rdist2 = rprobs.RaindropsGeoffroyGamma(nrain, qrain, dvol)
-  numconc = 1e8 # [m^3]
+  numconc = 75e6 # [m^3]
   distribs = [rdist1, rdist2]
   scalefacs = [10000, 1]
   radiiprobdist = rprobs.CombinedRadiiProbDistribs(distribs, scalefacs)
@@ -132,23 +132,6 @@ for runn in runnums:
   fs = configfile_for_nfragsX(path2build, path2out, configtemplate,
                               nsupers, nfrags, runn)
 
-  if genSDs:
-    ### --- Initial SD Conditions --- ###
-    initattrsgen = iSDs.InitManyAttrsGen(radiigen, radiiprobdist,
-                                        coord3gen, coord1gen, coord2gen)
-    csupers.write_initsuperdrops_binary(fs["initSDsfile"], initattrsgen, 
-                                        fs["configfile"], constsfile,
-                                        fs["gridfile"], nsupers, numconc)
-    rsupers.print_initSDs_infos(fs["initSDsfile"], fs["configfile"],
-                                constsfile, fs["gridfile"])
-
-    if plotfigs:
-      ### --- plot and save figure for initial SDs --- ###
-      rsupers.plot_initGBxsdistribs(fs["configfile"], constsfile, 
-                                  fs["initSDsfile"], fs["gridfile"],
-                                  initfigspath, True, "all",
-                                  endname="_"+str(runn))
-      
 ### --- 0-D domain --- ###
 zgrid = np.array([0, 100])  # array of zhalf coords [m]
 xgrid = np.array([0, 100])  # array of xhalf coords [m]
@@ -170,3 +153,26 @@ cthermo.write_thermodynamics_binary(fs["thermofiles"], tdyng,
                                     fs["configfile"], constsfile,
                                     fs["gridfile"])
 
+for runn in runnums:
+  ### --- generate configuration file --- ###
+  fs = configfile_for_nfragsX(path2build, path2out, configtemplate,
+                              nsupers, nfrags, runn)
+
+  if genSDs:
+    ### --- Initial SD Conditions --- ###
+    initattrsgen = iSDs.InitManyAttrsGen(radiigen, radiiprobdist,
+                                        coord3gen, coord1gen, coord2gen)
+    csupers.write_initsuperdrops_binary(fs["initSDsfile"], initattrsgen, 
+                                        fs["configfile"], constsfile,
+                                        fs["gridfile"], nsupers, numconc)
+    rsupers.print_initSDs_infos(fs["initSDsfile"], fs["configfile"],
+                                constsfile, 
+                                fs["gridfile"])
+
+    if plotfigs:
+      ### --- plot and save figure for initial SDs --- ###
+      rsupers.plot_initGBxsdistribs(fs["configfile"], constsfile, 
+                                  fs["initSDsfile"], fs["gridfile"],
+                                  initfigspath, True, "all",
+                                  endname="_"+str(runn))
+                                     
