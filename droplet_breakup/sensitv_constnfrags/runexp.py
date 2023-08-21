@@ -10,7 +10,7 @@ path2build = "/work/mh1126/m300950/breakup/build/"
 executable = "runbreakup"
 
 nsupers = 2048
-nfrags = 5.2
+nfrags = 0.0
 runnums = [0]
 
 for runn in runnums:

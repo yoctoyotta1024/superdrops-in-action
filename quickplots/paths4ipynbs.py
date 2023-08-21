@@ -6,7 +6,7 @@ path2sds = HOMEdir+"/superdrops_in_action/"
 # path2build = "/home/m/m300950/CLEO/build/"
 path2build = "/work/mh1126/m300950/breakup/build/"
 binsubfolder = "./"
-datalabel = "_testing"
+datalabel = "_testing_2"
 savelab = binsubfolder+datalabel[1:]
 
 savedir = path2sds+"/quickplots/plots/"+savelab
@@ -29,11 +29,16 @@ class DatasetPaths:
         
     path2dataset = "/work/mh1126/m300950/breakup/build/../constnfrags" 
     self.gridfile = path2build+"/share/dimlessGBxboundaries.dat"
+    # self.setuptxt = path2dataset+"/setup_nsupers"+str(nsupers)+\
+    #   "_nfrags"+str(nfrags).replace(".", "p")+".txt"
+    # self.dataset = path2dataset+"/SDMdata_nsupers"+str(nsupers)+\
+    #   "_nfrags"+str(nfrags).replace(".", "p")+"_"+str(runn)+".zarr"
+
     self.setuptxt = path2dataset+"/setup_nsupers"+str(nsupers)+\
-      "_nfrags"+str(nfrags).replace(".", "p")+".txt"
+      "_cntrl.txt"
     self.dataset = path2dataset+"/SDMdata_nsupers"+str(nsupers)+\
-      "_nfrags"+str(nfrags).replace(".", "p")+"_"+str(runn)+".zarr"
-    
+      "_cntrl.zarr"
+
     print("dataset: "+self.dataset,
           "\ngridfile: "+self.gridfile,
           "\nsetup: "+self.setuptxt)
