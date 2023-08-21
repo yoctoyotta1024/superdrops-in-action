@@ -3,14 +3,13 @@
 
 HOMEdir = "/home/m/m300950"
 path2sds = HOMEdir+"/superdrops_in_action/"
-# path2build = "/home/m/m300950/CLEO/build/"
 path2build = "/work/mh1126/m300950/breakup/build/"
 binsubfolder = "./"
-datalabel = "_testing_2"
-savelab = binsubfolder+datalabel[1:]
-
-savedir = path2sds+"/quickplots/plots/"+savelab
-print("builddir: "+path2build+"\nsavedir: "+savedir)
+# path2build = "/home/m/m300950/CLEO/build/"
+# datalabel = "_test"
+# savelab = binsubfolder+datalabel[1:]
+# savedir = path2sds+"/quickplots/plots/"+savelab
+# print("builddir: "+path2build+"\nsavedir: "+savedir)
 
 # class DatasetPaths:
 #   def __init__(self):
@@ -29,15 +28,18 @@ class DatasetPaths:
         
     path2dataset = "/work/mh1126/m300950/breakup/build/../constnfrags" 
     self.gridfile = path2build+"/share/dimlessGBxboundaries.dat"
-    # self.setuptxt = path2dataset+"/setup_nsupers"+str(nsupers)+\
-    #   "_nfrags"+str(nfrags).replace(".", "p")+".txt"
-    # self.dataset = path2dataset+"/SDMdata_nsupers"+str(nsupers)+\
-    #   "_nfrags"+str(nfrags).replace(".", "p")+"_"+str(runn)+".zarr"
-
     self.setuptxt = path2dataset+"/setup_nsupers"+str(nsupers)+\
-      "_cntrl.txt"
+      "_nfrags"+str(nfrags).replace(".", "p")+".txt"
     self.dataset = path2dataset+"/SDMdata_nsupers"+str(nsupers)+\
-      "_cntrl.zarr"
+      "_nfrags"+str(nfrags).replace(".", "p")+"_"+str(runn)+".zarr"
+
+    datalabel = "_bu"+str(nfrags).replace(".", "p")
+    savelab = binsubfolder+datalabel[1:]
+    self.savedir = path2sds+"/quickplots/plots/"+savelab
+    # self.setuptxt = path2dataset+"/setup_nsupers"+str(nsupers)+\
+    #   "_cntrl.txt"
+    # self.dataset = path2dataset+"/SDMdata_nsupers"+str(nsupers)+\
+    #   "_cntrl_"+str(runn)+".zarr"
 
     print("dataset: "+self.dataset,
           "\ngridfile: "+self.gridfile,
