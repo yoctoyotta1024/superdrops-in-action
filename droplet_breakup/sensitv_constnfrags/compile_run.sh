@@ -8,8 +8,8 @@
 #SBATCH --mail-user=clara.bayley@mpimet.mpg.de
 #SBATCH --mail-type=FAIL
 #SBATCH --account=mh1126
-#SBATCH --output=/work/mh1126/m300950/breakup/build/tmp/runBUexp_out.%j.out
-#SBATCH --error=/work/mh1126/m300950/breakup/build/tmp/runBUexp_err.%j.out
+#SBATCH --output=/work/mh1126/m300950/droplet_breakup/build/tmp/runBUexp_out.%j.out
+#SBATCH --error=/work/mh1126/m300950/droplet_breakup/build/tmp/runBUexp_err.%j.out
 
 ### ------------- PLEASE NOTE: this script assumes you ------------- ###
 ### ------------- have already built CLEO in path2build ------------ ### 

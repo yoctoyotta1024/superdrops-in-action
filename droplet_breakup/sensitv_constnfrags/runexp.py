@@ -6,7 +6,7 @@
 from src import *
 
 path2CLEO = "/home/m/m300950/CLEO/"
-path2build = "/work/mh1126/m300950/breakup/build/"
+path2build = "/work/mh1126/m300950/droplet_breakup/build/"
 executable = "runbreakup"
 
 nsupers = 8192

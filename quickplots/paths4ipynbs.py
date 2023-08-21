@@ -3,7 +3,7 @@
 
 HOMEdir = "/home/m/m300950"
 path2sds = HOMEdir+"/superdrops_in_action/"
-path2build = "/work/mh1126/m300950/breakup/build/"
+path2build = "/work/mh1126/m300950/droplet_breakup/build/"
 binsubfolder = "./"
 # path2build = "/home/m/m300950/CLEO/build/"
 # datalabel = "_test"
@@ -26,7 +26,7 @@ binsubfolder = "./"
 class DatasetPaths:
   def __init__(self, nsupers, nfrags, runn):
         
-    path2dataset = "/work/mh1126/m300950/breakup/build/../constnfrags" 
+    path2dataset = "/work/mh1126/m300950/droplet_breakup/build/../constnfrags" 
     self.gridfile = path2build+"/share/dimlessGBxboundaries.dat"
     self.setuptxt = path2dataset+"/setup_nsupers"+str(nsupers)+\
       "_nfrags"+str(nfrags).replace(".", "p")+".txt"

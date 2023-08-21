@@ -7,7 +7,7 @@ import numpy as np
 from src import *
 
 path2CLEO = "/home/m/m300950/CLEO/"
-path2build = "/work/mh1126/m300950/breakup/build/"
+path2build = "/work/mh1126/m300950/droplet_breakup/build/"
 constsfile = path2CLEO+"/libs/claras_SDconstants.hpp"
 executable = "runbreakup"
 
@@ -17,9 +17,9 @@ runnums = [0]
 configtemplate = "./configtemplate.txt"
 path2out = path2build+"../constnfrags/"
 
-genSDs =  False # generate inital SD conditions
-genGBxsthermo = False 
-plotfigs = False 
+genSDs = True # generate inital SD conditions
+genGBxsthermo = True 
+plotfigs = True 
 initfigspath = path2build+"bin/"
 
 for runn in runnums:
@@ -40,7 +40,7 @@ if genSDs:
   rdist2 = rprobs.RaindropsGeoffroyGamma(nrain, qrain, dvol)
   numconc = 75e6 # [m^3]
   distribs = [rdist1, rdist2]
-  scalefacs = [1000, 1]
+  scalefacs = [5000, 1]
   radiiprobdist = rprobs.CombinedRadiiProbDistribs(distribs, scalefacs)
 
   coord3gen            = None                        # do not generate superdroplet coords
