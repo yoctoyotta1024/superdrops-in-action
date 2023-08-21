@@ -12,14 +12,14 @@ constsfile = path2CLEO+"/libs/claras_SDconstants.hpp"
 executable = "runbreakup"
 
 nsupers = 8192
-nfrags = 512.0
+nfrags = 8.0
 runnums = [0]
 configtemplate = "./configtemplate.txt"
 path2out = path2build+"../constnfrags/"
 
-genSDs = True # generate inital SD conditions
-genGBxsthermo = True 
-plotfigs = True 
+genSDs = False 
+genGBxsthermo = False 
+plotfigs = False 
 initfigspath = path2build+"bin/"
 
 for runn in runnums:
@@ -40,7 +40,7 @@ if genSDs:
   rdist2 = rprobs.RaindropsGeoffroyGamma(nrain, qrain, dvol)
   numconc = 75e6 # [m^3]
   distribs = [rdist1, rdist2]
-  scalefacs = [5000, 1]
+  scalefacs = [2750, 1]
   radiiprobdist = rprobs.CombinedRadiiProbDistribs(distribs, scalefacs)
 
   coord3gen            = None                        # do not generate superdroplet coords
