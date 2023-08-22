@@ -9,9 +9,9 @@ import random
 from . import thermoeqns
 from sys import maxsize
 
-def get_rawdataset(dataset, print=True):
-
-  print("dataset: ", dataset)
+def get_rawdataset(dataset, prnt=True):
+  if prnt:
+    print("dataset: ", dataset)
   return xr.open_dataset(dataset, engine="zarr", consolidated=False)
 
 def get_rawdata4key(dataset, key):
