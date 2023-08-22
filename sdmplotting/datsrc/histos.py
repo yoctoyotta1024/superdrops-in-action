@@ -26,15 +26,15 @@ def logr_distribution(rspan, nbins, radius, wghts,
 
   # create lnr bins (linearly spaced in lnr)
   hedgs = np.linspace(np.log(rspan[0]), np.log(rspan[1]), nbins+1)  # edges to lnr bins
-  hwdths = hedgs[1:]- hedgs[:-1]                               # lnr bin widths
-  hcens = (hedgs[1:]+hedgs[:-1])/2                             # lnr bin centres
+  logrwdths = hedgs[1:]- hedgs[:-1]                                 # lnr bin widths
+  hcens = np.log((np.exp(hedgs[1:])+np.exp(hedgs[:-1]))/2)          # lnr bin centres
 
   # get number frequency in each bin
   hist, hedgs = np.histogram(np.log(radius), bins=hedgs, 
                               weights=wghts, density=None)
   
   if perlogR == True: # get frequency / bin width
-      hist = hist/hwdths
+      hist = hist/logrwdths
 
   if smooth:
     hist, hcens = gaussian_kernel_smoothing(hist, hcens, smooth)
@@ -51,15 +51,17 @@ def log10r_distribution(rspan, nbins, radius, wghts,
 
   # create log10(r) bins (linearly spaced in log10(r)
   hedgs = np.linspace(np.log10(rspan[0]), np.log10(rspan[1]), nbins+1)  # edges to log10(r) bins
-  hwdths = hedgs[1:]- hedgs[:-1]                               # bin widths
-  hcens = (hedgs[1:]+hedgs[:-1])/2                             # bin centres
+  log10rwdths = hedgs[1:]- hedgs[:-1]                               # bin widths in log10(r)
+  hcens = np.log10(((hedgs[1:])**10+(hedgs[:-1])**10)/2)          # bin centres
+
+  hcens = (hedgs[1:]+hedgs[:-1])/2                             
 
   # get number frequency in each bin
   hist, hedgs = np.histogram(np.log10(radius), bins=hedgs, 
                               weights=wghts, density=None)
   
   if perlogR == True: # get frequency / bin width
-      hist = hist/hwdths
+      hist = hist/log10rwdths
 
   if smooth:
     hist, hcens = gaussian_kernel_smoothing(hist, hcens, smooth)
