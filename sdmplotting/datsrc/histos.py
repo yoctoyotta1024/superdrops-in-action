@@ -51,8 +51,8 @@ def log10r_distribution(rspan, nbins, radius, wghts,
 
   # create log10(r) bins (linearly spaced in log10(r)
   hedgs = np.linspace(np.log10(rspan[0]), np.log10(rspan[1]), nbins+1)  # edges to log10(r) bins
-  log10rwdths = hedgs[1:]- hedgs[:-1]                               # bin widths in log10(r)
-  hcens = np.log10(((hedgs[1:])**10+(hedgs[:-1])**10)/2)          # bin centres
+  log10rwdths = hedgs[1:]- hedgs[:-1]                                   # bin widths in log10(r)
+  hcens = np.log10(((hedgs[1:])**10+(hedgs[:-1])**10)/2)                # bin centres
 
   hcens = (hedgs[1:]+hedgs[:-1])/2                             
 
@@ -66,7 +66,7 @@ def log10r_distribution(rspan, nbins, radius, wghts,
   if smooth:
     hist, hcens = gaussian_kernel_smoothing(hist, hcens, smooth)
 
-  return hist, hedgs**10, hcens**10 # units of hedgs and hcens [microns]
+  return hist, 10**hedgs, 10**hcens # units of hedgs and hcens [microns]
 
 
 def radius_distribution(radius, rspan, nbins, wghts,
