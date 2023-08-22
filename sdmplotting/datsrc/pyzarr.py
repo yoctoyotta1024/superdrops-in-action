@@ -20,7 +20,7 @@ def get_rawdata4key(dataset, key):
 
 def get_rawdata4raggedkey(dataset, key):
   ds = xr.open_dataset(dataset, engine="zarr", consolidated=False)
-  return ak.unflatten(ds[key].values, ds["raggedcount"])
+  return ak.unflatten(ds[key].values, ds["raggedcount"].values)
 
 def tryopen(ds, totnsupers, var):
   try:
