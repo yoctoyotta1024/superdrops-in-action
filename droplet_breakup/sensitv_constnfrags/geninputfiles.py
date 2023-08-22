@@ -12,7 +12,7 @@ constsfile = path2CLEO+"/libs/claras_SDconstants.hpp"
 executable = "runbreakup"
 
 nsupers = 8192
-nfrags = 16.0
+nfrags = 256.0
 runnums = [0]
 configtemplate = "./configtemplate.txt"
 path2out = path2build+"../constnfrags/"

@@ -10,7 +10,7 @@ path2build = "/work/mh1126/m300950/droplet_breakup/build/"
 executable = "runbreakup"
 
 nsupers = 8192
-nfrags = 8.0
+nfrags = 256.0
 runnums = [0]
 
 for runn in runnums:

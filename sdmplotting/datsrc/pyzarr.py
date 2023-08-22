@@ -9,10 +9,18 @@ import random
 from . import thermoeqns
 from sys import maxsize
 
-def get_rawdataset(dataset):
+def get_rawdataset(dataset, print=True):
 
   print("dataset: ", dataset)
   return xr.open_dataset(dataset, engine="zarr", consolidated=False)
+
+def get_rawdata4key(dataset, key):
+
+  return xr.open_dataset(dataset, engine="zarr", consolidated=False)[key]
+
+def get_rawdata4raggedkey(dataset, key):
+  ds = xr.open_dataset(dataset, engine="zarr", consolidated=False)
+  return ak.unflatten(ds[key].values, ds["raggedcount"])
 
 def tryopen(ds, totnsupers, var):
   try:
