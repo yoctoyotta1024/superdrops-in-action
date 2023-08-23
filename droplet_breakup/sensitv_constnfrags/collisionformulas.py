@@ -61,29 +61,55 @@ def nocoll_breakup_coal_or_rebound(r1, r2):
 
   return coalbure
 
-def plot_coal_breakup_or_rebound(ax, r1, r2, dist=np.array([1.0])):
+def plot_coal_breakup_or_rebound(fig, ax, r1, r2):
     
     rr1, rr2 = np.meshgrid(r1, r2)
     coalbure = nocoll_breakup_coal_or_rebound(rr1*1e-6, rr2*1e-6)
-    
-    weighted_coalbure = coalbure * dist / np.sum(dist)
+    coalbure = np.where(rr1 > rr2, np.nan, coalbure) # ensure data only for rr1 < rr2
+
     levels = [-1.5,-0.5,0.5,1.5,2.5]
     levellabs = ["no collision", "rebound", "coalescence", "breakup"]
-    cont = ax.contourf(rr1, rr2, weighted_coalbure, levels=levels,
+    cont = ax.contourf(rr1, rr2, coalbure, levels=levels,
                        cmap=cm.Set3)
     cols = ["gold", "lightblue", "mediumorchid", "green"]
-    ax.contour(rr1, rr2, weighted_coalbure, levels=levels,
+    ax.contour(rr1, rr2, coalbure, levels=levels,
                colors=cols, linewidths=0.8)
      
-    ax.set_xlabel("radius /\u03BCm")
-    ax.set_ylabel("radius /\u03BCm")
-    ax.set_aspect("equal")
-
     cbar = fig.colorbar(cont, ax=ax, location="right")
     cbartcks = (cbar.get_ticks()[1:] + cbar.get_ticks()[:-1])/2
     cbar.ax.set_yticks(cbartcks, levellabs)
     x = cbar.ax.get_xlim()
     cbar.ax.hlines(levels, x[0], x[1], color=cols)
 
+    ax.fill_between(r1, r2, color="lightgrey")
+
+    ax.set_aspect("equal")
+    ax.set_xlabel("small radius /\u03BCm")
+    ax.set_ylabel("large radius /\u03BCm")
+    ax.set_xscale("log")
+    ax.set_yscale("log")
+
+def plot_coal_breakup_or_rebound_ondist(fig, ax, r1, r2, dist1, dist2):
+    
+    rr1, rr2 = np.meshgrid(r1, r2)
+    dist = np.outer(dist1/np.sum(dist1), dist2/np.sum(dist2))
+    dist = np.where(dist == 0, np.nan, dist)
+    dist = np.where(rr1 > rr2, np.nan, dist)
+    cont = ax.contourf(rr1, rr2, dist, cmap="cividis", norm=LogNorm())
+    
+    coalbure = nocoll_breakup_coal_or_rebound(rr1*1e-6, rr2*1e-6)
+    levels = [-1.5,-0.5,0.5,1.5,2.5]
+    levellabs = ["no collision", "rebound", "coalescence", "breakup"]
+    cols = ["gold", "lightblue", "mediumorchid", "green"]
+    coalbure = np.where(rr1 > rr2, np.nan, coalbure)
+    ax.contour(rr1, rr2, coalbure, levels=levels, colors=cols)
+     
+    cbar = fig.colorbar(cont, ax=ax, location="right")
+
+    ax.fill_between(r1, r2, color="lightgrey")
+
+    ax.set_aspect("equal")    
+    ax.set_xlabel("small radius /\u03BCm")
+    ax.set_ylabel("large radius /\u03BCm")
     ax.set_xscale("log")
     ax.set_yscale("log")
