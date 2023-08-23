@@ -1,4 +1,5 @@
 import numpy as np
+import matplotlib.cm as cm
 
 def rho_w():
   return 1000 # density of water [kg/m^3]
