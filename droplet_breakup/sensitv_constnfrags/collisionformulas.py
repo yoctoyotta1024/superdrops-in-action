@@ -74,8 +74,8 @@ def plot_coal_breakup_or_rebound(ax, r1, r2, dist=np.array([1.0])):
     ax.contour(rr1, rr2, weighted_coalbure, levels=levels,
                colors=cols, linewidths=0.8)
      
-    ax.set_xlabel("radius 1 /\u03BCm")
-    ax.set_ylabel("radius 2 /\u03BCm")
+    ax.set_xlabel("radius /\u03BCm")
+    ax.set_ylabel("radius /\u03BCm")
     ax.set_aspect("equal")
 
     cbar = fig.colorbar(cont, ax=ax, location="right")
