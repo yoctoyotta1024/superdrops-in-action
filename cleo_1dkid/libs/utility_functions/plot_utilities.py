@@ -35,7 +35,9 @@ def save_figure(fig, binpath, figname):
         None
 
     """
-    filename = binpath / figname
+    from pathlib import Path
+
+    filename = Path(binpath) / figname
     fig.savefig(
         filename,
         dpi=400,

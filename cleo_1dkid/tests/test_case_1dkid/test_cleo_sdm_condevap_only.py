@@ -25,6 +25,11 @@ from PyMPDATA_examples.Shipway_and_Hill_2012 import si
 
 
 @pytest.fixture(scope="module")
+def binpath(pytestconfig):
+    return pytestconfig.getoption("binpath")
+
+
+@pytest.fixture(scope="module")
 def path2pycleo(pytestconfig):
     return pytestconfig.getoption("cleo_path2pycleo")
 
@@ -34,7 +39,7 @@ def config_filename(pytestconfig):
     return pytestconfig.getoption("cleo_test_1dkid_condevap_only_config_filename")
 
 
-def test_cleo_sdm_1dkid_condevap_only(path2pycleo, config_filename):
+def test_cleo_sdm_1dkid_condevap_only(binpath, path2pycleo, config_filename):
     """runs test of 1-D KiD rainshaft model using CLEO SDM for the
     microphysics scheme with only condensation/evaporation enabled.
 
@@ -58,8 +63,7 @@ def test_cleo_sdm_1dkid_condevap_only(path2pycleo, config_filename):
     run_name = "cleo_sdm_1dkid_condevap_only"
 
     ### path to directory to save data/plots in after model run
-    binpath = Path(__file__).parent.resolve() / "bin"  # i.e. [current directory]/bin/
-    binpath.mkdir(parents=False, exist_ok=True)
+    Path(binpath).mkdir(parents=False, exist_ok=True)
 
     ### time and grid parameters
     # NOTE: these must be consistent with CLEO initial condition binary files(!)

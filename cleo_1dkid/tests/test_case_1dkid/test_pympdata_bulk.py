@@ -17,6 +17,7 @@ https://opensource.org/licenses/BSD-3-Clause
 File Description:
 """
 
+import pytest
 import numpy as np
 from pathlib import Path
 from PyMPDATA_examples.Shipway_and_Hill_2012 import si
@@ -28,7 +29,12 @@ from libs.pympdata_bulk.bulk_scheme_condensation import (
 )
 
 
-def test_pympdata_bulk_scheme_1dkid():
+@pytest.fixture(scope="module")
+def binpath(pytestconfig):
+    return pytestconfig.getoption("binpath")
+
+
+def test_pympdata_bulk_scheme_1dkid(binpath):
     """runs test of 1-D KiD rainshaft model using bulk scheme for condensation
     extracted from pyMPDATA for the microphysics scheme.
 
@@ -40,8 +46,7 @@ def test_pympdata_bulk_scheme_1dkid():
     run_name = "pympdata_bulkmicrophys_1dkid"
 
     ### path to directory to save data/plots in after model run
-    binpath = Path(__file__).parent.resolve() / "bin"  # i.e. [current directory]/bin/
-    binpath.mkdir(parents=False, exist_ok=True)
+    Path(binpath).mkdir(parents=False, exist_ok=True)
 
     ### time and grid parameters
     z_delta = 25 * si.m
