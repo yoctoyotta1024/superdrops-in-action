@@ -55,8 +55,8 @@ jobs:
             -DKokkos_ARCH_NATIVE=ON -DKokkos_ENABLE_SERIAL=ON \
             -DCLEO_COUPLED_DYNAMICS=numpy \
             -DCLEO_DOMAIN=cartesian \
-            -DCLEO_PYTHON=python_path \
-          cd build && make && cd ..
+            -DCLEO_PYTHON=python_path
+          cd build && pwd && make && cd ..
 
       - name: Compile CLEO python bindings
         run: cd build && make -j 64 pycleo && cd ..
