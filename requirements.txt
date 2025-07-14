@@ -20,3 +20,4 @@ metpy
 mpi4py
 openmpi
 ruamel.yaml
+zarr
