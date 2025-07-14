@@ -23,66 +23,98 @@
 
 #include <Kokkos_Core.hpp>
 #include <concepts>
-#include <cstdint>
+#include <functional>
 #include <iostream>
 #include <memory>
+#include <string>
+#include <utility>
 
-#include "../cleoconstants.hpp"
 #include "../kokkosaliases.hpp"
 #include "gridboxes/gridbox.hpp"
 #include "observers/consttstep_observer.hpp"
 #include "observers/observers.hpp"
 #include "superdrops/sdmmonitor.hpp"
-#include "zarr/buffer.hpp"
 #include "zarr/xarray_zarr_array.hpp"
 
-
 /**
- * @brief Structure NullObserver does nothing at all.
- *
- * NullObserver defined for completion of Observer's Monoid Set.
- *
+ * @class DoKiDObs
+ * @brief Template class for functionality to observe things for KiD at the start of each timestep
+ * and write them to Zarr arrays in an Xarray dataset.
+ * @tparam Dataset Type of dataset.
+ * @tparam Store Type of store which dataset writes to.
  */
-struct KiDObserver {
-  /**
-   * @brief No operations before timestepping.
-   *
-   * @param d_gbxs The view of gridboxes in device memory.
-   */
-  void before_timestepping(const viewd_constgbx d_gbxs) const {}
+template <typename Dataset, typename Store>
+class DoKiDObs {
+ private:
+  Dataset &dataset; /**< Dataset to write data to. */
+  std::shared_ptr<XarrayZarrArray<Store, float>>
+      xzarr_ptr; /**< Pointer to time array in dataset. */
+  std::function<double(unsigned int)>
+      step2dimlesstime; /**< Function to convert timesteps to real time [assumed seconds]. */
 
   /**
-   * @brief No perations after timestepping.
+   * @brief Increment size of time dimension in dataset and write out current time of model (assumed
+   * seconds) to the array in the dataset.
+   *
+   * _Note:_ conversion of time from double precision (8 bytes double) to single precision (4 bytes
+   * float) in output.
+   *
+   * @param t_mdl Current model time.
+   */
+  void at_start_step(const unsigned int t_mdl) const {
+    const auto ntimes = size_t{dataset.get_dimension("time") + 1};
+    const auto timedim = std::pair<std::string, size_t>({"time", ntimes});
+    dataset.set_dimension(timedim);
+
+    const auto time = static_cast<float>(step2dimlesstime(t_mdl));
+    dataset.write_to_array(xzarr_ptr, time);
+  }
+
+ public:
+  /**
+   * @brief Constructor for DoKiDObs.
+   * @param dataset Dataset to write data to.
+   * @param store Store which dataset writes to.
+   * @param maxchunk Maximum number of elements in a chunk (1-D vector size).
+   * @param step2dimlesstime Function to convert model timesteps to a real time [assumed seconds].
+   */
+  DoKiDObs(Dataset &dataset, Store &store, const size_t maxchunk,
+            const std::function<double(unsigned int)> step2dimlesstime)
+      : dataset(dataset),
+        xzarr_ptr(std::make_shared<XarrayZarrArray<Store, float>>(
+            dataset.template create_coordinate_array<float>("time", "s", dlc::TIME0, maxchunk, 0))),
+        step2dimlesstime(step2dimlesstime) {}
+
+  /**
+   * @brief Destructor for DoKiDObs.
+   */
+  ~DoKiDObs() { dataset.write_arrayshape(xzarr_ptr); }
+
+  /**
+   * @brief Placeholder for before timestepping functionality and to make class satisfy observer
+   * concept.
+   */
+  void before_timestepping(const viewd_constgbx d_gbxs) const {
+    std::cout << "observer includes KiD observer\n";
+  }
+
+  /**
+   * @brief Placeholder for after timestepping functionality and to make class satisfy observer
+   * concept.
    */
   void after_timestepping() const {}
 
   /**
-   * @brief Next observation time is largest possible value.
+   * @brief Adapter to call at start step function which writes data to arrays in the dataset.
    *
-   * @param t_mdl Unsigned int for current timestep.
-   * @return The next observation time (maximum unsigned int).
-   */
-  unsigned int next_obs(const unsigned int t_mdl) const { return LIMITVALUES::uintmax; }
-
-  /**
-   * @brief Check if on step always returns false.
-   *
-   * Null observer is never on_step.
-   *
-   * @param t_mdl The unsigned int parameter.
-   * @return bool, always false.
-   */
-  bool on_step(const unsigned int t_mdl) const { return false; }
-
-  /**
-   * @brief No operations at the start of a step.
-   *
-   * @param t_mdl The unsigned int for the current timestep.
-   * @param d_gbxs The view of gridboxes in device memory.
+   * @param t_mdl Current model timestep.
+   * @param d_gbxs View of gridboxes on device.
    * @param d_supers View of superdrops on device.
    */
   void at_start_step(const unsigned int t_mdl, const viewd_constgbx d_gbxs,
-                     const subviewd_constsupers d_supers) const {}
+                     const subviewd_constsupers d_supers) const {
+    at_start_step(t_mdl);
+  }
 
   /**
    * @brief Get null monitor for SDM processes from observer.
