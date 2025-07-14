@@ -14,7 +14,7 @@ jobs:
       - name: Initialise Conda/Mamba
         uses: conda-incubator/setup-miniconda@v3
         with:
-          activate-environment: microtestsenv
+          activate-environment: superdrops-in-action
           auto-activate-base: false
           use-mamba: true
           miniforge-version: 'latest'
@@ -22,7 +22,7 @@ jobs:
 
       - name: Update Mamba Environment
         run: |
-          mamba env update -n microtestsenv -f environment.yaml
+          mamba env update -n superdrops-in-action -f environment.yaml
 
       - name: Mamba and Doxygen Info
         run: |

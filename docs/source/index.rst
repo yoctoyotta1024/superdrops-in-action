@@ -29,6 +29,7 @@ Contents
    usage/getstart
    usage/requirements
    usage/ourdocs
+   cleo_1dkid/cleo_1dkid
 
    GitHub Repo <https://github.com/yoctoyotta1024/superdrops-in-action.git>
    usage/contributing
