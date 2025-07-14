@@ -3,7 +3,7 @@
  *
  *
  * ----- CLEO -----
- * File: py_observers.hpp
+ * File: py_zarr.hpp
  * Project: pycleo
  * Created Date: Thursday 5th June 2025
  * Author: Clara Bayley (CB)
@@ -16,28 +16,31 @@
  * https://opensource.org/licenses/BSD-3-Clause
  * -----
  * File Description:
- * Python bindings to various different CLEO's Observers instantiations
+ * Python bindings to parts of CLEO's zarr library
  */
 
-#ifndef CLEO_1DKID_CLEO_DEPS_LIBS_PYCLEO_PY_OBSERVERS_HPP_
-#define CLEO_1DKID_CLEO_DEPS_LIBS_PYCLEO_PY_OBSERVERS_HPP_
+#ifndef CLEO_1DKID_CLEO_DEPS_LIBS_PYCLEO_PY_ZARR_HPP_
+#define CLEO_1DKID_CLEO_DEPS_LIBS_PYCLEO_PY_ZARR_HPP_
 
 #include <pybind11/pybind11.h>
+#include <pybind11/stl/filesystem.h>
 
 #include "./pycleo_aliases.hpp"
 #include "configuration/config.hpp"
-#include "initialise/timesteps.hpp"
-#include "observers/observers.hpp"
-#include "observers/consttstep_observer.hpp"
-#include "observers/kid_observer.hpp"
 #include "zarr/simple_dataset.hpp"
 #include "zarr/fsstore.hpp"
 
 namespace py = pybind11;
 namespace pyca = pycleo_aliases;
 
-void pyNullObserver(py::module &m);
-void pyKiDObserver(py::module &m);
-void pycreate_kid_observer(py::module &m);
+inline void pyFSStore(py::module &m) {
+  py::class_<FSStore>(m, "FSStore")
+      .def(py::init<std::filesystem::path>());
+}
 
-#endif  // CLEO_1DKID_CLEO_DEPS_LIBS_PYCLEO_PY_OBSERVERS_HPP_
+inline void pySimpleDataset(py::module &m) {
+  py::class_<SimpleDataset<FSStore>>(m, "SimpleDataset")
+      .def(py::init<FSStore &>());
+}
+
+#endif  // CLEO_1DKID_CLEO_DEPS_LIBS_PYCLEO_PY_ZARR_HPP_

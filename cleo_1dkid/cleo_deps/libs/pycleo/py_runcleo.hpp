@@ -35,6 +35,7 @@
 #include "initialise/init_supers_from_binary.hpp"
 #include "initialise/initgbxsnull.hpp"
 #include "observers/observers.hpp"
+#include "observers/kid_observer.hpp"
 #include "runcleo/creategbxs.hpp"
 #include "runcleo/createsupers.hpp"
 #include "runcleo/sdmmethods.hpp"
@@ -51,5 +52,6 @@ void pycreate_gbxs_cartesian_null(py::module &m);
 
 void pyCartesianNullSDMMethods(py::module &m);
 void pyCartesianSDMMethods(py::module &m);
+void pyKiDSDMMethods(py::module &m);
 
 #endif  // CLEO_1DKID_CLEO_DEPS_LIBS_PYCLEO_PY_RUNCLEO_HPP_

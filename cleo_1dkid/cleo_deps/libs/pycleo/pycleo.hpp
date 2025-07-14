@@ -35,6 +35,7 @@
 #include "./py_observers.hpp"
 #include "./py_runcleo.hpp"
 #include "./py_superdrops.hpp"
+#include "./py_zarr.hpp"
 #include "configuration/config.hpp"
 #include "coupldyn_numpy/pycoupldyn_numpy.hpp"
 
@@ -105,11 +106,16 @@ PYBIND11_MODULE(pycleo, m) {
   pyCartesianMoveSupersInDomain(m);
 
   /* observers */
+  pyFSStore(m);
+  pySimpleDataset(m);
   pyNullObserver(m);
+  pyKiDObserver(m);
+  pycreate_kid_observer(m);
 
   /* sdmmethods */
   pyCartesianNullSDMMethods(m);
   pyCartesianSDMMethods(m);
+  pyKiDSDMMethods(m);
 }
 
 #endif  // CLEO_1DKID_CLEO_DEPS_LIBS_PYCLEO_PYCLEO_HPP_

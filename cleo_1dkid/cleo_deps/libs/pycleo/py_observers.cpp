@@ -26,3 +26,22 @@ void pyNullObserver(py::module &m) {
       .def(py::init())
       .def("next_obs", &pyca::obs_null::next_obs, py::arg("t_mdl"));
 }
+
+void pyKiDObserver(py::module &m) {
+  py::class_<pyca::obs_kid>(m, "KiDObserver")
+      .def(py::init<unsigned int, DoKiDObs<SimpleDataset<FSStore>, FSStore>>())
+      .def("next_obs", &pyca::obs_kid::next_obs, py::arg("t_mdl"));
+}
+
+void pycreate_kid_observer(py::module &m) {
+  m.def(
+      "pycreate_kid_observer", [](const Config &config, const Timesteps &tsteps,
+                                    SimpleDataset<FSStore> &dataset, FSStore &store) {
+        const auto interval = tsteps.get_obsstep();
+        const auto maxchunk = config.get_maxchunk();
+
+        return ConstTstepObserver(interval, DoKiDObs(dataset, store, maxchunk, &step2dimlesstime));
+      },
+      "returns KiDObserver instance",
+      py::arg("config"), py::arg("tsteps"), py::arg("dataset"), py::arg("store"));
+}

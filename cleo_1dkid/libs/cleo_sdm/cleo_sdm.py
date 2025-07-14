@@ -49,7 +49,9 @@ def create_sdm(config, tsteps, is_motion):
     )
 
     print("PYCLEO STATUS: creating Observer")
-    obs = pycleo.NullObserver()
+    store = pycleo.FSStore(config.get_zarrbasedir())
+    dataset = pycleo.SimpleDataset(store)
+    obs = pycleo.pycreate_kid_observer(config, tsteps, dataset, store)
 
     print("PYCLEO STATUS: creating MicrophysicalProcess")
     micro = pycleo.pycreate_microphysical_process(
@@ -69,10 +71,10 @@ def create_sdm(config, tsteps, is_motion):
     move = pycleo.CartesianMoveSupersInDomain(motion, transport, boundary_conditions)
 
     print("PYCLEO STATUS: creating SDM Methods")
-    sdm = pycleo.CartesianSDMMethods(tsteps.get_couplstep(), gbxmaps, micro, move, obs)
+    sdm = pycleo.KiDSDMMethods(tsteps.get_couplstep(), gbxmaps, micro, move, obs)
 
     print(f"PYCLEO STATUS: SDM created with couplstep = {sdm.get_couplstep()}")
-    return sdm
+    return sdm, dataset, store
 
 
 def prepare_to_timestep_sdm(config, sdm):
@@ -140,7 +142,7 @@ class CleoSDM:
         )
         self.comms = coupldyn_numpy.NumpyComms()
 
-        self.sdm = create_sdm(config, tsteps, is_motion)
+        self.sdm, self.dataset, self.store = create_sdm(config, tsteps, is_motion)
         self.sdm, self.gbxs, self.allsupers = prepare_to_timestep_sdm(config, self.sdm)
 
     def run(self, timestep):
