@@ -70,7 +70,7 @@ jobs:
             -o ./cleo_1dkid/share/cleo_initial_conditions/generic/dimlessGBxboundaries.dat
           curl https://swiftbrowser.dkrz.de/public/dkrz_8f1b1e92-f07c-41c5-a4ae-8089ec495d87/superdrops-in-action/cleo_1dkid/share/cleo_initial_conditions/generic/dimlessSDsinit.dat \
             -o ./cleo_1dkid/share/cleo_initial_conditions/generic/dimlessSDsinit.dat
-          pwd && echo "ls ./cleo_1dkid/share/cleo_initial_conditions/generic/" && ls ./cleo_1dkid/share/cleo_initial_conditions/generic/
+          pwd && echo "ls -l ./cleo_1dkid/share/cleo_initial_conditions/generic/" && ls -l ./cleo_1dkid/share/cleo_initial_conditions/generic/
 
       - name: Download CLEO Initial Condition Files for 1-D KiD Test
         run: |
@@ -89,9 +89,9 @@ jobs:
             -o ./cleo_1dkid/share/cleo_initial_conditions/1dkid/fullscheme/dimlessGBxboundaries.dat
           curl https://swiftbrowser.dkrz.de/public/dkrz_8f1b1e92-f07c-41c5-a4ae-8089ec495d87/superdrops-in-action/cleo_1dkid/share/cleo_initial_conditions/1dkid/fullscheme/dimlessSDsinit.dat \
             -o ./cleo_1dkid/share/cleo_initial_conditions/1dkid/fullscheme/dimlessSDsinit.dat
-          pwd && echo "ls ./cleo_1dkid/share/cleo_initial_conditions/1dkid/" && ls ./cleo_1dkid/share/cleo_initial_conditions/1dkid/
-          echo "ls ./cleo_1dkid/share/cleo_initial_conditions/1dkid/condevap_only/" && ls ./cleo_1dkid/share/cleo_initial_conditions/1dkid/condevap_only/
-          echo "ls ./cleo_1dkid/share/cleo_initial_conditions/1dkid/fullscheme/" && ls ./cleo_1dkid/share/cleo_initial_conditions/1dkid/fullscheme/
+          pwd && echo "ls -l ./cleo_1dkid/share/cleo_initial_conditions/1dkid/" && ls -l ./cleo_1dkid/share/cleo_initial_conditions/1dkid/
+          echo "ls -l ./cleo_1dkid/share/cleo_initial_conditions/1dkid/condevap_only/" && ls -l ./cleo_1dkid/share/cleo_initial_conditions/1dkid/condevap_only/
+          echo "ls -l ./cleo_1dkid/share/cleo_initial_conditions/1dkid/fullscheme/" && ls -l ./cleo_1dkid/share/cleo_initial_conditions/1dkid/fullscheme/
 
       - name: Test with pytest
         run: |
