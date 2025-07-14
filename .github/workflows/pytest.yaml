@@ -48,7 +48,7 @@ jobs:
         run: |
           which python
           python_path=$(which python)
-          cmake  -S ./cleo_1dkid/ -B ./build \
+          cmake  -S ./cleo_1dkid/cleo_deps/ -B ./build \
             -DCMAKE_C_COMPILER=mpicc \
             -DCMAKE_CXX_COMPILER=mpic++ \
             -DCMAKE_CXX_FLAGS="-Werror -Wall -pedantic -Wno-unused-parameter -O3" \
@@ -94,4 +94,6 @@ jobs:
           echo "ls ./cleo_1dkid/share/cleo_initial_conditions/1dkid/fullscheme/" && ls ./cleo_1dkid/share/cleo_initial_conditions/1dkid/fullscheme/
 
       - name: Test with pytest
-        run: pytest ./cleo_1dkid/tests
+        run: |
+          mkdir ./build/bin/ && mkdir ./build/bin/generic/ && mkdir ./build/bin/condevap_only/ && mkdir ./build/bin/fullscheme/
+          pytest ./cleo_1dkid/tests
