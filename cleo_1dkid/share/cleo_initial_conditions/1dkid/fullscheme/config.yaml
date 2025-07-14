@@ -1,0 +1,71 @@
+---
+# ----- CLEO -----
+# File: config.yaml
+# Project: config
+# Created Date: Friday 27th June 2025
+# Author: Clara Bayley (CB)
+# Additional Contributors:
+# -----
+# Last Modified: Friday 27th June 2025
+# Modified By: CB
+# -----
+# License: BSD 3-Clause "New" or "Revised" License
+# https://opensource.org/licenses/BSD-3-Clause
+# -----
+# Copyright (c) 2023 MPI-M, Clara Bayley
+# -----
+# File Description:
+# Configuration file for CLEO SDM coupled to a dynamics solver.
+# Note: The initial superdroplets data read from file "initsupers_filename" can be made with
+# CLEO's pySD module (see Python script "create_initsuperdropsbinary_script.py" for usage).
+# Likewise the "grid_filename" can be made using pySD (see "create_gbxboundariesbinary_script.py"),
+# and so can the thermodynamics files when using coupled thermodynamics "fromfile".
+#
+
+### Kokkos Initialization Parameters ###
+kokkos_settings:
+  num_threads : 64                                     # number of threads for host parallel backend
+
+### SDM Runtime Parameters ###
+domain:
+  nspacedims : 1                                       # no. of spatial dimensions to model
+  ngbxs : 128                                          # total number of Gbxs
+  maxnsupers: 1024                                     # maximum number of SDs
+
+timesteps:
+  CONDTSTEP : 0.1                                       # time between SD condensation [s]
+  COLLTSTEP : 1.25                                      # time between SD collision [s]
+  MOTIONTSTEP : 1.25                                    # time between SDM motion [s]
+  COUPLTSTEP : 1.25                                     # time between dynamic couplings [s]
+  OBSTSTEP : 900                                        # time between SDM observations [s]
+  T_END : 900                                           # time span of integration from 0s to T_END [s]
+
+### Initialisation Parameters ###
+inputfiles:
+  constants_filename : ./build/_deps/cleo-src/libs/cleoconstants.hpp  # name of file for values of physical constants
+  grid_filename : ./share/cleo_initial_conditions/1dkid/fullscheme/dimlessGBxboundaries.dat  # binary filename for initialisation of GBxs / GbxMaps
+
+initsupers:
+  type: frombinary                                     # type of initialisation of super-droplets
+  initsupers_filename : ./share/cleo_initial_conditions/1dkid/fullscheme/dimlessSDsinit.dat  # binary filename for initialisation of SDs
+
+### Output Parameters ###
+outputdata:
+  setup_filename : ./build/bin/1dkid_fullscheme_setup.txt     # .txt filename to copy configuration to
+  zarrbasedir : ./build/bin/1dkid_fullscheme_sol.zarr  # zarr store base directory
+  maxchunk : 2500000                         # maximum no. of elements in chunks of zarr store array
+
+### Microphysics Parameters ###
+microphysics:
+  condensation:
+    do_alter_thermo : true                             # true = cond/evap alters the thermodynamic state
+    maxniters : 50                                     # maximum no. iterations of Newton Raphson Method
+    MINSUBTSTEP : 0.005                                # minimum subtimestep in cases of substepping [s]
+    rtol : 0.0                                         # relative tolerance for implicit Euler integration
+    atol : 0.001                                       # absolute tolerance for implicit Euler integration
+
+### Pycleo (Python Bindings) Parameters ###
+pycleo:
+  enable_terminal_velocity : true                                 # true enables terminal velocity in superdroplet motion
+  enable_condensation : true                                       # true enables condensation in microphysics
+  enable_collisions : true                                        # true enables collisions in microphysics
