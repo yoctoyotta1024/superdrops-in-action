@@ -35,6 +35,7 @@
 #include "../kokkosaliases.hpp"
 #include "cartesiandomain/cartesian_decomposition.hpp"
 #include "cartesiandomain/doubly_periodic_domain.hpp"
+#include "cartesiandomain/kid_reinit.hpp"
 
 namespace dlc = dimless_constants;
 
@@ -302,7 +303,7 @@ struct CartesianMaps {
    */
   KOKKOS_FUNCTION
   unsigned int get_local_bounding_gridbox(const unsigned int gbxindex, double& coord3,
-                                          double& coord1, double& coord2) const;
+                                          double& coord1, double& coord2, double& radius) const;
 };
 
 #endif  // CLEO_1DKID_CLEO_DEPS_LIBS_CARTESIANDOMAIN_CARTESIANMAPS_HPP_

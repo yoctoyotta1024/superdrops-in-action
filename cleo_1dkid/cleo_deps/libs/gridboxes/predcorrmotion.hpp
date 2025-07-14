@@ -91,12 +91,14 @@ struct PredCorrMotion {
     auto coord3 = drop.get_coord3();
     auto coord1 = drop.get_coord1();
     auto coord2 = drop.get_coord2();
-    const auto idx = gbxmaps.get_local_bounding_gridbox(gbxindex, coord3, coord1,
-                                                        coord2);  // drop_coords may change(!)
+    auto radius = drop.get_radius();
+    // (!) drop_coords and radius may change inside get_local_bounding_gridbox (!)
+    const auto idx = gbxmaps.get_local_bounding_gridbox(gbxindex, coord3, coord1, coord2, radius);
 
     // Sets the updated superdroplet coordinates and gridbox index
     drop.set_coords(coord3, coord1, coord2);
     drop.set_sdgbxindex(idx);
+    drop.change_radius(radius);
 
     // If the index is non-local return
     // For superdrops going to other processes checks will be perfomed in the receiver

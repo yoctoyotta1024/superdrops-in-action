@@ -40,10 +40,6 @@ jobs:
           which python
           python --version
 
-      - name: Install Pybind11
-        run: |
-          git submodule update --init
-
       - name: Build Pybind11 module for C++ code
         run: |
           which python
@@ -64,11 +60,11 @@ jobs:
       - name: Download CLEO Initial Condition Files for Generic Test
         run: |
           mkdir -p ./cleo_1dkid/share/cleo_initial_conditions/generic/
-          curl https://swiftbrowser.dkrz.de/public/dkrz_8f1b1e92-f07c-41c5-a4ae-8089ec495d87/superdrops-in-action/cleo_1dkid/share/cleo_initial_conditions/generic/config.yaml \
+          curl https://swift.dkrz.de/v1/dkrz_8f1b1e92-f07c-41c5-a4ae-8089ec495d87/superdrops-in-action/cleo_1dkid/share/cleo_initial_conditions/generic/config.yaml \
             -o ./cleo_1dkid/share/cleo_initial_conditions/generic/config.yaml
-          curl https://swiftbrowser.dkrz.de/public/dkrz_8f1b1e92-f07c-41c5-a4ae-8089ec495d87/superdrops-in-action/cleo_1dkid/share/cleo_initial_conditions/generic/dimlessGBxboundaries.dat \
+          curl https://swift.dkrz.de/v1/dkrz_8f1b1e92-f07c-41c5-a4ae-8089ec495d87/superdrops-in-action/cleo_1dkid/share/cleo_initial_conditions/generic/dimlessGBxboundaries.dat \
             -o ./cleo_1dkid/share/cleo_initial_conditions/generic/dimlessGBxboundaries.dat
-          curl https://swiftbrowser.dkrz.de/public/dkrz_8f1b1e92-f07c-41c5-a4ae-8089ec495d87/superdrops-in-action/cleo_1dkid/share/cleo_initial_conditions/generic/dimlessSDsinit.dat \
+          curl https://swift.dkrz.de/v1/dkrz_8f1b1e92-f07c-41c5-a4ae-8089ec495d87/superdrops-in-action/cleo_1dkid/share/cleo_initial_conditions/generic/dimlessSDsinit.dat \
             -o ./cleo_1dkid/share/cleo_initial_conditions/generic/dimlessSDsinit.dat
           pwd && echo "ls -l ./cleo_1dkid/share/cleo_initial_conditions/generic/" && ls -l ./cleo_1dkid/share/cleo_initial_conditions/generic/
 
@@ -77,17 +73,17 @@ jobs:
           mkdir -p ./cleo_1dkid/share/cleo_initial_conditions/1dkid/
           mkdir -p ./cleo_1dkid/share/cleo_initial_conditions/1dkid/condevap_only/
           mkdir -p ./cleo_1dkid/share/cleo_initial_conditions/1dkid/fullscheme/
-          curl https://swiftbrowser.dkrz.de/public/dkrz_8f1b1e92-f07c-41c5-a4ae-8089ec495d87/superdrops-in-action/cleo_1dkid/share/cleo_initial_conditions/1dkid/condevap_only/config.yaml \
+          curl https://swift.dkrz.de/v1/dkrz_8f1b1e92-f07c-41c5-a4ae-8089ec495d87/superdrops-in-action/cleo_1dkid/share/cleo_initial_conditions/1dkid/condevap_only/config.yaml \
             -o ./cleo_1dkid/share/cleo_initial_conditions/1dkid/condevap_only/config.yaml
-          curl https://swiftbrowser.dkrz.de/public/dkrz_8f1b1e92-f07c-41c5-a4ae-8089ec495d87/superdrops-in-action/cleo_1dkid/share/cleo_initial_conditions/1dkid/condevap_only/dimlessGBxboundaries.dat \
+          curl https://swift.dkrz.de/v1/dkrz_8f1b1e92-f07c-41c5-a4ae-8089ec495d87/superdrops-in-action/cleo_1dkid/share/cleo_initial_conditions/1dkid/condevap_only/dimlessGBxboundaries.dat \
             -o ./cleo_1dkid/share/cleo_initial_conditions/1dkid/condevap_only/dimlessGBxboundaries.dat
-          curl https://swiftbrowser.dkrz.de/public/dkrz_8f1b1e92-f07c-41c5-a4ae-8089ec495d87/superdrops-in-action/cleo_1dkid/share/cleo_initial_conditions/1dkid/condevap_only/dimlessSDsinit.dat \
+          curl https://swift.dkrz.de/v1/dkrz_8f1b1e92-f07c-41c5-a4ae-8089ec495d87/superdrops-in-action/cleo_1dkid/share/cleo_initial_conditions/1dkid/condevap_only/dimlessSDsinit.dat \
             -o ./cleo_1dkid/share/cleo_initial_conditions/1dkid/condevap_only/dimlessSDsinit.dat
-          curl https://swiftbrowser.dkrz.de/public/dkrz_8f1b1e92-f07c-41c5-a4ae-8089ec495d87/superdrops-in-action/cleo_1dkid/share/cleo_initial_conditions/1dkid/fullscheme/config.yaml \
+          curl https://swift.dkrz.de/v1/dkrz_8f1b1e92-f07c-41c5-a4ae-8089ec495d87/superdrops-in-action/cleo_1dkid/share/cleo_initial_conditions/1dkid/fullscheme/config.yaml \
             -o ./cleo_1dkid/share/cleo_initial_conditions/1dkid/fullscheme/config.yaml
-          curl https://swiftbrowser.dkrz.de/public/dkrz_8f1b1e92-f07c-41c5-a4ae-8089ec495d87/superdrops-in-action/cleo_1dkid/share/cleo_initial_conditions/1dkid/fullscheme/dimlessGBxboundaries.dat \
+          curl https://swift.dkrz.de/v1/dkrz_8f1b1e92-f07c-41c5-a4ae-8089ec495d87/superdrops-in-action/cleo_1dkid/share/cleo_initial_conditions/1dkid/fullscheme/dimlessGBxboundaries.dat \
             -o ./cleo_1dkid/share/cleo_initial_conditions/1dkid/fullscheme/dimlessGBxboundaries.dat
-          curl https://swiftbrowser.dkrz.de/public/dkrz_8f1b1e92-f07c-41c5-a4ae-8089ec495d87/superdrops-in-action/cleo_1dkid/share/cleo_initial_conditions/1dkid/fullscheme/dimlessSDsinit.dat \
+          curl https://swift.dkrz.de/v1/dkrz_8f1b1e92-f07c-41c5-a4ae-8089ec495d87/superdrops-in-action/cleo_1dkid/share/cleo_initial_conditions/1dkid/fullscheme/dimlessSDsinit.dat \
             -o ./cleo_1dkid/share/cleo_initial_conditions/1dkid/fullscheme/dimlessSDsinit.dat
           pwd && echo "ls -l ./cleo_1dkid/share/cleo_initial_conditions/1dkid/" && ls -l ./cleo_1dkid/share/cleo_initial_conditions/1dkid/
           echo "ls -l ./cleo_1dkid/share/cleo_initial_conditions/1dkid/condevap_only/" && ls -l ./cleo_1dkid/share/cleo_initial_conditions/1dkid/condevap_only/
