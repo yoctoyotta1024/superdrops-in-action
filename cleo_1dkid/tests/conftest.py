@@ -22,13 +22,18 @@ configuration file for pytests to allow tests to receive arguments
 def pytest_addoption(parser):
     from pathlib import Path
 
-    default_cleo_path2pycleo = Path.cwd() / "build" / "_deps" / "cleo-build" / "pycleo"
+    default_cleo_path2pycleo = Path.cwd() / "build" / "pycleo"
     parser.addoption(
         "--cleo_path2pycleo", action="store", default=str(default_cleo_path2pycleo)
     )
 
     default_cleo_test_generic_config_filename = (
-        Path.cwd() / "src" / "cleo_initial_conditions" / "generic" / "config.yaml"
+        Path.cwd()
+        / "cleo_1dkid"
+        / "share"
+        / "cleo_initial_conditions"
+        / "generic"
+        / "config.yaml"
     )
     parser.addoption(
         "--cleo_test_generic_config_filename",
@@ -36,7 +41,9 @@ def pytest_addoption(parser):
         default=str(default_cleo_test_generic_config_filename),
     )
 
-    cleo_initconds_1dkid_path = Path.cwd() / "src" / "cleo_initial_conditions" / "1dkid"
+    cleo_initconds_1dkid_path = (
+        Path.cwd() / "cleo_1dkid" / "share" / "cleo_initial_conditions" / "1dkid"
+    )
     default_cleo_test_1dkid_condevap_only_config_filename = (
         cleo_initconds_1dkid_path / "condevap_only" / "config.yaml"
     )
