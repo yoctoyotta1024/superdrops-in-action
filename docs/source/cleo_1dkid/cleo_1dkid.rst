@@ -4,6 +4,10 @@ CLEO 1-D KiD Test Case
 The 1-D KiD test case uses the PYMPDATA libray alongside CLEO SDM. To run CLEO's C++ code alongside
 PYMPDATA, we first make the pycleo Python module using pybind11.
 
+CLEO's libraries (``libs``) and external depenencies (``extern``) from v0.49.0 have been copied
+into the directory ``cleo_1dkid/cleo_deps``. Some files, e.g. to set the KiD boundary conditions
+have since been modified.
+
 Creating The Python Bindings
 ----------------------------
 
@@ -19,7 +23,7 @@ Then call the helper script with the source and build directories you want to us
 
 .. code-block:: console
 
-  $ ./cleo_1dkid/scripts/compile_pycleo_levante.sh $HOME/superdrops-in-action/cleo_1dkid $HOME/superdrops-in-action/build
+  $ ./cleo_1dkid/scripts/compile_pycleo_levante.sh $HOME/superdrops-in-action/cleo_1dkid/cleo_deps $HOME/superdrops-in-action/build
 
 After making the bindings, the ``pycleo`` Python module can used just like an ordinary python module.
 
