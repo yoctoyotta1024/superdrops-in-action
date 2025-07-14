@@ -82,6 +82,8 @@ def perform_1dkid_test_case(
     plot_1dkid_moisture(out, z_delta, z_max, figpath, run_name)
     print("------------------------")
 
+    return out
+
 
 def plot_1dkid_moisture(out, z_delta, z_max, figpath, run_name):
     """
