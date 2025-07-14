@@ -42,11 +42,3 @@ You can install Python packages to an existing Conda (or Micromamba) environment
 
   $ micromamba env create --file=environment.yaml
   $ micromamba activate [your environment]
-
-YAC
----
-
-YAC is one of the external libraries of CLEO, which itself is dependent on YAXT. You will need to
-have both installed somewhere in order to compile CLEO. Please see
-`CLEO's documentation <https://yoctoyotta1024.github.io/CLEO/usage/requirements.html#yac>`_
-for more details.

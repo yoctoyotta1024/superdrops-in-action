@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="Contributing" href="../usage/contributing.html" /><link rel="prev" title="Our Docs" href="../usage/ourdocs.html" />
 
     <!-- Generated with Sphinx 8.2.3 and Furo 2024.08.06 -->
-        <title>CLEO 1-D KiD Test Case - Microphysics Test Cases 0.0.0 documentation</title>
+        <title>CLEO 1-D KiD Test Case - superdrops-in-action 0.0.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=354aac6f" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
@@ -167,7 +167,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">Microphysics Test Cases 0.0.0 documentation</div></a>
+      <a href="../index.html"><div class="brand">superdrops-in-action 0.0.0 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -191,7 +191,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../index.html">
   
   
-  <span class="sidebar-brand-text">Microphysics Test Cases 0.0.0 documentation</span>
+  <span class="sidebar-brand-text">superdrops-in-action 0.0.0 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -252,17 +252,20 @@
 <h1>CLEO 1-D KiD Test Case<a class="headerlink" href="#cleo-1-d-kid-test-case" title="Link to this heading">¶</a></h1>
 <p>The 1-D KiD test case uses the PYMPDATA libray alongside CLEO SDM. To run CLEO’s C++ code alongside
 PYMPDATA, we first make the pycleo Python module using pybind11.</p>
+<p>CLEO’s libraries (<code class="docutils literal notranslate"><span class="pre">libs</span></code>) and external depenencies (<code class="docutils literal notranslate"><span class="pre">extern</span></code>) from v0.49.0 have been copied
+into the directory <code class="docutils literal notranslate"><span class="pre">cleo_1dkid/cleo_deps</span></code>. Some files, e.g. to set the KiD boundary conditions
+have since been modified.</p>
 <section id="creating-the-python-bindings">
 <h2>Creating The Python Bindings<a class="headerlink" href="#creating-the-python-bindings" title="Link to this heading">¶</a></h2>
 <p>To build the python bindings for CLEO you can simply do
-`` cmake -S ./ -B ./build &amp;&amp; cd build &amp;&amp; make pycleo`` inside the <code class="docutils literal notranslate"><span class="pre">cleo_1dkid</span></code> directory. However,
+`` cmake -S ./cleo_1dkid/ -B ./build &amp;&amp; cd build &amp;&amp; make pycleo``. However,
 you need to have certain <a class="reference internal" href="../usage/requirements.html#requirements"><span class="std std-ref">requirements</span></a> fulfilled first
 (compiler versions etc.). On Levante, we therefore reccomend you use the bash helper script
-<code class="docutils literal notranslate"><span class="pre">scripts/compile_pycleo_levante.sh</span></code> instead of directly calling cmake.</p>
+<code class="docutils literal notranslate"><span class="pre">cleo_1dkid/scripts/bash/compile_pycleo_levante.sh</span></code> instead of directly calling cmake.</p>
 <p>First activate the python environment you want to use, e.g.
 <code class="docutils literal notranslate"><span class="pre">micromamba</span> <span class="pre">activate</span> <span class="pre">superdrops-in-action</span></code>.
 Then call the helper script with the source and build directories you want to use, e.g.</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>./scripts/compile_bindings_levante.sh<span class="w"> </span><span class="nv">$HOME</span>/superdrops-in-action/cleo_1dkid<span class="w"> </span><span class="nv">$HOME</span>/superdrops-in-action/build
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>./cleo_1dkid/scripts/bash/compile_pycleo_levante.sh<span class="w"> </span><span class="nv">$HOME</span>/superdrops-in-action/cleo_1dkid/cleo_deps<span class="w"> </span><span class="nv">$HOME</span>/superdrops-in-action/build
 </pre></div>
 </div>
 <p>After making the bindings, the <code class="docutils literal notranslate"><span class="pre">pycleo</span></code> Python module can used just like an ordinary python module.</p>
