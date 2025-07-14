@@ -19,7 +19,7 @@ Then call the helper script with the source and build directories you want to us
 
 .. code-block:: console
 
-  $ ./scripts/compile_bindings_levante.sh $HOME/superdrops-in-action/cleo_1dkid $HOME/superdrops-in-action/build
+  $ ./cleo_1dkid/scripts/compile_pycleo_levante.sh $HOME/superdrops-in-action/cleo_1dkid $HOME/superdrops-in-action/build
 
 After making the bindings, the ``pycleo`` Python module can used just like an ordinary python module.
 
