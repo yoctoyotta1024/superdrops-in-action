@@ -22,14 +22,14 @@ Helpful functions for plotting
 from ..thermo.output_thermodynamics import OutputThermodynamics
 
 
-def save_figure(fig, binpath, figname):
+def save_figure(fig, figpath, figname):
     """
     Save a Matplotlib figure as a PNG file with high resolution and tight bounding box.
 
     Args:
         fig (matplotlib.figure.Figure): The Matplotlib figure to be saved.
-        binpath (Path): The directory where the figure will be saved.
-        figname (str): The name of the PNG file to save in binpath directory.
+        figpath (Path): The directory where the figure will be saved.
+        figname (str): The name of the PNG file to save in figpath directory.
 
     Returns:
         None
@@ -37,7 +37,7 @@ def save_figure(fig, binpath, figname):
     """
     from pathlib import Path
 
-    filename = Path(binpath) / figname
+    filename = Path(figpath) / figname
     fig.savefig(
         filename,
         dpi=400,
@@ -45,7 +45,7 @@ def save_figure(fig, binpath, figname):
         facecolor="w",
         format="png",
     )
-    print("Figure .png saved as: " + str(binpath) + "/" + figname)
+    print("Figure .png saved as: " + str(figpath) + "/" + figname)
 
 
 def plot_thermodynamics_output_timeseries(ax, out: OutputThermodynamics, var: str):

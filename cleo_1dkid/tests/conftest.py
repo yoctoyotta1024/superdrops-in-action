@@ -22,8 +22,8 @@ configuration file for pytests to allow tests to receive arguments
 def pytest_addoption(parser):
     from pathlib import Path
 
-    default_binpath = Path.cwd() / "build" / "bin"
-    parser.addoption("--binpath", action="store", default=str(default_binpath))
+    default_figpath = Path.cwd() / "build" / "bin"
+    parser.addoption("--figpath", action="store", default=str(default_figpath))
 
     default_cleo_path2pycleo = Path.cwd() / "build" / "pycleo"
     parser.addoption(

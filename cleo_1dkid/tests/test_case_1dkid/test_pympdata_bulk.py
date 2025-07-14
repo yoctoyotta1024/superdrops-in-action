@@ -30,11 +30,11 @@ from libs.pympdata_bulk.bulk_scheme_condensation import (
 
 
 @pytest.fixture(scope="module")
-def binpath(pytestconfig):
-    return pytestconfig.getoption("binpath")
+def figpath(pytestconfig):
+    return pytestconfig.getoption("figpath")
 
 
-def test_pympdata_bulk_scheme_1dkid(binpath):
+def test_pympdata_bulk_scheme_1dkid(figpath):
     """runs test of 1-D KiD rainshaft model using bulk scheme for condensation
     extracted from pyMPDATA for the microphysics scheme.
 
@@ -46,7 +46,7 @@ def test_pympdata_bulk_scheme_1dkid(binpath):
     run_name = "pympdata_bulkmicrophys_1dkid"
 
     ### path to directory to save data/plots in after model run
-    Path(binpath).mkdir(parents=False, exist_ok=True)
+    Path(figpath).mkdir(parents=False, exist_ok=True)
 
     ### time and grid parameters
     z_delta = 25 * si.m
@@ -86,6 +86,6 @@ def test_pympdata_bulk_scheme_1dkid(binpath):
         thermo_init,
         microphys_scheme,
         advect_hydrometeors,
-        binpath,
+        figpath,
         run_name,
     )

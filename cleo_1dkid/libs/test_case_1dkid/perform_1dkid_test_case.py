@@ -36,7 +36,7 @@ def perform_1dkid_test_case(
     thermo_init,
     microphys_scheme,
     advect_hydrometeors,
-    binpath,
+    figpath,
     run_name,
 ):
     """
@@ -44,7 +44,7 @@ def perform_1dkid_test_case(
 
     This function runs a 1-D KiD rainshaft model with a specified microphysics scheme and
     KiD dynamics given the initial thermodynamics. The data is then saved/plotted in the
-    binpath directory using the run_name as a label.
+    figpath directory using the run_name as a label.
 
     Args:
         z_delta (float): Grid spacing of 1-D column (m).
@@ -53,11 +53,11 @@ def perform_1dkid_test_case(
         timestep (float): Timestep for the simulation (s).
         thermo_init (Thermodynamics): Initial thermodynamics.
         microphys_scheme: Microphysics scheme to use in test run.
-        binpath (str): Path to the directory where data/plots will be saved.
+        figpath (str): Path to the directory where data/plots will be saved.
         run_name (str): Name of the test run (used for labeling output).
 
     Raises:
-        AssertionError: If the specified binpath does not exist or if run_name is empty.
+        AssertionError: If the specified figpath does not exist or if run_name is empty.
 
     Returns:
         None
@@ -77,13 +77,13 @@ def perform_1dkid_test_case(
     print("--------------------------------")
 
     print("--- Plotting Results ---")
-    assert Path(binpath).exists(), "The specified binpath does not exist."
+    assert Path(figpath).exists(), "The specified figpath does not exist."
     assert run_name, "The run_name cannot be empty."
-    plot_1dkid_moisture(out, z_delta, z_max, binpath, run_name)
+    plot_1dkid_moisture(out, z_delta, z_max, figpath, run_name)
     print("------------------------")
 
 
-def plot_1dkid_moisture(out, z_delta, z_max, binpath, run_name):
+def plot_1dkid_moisture(out, z_delta, z_max, figpath, run_name):
     """
     Plots the 1D Kinematic Driver (KID) results and saves the plots.
 
@@ -94,7 +94,7 @@ def plot_1dkid_moisture(out, z_delta, z_max, binpath, run_name):
             The vertical resolution of the model.
         z_max: float
             The maximum height of the model domain.
-        binpath: str
+        figpath: str
             The path where the plot images will be saved.
         run_name: str
             The name of the run, used for labeling the plots and the output file name.
@@ -103,9 +103,9 @@ def plot_1dkid_moisture(out, z_delta, z_max, binpath, run_name):
         None
 
     """
-    assert Path(binpath).exists()
+    assert Path(figpath).exists()
     assert run_name
-    print("plotting " + run_name + " and saving plots in: " + str(binpath))
+    print("plotting " + run_name + " and saving plots in: " + str(figpath))
 
     fig, axs = plt.subplots(
         nrows=6,
@@ -177,7 +177,7 @@ def plot_1dkid_moisture(out, z_delta, z_max, binpath, run_name):
         ax.remove()
 
     fig.tight_layout()
-    plot_utilities.save_figure(fig, binpath, figname)
+    plot_utilities.save_figure(fig, figpath, figname)
 
 
 def plot_kid_result(
