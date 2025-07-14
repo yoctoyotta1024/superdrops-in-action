@@ -2,6 +2,14 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## [v0.3.0](https://github.com/yoctoyotta1024/superdrops-in-action/compare/ef7e3fa1db74be595bbd2e1a2a4f175a0ea633a4..v0.3.0) - 2025-07-14
+#### Bug Fixes
+- correct links to files in CI - ([ef7e3fa](https://github.com/yoctoyotta1024/superdrops-in-action/commit/ef7e3fa1db74be595bbd2e1a2a4f175a0ea633a4)) - clara.bayley
+#### Features
+- new function to reset superdroplet radii in BCs - ([a7560c2](https://github.com/yoctoyotta1024/superdrops-in-action/commit/a7560c261b457ec11815250969f4f3a90f42d840)) - clara.bayley
+
+- - -
+
 ## [v0.2.0](https://github.com/yoctoyotta1024/superdrops-in-action/compare/9b7b715636ea3b61efe2b8a81fa074af0f870601..v0.2.0) - 2025-07-14
 #### Bug Fixes
 - extra \ removed - ([df1a08c](https://github.com/yoctoyotta1024/superdrops-in-action/commit/df1a08c0863c4c6bce8435bd099897f9fda02b23)) - clara.bayley
