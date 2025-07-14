@@ -1,0 +1,99 @@
+name: pytest
+
+on: [push, pull_request]
+
+jobs:
+  cleo_1dkid_tests:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash -l {0}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+          cmake libopenmpi-dev openmpi-bin libomp-dev \
+          libnetcdff-dev liblapack-dev libfyaml-dev
+          apt list --installed
+
+      - name: Initialise Conda/Mamba
+        uses: conda-incubator/setup-miniconda@v3
+        with:
+          activate-environment: superdrops-in-action
+          auto-activate-base: false
+          use-mamba: true
+          miniforge-version: 'latest'
+          conda-remove-defaults: true
+
+      - name: Update Mamba Environment
+        run: |
+          mamba env update -n superdrops-in-action -f environment.yaml
+
+      - name: Mamba and Python Info
+        run: |
+          mamba info
+          mamba list
+          which python
+          python --version
+
+      - name: Install Pybind11
+        run: |
+          git submodule update --init
+
+      - name: Build Pybind11 module for C++ code
+        run: |
+          which python
+          python_path=$(which python)
+          cmake  -S ./cleo_1dkid/cleo_deps/ -B ./build \
+            -DCMAKE_C_COMPILER=mpicc \
+            -DCMAKE_CXX_COMPILER=mpic++ \
+            -DCMAKE_CXX_FLAGS="-Werror -Wall -pedantic -Wno-unused-parameter -O3" \
+            -DKokkos_ARCH_NATIVE=ON -DKokkos_ENABLE_SERIAL=ON \
+            -DCLEO_COUPLED_DYNAMICS=numpy \
+            -DCLEO_DOMAIN=cartesian \
+            -DCLEO_PYTHON=python_path
+          cd build && pwd && make && cd ..
+
+      - name: Compile CLEO python bindings
+        run: cd build && make -j 64 pycleo && cd ..
+
+      - name: Download CLEO Initial Condition Files for Generic Test
+        run: |
+          mkdir -p ./cleo_1dkid/share/cleo_initial_conditions/generic/
+          curl https://swiftbrowser.dkrz.de/public/dkrz_8f1b1e92-f07c-41c5-a4ae-8089ec495d87/superdrops-in-action/cleo_1dkid/share/cleo_initial_conditions/generic/config.yaml \
+            -o ./cleo_1dkid/share/cleo_initial_conditions/generic/config.yaml
+          curl https://swiftbrowser.dkrz.de/public/dkrz_8f1b1e92-f07c-41c5-a4ae-8089ec495d87/superdrops-in-action/cleo_1dkid/share/cleo_initial_conditions/generic/dimlessGBxboundaries.dat \
+            -o ./cleo_1dkid/share/cleo_initial_conditions/generic/dimlessGBxboundaries.dat
+          curl https://swiftbrowser.dkrz.de/public/dkrz_8f1b1e92-f07c-41c5-a4ae-8089ec495d87/superdrops-in-action/cleo_1dkid/share/cleo_initial_conditions/generic/dimlessSDsinit.dat \
+            -o ./cleo_1dkid/share/cleo_initial_conditions/generic/dimlessSDsinit.dat
+          pwd && echo "ls -l ./cleo_1dkid/share/cleo_initial_conditions/generic/" && ls -l ./cleo_1dkid/share/cleo_initial_conditions/generic/
+
+      - name: Download CLEO Initial Condition Files for 1-D KiD Test
+        run: |
+          mkdir -p ./cleo_1dkid/share/cleo_initial_conditions/1dkid/
+          mkdir -p ./cleo_1dkid/share/cleo_initial_conditions/1dkid/condevap_only/
+          mkdir -p ./cleo_1dkid/share/cleo_initial_conditions/1dkid/fullscheme/
+          curl https://swiftbrowser.dkrz.de/public/dkrz_8f1b1e92-f07c-41c5-a4ae-8089ec495d87/superdrops-in-action/cleo_1dkid/share/cleo_initial_conditions/1dkid/condevap_only/config.yaml \
+            -o ./cleo_1dkid/share/cleo_initial_conditions/1dkid/condevap_only/config.yaml
+          curl https://swiftbrowser.dkrz.de/public/dkrz_8f1b1e92-f07c-41c5-a4ae-8089ec495d87/superdrops-in-action/cleo_1dkid/share/cleo_initial_conditions/1dkid/condevap_only/dimlessGBxboundaries.dat \
+            -o ./cleo_1dkid/share/cleo_initial_conditions/1dkid/condevap_only/dimlessGBxboundaries.dat
+          curl https://swiftbrowser.dkrz.de/public/dkrz_8f1b1e92-f07c-41c5-a4ae-8089ec495d87/superdrops-in-action/cleo_1dkid/share/cleo_initial_conditions/1dkid/condevap_only/dimlessSDsinit.dat \
+            -o ./cleo_1dkid/share/cleo_initial_conditions/1dkid/condevap_only/dimlessSDsinit.dat
+          curl https://swiftbrowser.dkrz.de/public/dkrz_8f1b1e92-f07c-41c5-a4ae-8089ec495d87/superdrops-in-action/cleo_1dkid/share/cleo_initial_conditions/1dkid/fullscheme/config.yaml \
+            -o ./cleo_1dkid/share/cleo_initial_conditions/1dkid/fullscheme/config.yaml
+          curl https://swiftbrowser.dkrz.de/public/dkrz_8f1b1e92-f07c-41c5-a4ae-8089ec495d87/superdrops-in-action/cleo_1dkid/share/cleo_initial_conditions/1dkid/fullscheme/dimlessGBxboundaries.dat \
+            -o ./cleo_1dkid/share/cleo_initial_conditions/1dkid/fullscheme/dimlessGBxboundaries.dat
+          curl https://swiftbrowser.dkrz.de/public/dkrz_8f1b1e92-f07c-41c5-a4ae-8089ec495d87/superdrops-in-action/cleo_1dkid/share/cleo_initial_conditions/1dkid/fullscheme/dimlessSDsinit.dat \
+            -o ./cleo_1dkid/share/cleo_initial_conditions/1dkid/fullscheme/dimlessSDsinit.dat
+          pwd && echo "ls -l ./cleo_1dkid/share/cleo_initial_conditions/1dkid/" && ls -l ./cleo_1dkid/share/cleo_initial_conditions/1dkid/
+          echo "ls -l ./cleo_1dkid/share/cleo_initial_conditions/1dkid/condevap_only/" && ls -l ./cleo_1dkid/share/cleo_initial_conditions/1dkid/condevap_only/
+          echo "ls -l ./cleo_1dkid/share/cleo_initial_conditions/1dkid/fullscheme/" && ls -l ./cleo_1dkid/share/cleo_initial_conditions/1dkid/fullscheme/
+
+      - name: Test with pytest
+        run: |
+          mkdir ./build/bin/ && mkdir ./build/bin/generic/ && mkdir ./build/bin/condevap_only/ && mkdir ./build/bin/fullscheme/
+          pytest ./cleo_1dkid/tests

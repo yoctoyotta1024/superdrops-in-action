@@ -37,7 +37,7 @@ sys.path.insert(0, pathlib.Path(__file__).parents[2].resolve().as_posix())
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
-project = "Microphysics Test Cases"
+project = "superdrops-in-action"
 license = "BSD 3-Clause"
 copyright = "(2024) MPI-M, Clara Bayley"
 author = "Clara Bayley & Other Developers"
