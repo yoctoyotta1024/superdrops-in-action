@@ -14,7 +14,7 @@ add_subdirectory(observers)
 
 # libraries particular to certain CLEO configurations #
 # CLEO's CoupledDynamics
-set(valid_coupled_dynamics "null" "fromfile" "cvode" "yac" "numpy")
+set(valid_coupled_dynamics "null" "fromfile" "cvode" "numpy")
 if("${CLEO_COUPLED_DYNAMICS}" IN_LIST valid_coupled_dynamics)
   if("${CLEO_COUPLED_DYNAMICS}" STREQUAL "null")
     message(STATUS "CLEO using no coupled dynamics (${CLEO_COUPLED_DYNAMICS})")

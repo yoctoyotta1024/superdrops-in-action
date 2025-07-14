@@ -3,68 +3,11 @@ name: pytest
 on: [push, pull_request]
 
 jobs:
-  setup:
+  pytest:
     runs-on: ubuntu-latest
     defaults:
       run:
         shell: bash -l {0}
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup
-        if: steps.cache_yaxt.outputs.cache-hit != 'true' || steps.cache_yac.outputs.cache-hit != 'true'
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y \
-          cmake libopenmpi-dev openmpi-bin libomp-dev \
-          libnetcdff-dev liblapack-dev libfyaml-dev
-          apt list --installed
-
-      - name: Cache YAXT
-        id: cache_yaxt
-        uses: actions/cache@v4
-        with:
-          path: ${{ runner.temp }}/yaxt/
-          key: ${{ runner.os }}-yaxt-cache-v0.11.1
-          restore-keys: |
-            ${{ runner.os }}-yaxt-
-
-      - name: Cache YAC
-        id: cache_yac
-        uses: actions/cache@v4
-        with:
-          path: ${{ runner.temp }}/yac/
-          key: ${{ runner.os }}-yac-cache-v3.5.2
-          restore-keys: |
-            ${{ runner.os }}-yac-
-
-      - name: Build YAXT
-        if: steps.cache_yaxt.outputs.cache-hit != 'true'
-        run: |
-          mkdir yaxt-0.11.1 && cd yaxt-0.11.1
-          curl -s -L https://gitlab.dkrz.de/dkrz-sw/yaxt/-/archive/release-0.11.1/yaxt-0.11.1.tar.gz | tar xvz --strip-components=1
-          ./configure --without-regard-for-quality --without-example-programs \
-            --without-perf-programs --with-pic --prefix=${{ runner.temp }}/yaxt
-          make -j 4
-          make install
-
-      - name: Build YAC
-        if: steps.cache_yac.outputs.cache-hit != 'true'
-        run: |
-          mkdir yac-v3.5.2 && cd yac-v3.5.2
-          curl -s -L https://gitlab.dkrz.de/dkrz-sw/yac/-/archive/v3.5.2/yac_v3.5.2.tar.gz | tar xvz --strip-components=1
-          ./configure CFLAGS="-fPIC" CC=mpicc FC=mpif90 --disable-mpi-checks \
-            --with-yaxt-root=${{ runner.temp }}/yaxt --prefix=${{ runner.temp }}/yac
-          make -j 4
-          make install
-
-  execute_tests:
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        shell: bash -l {0}
-    needs: setup
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -101,18 +44,6 @@ jobs:
         run: |
           git submodule update --init
 
-      - name: Restore YAXT Cache
-        uses: actions/cache@v4
-        with:
-          path: ${{ runner.temp }}/yaxt/
-          key: ${{ runner.os }}-yaxt-cache-v0.11.1
-
-      - name: Restore YAC Cache
-        uses: actions/cache@v4
-        with:
-          path: ${{ runner.temp }}/yac/
-          key: ${{ runner.os }}-yac-cache-v3.5.2
-
       - name: Build Pybind11 module for C++ code
         run: |
           which python
@@ -125,7 +56,6 @@ jobs:
             -DCLEO_COUPLED_DYNAMICS=numpy \
             -DCLEO_DOMAIN=cartesian \
             -DCLEO_PYTHON=python_path \
-            -DCMAKE_MODULE_PATH=${PWD}/libs/coupldyn_yac/cmake
           cd build && make && cd ..
 
       - name: Compile CLEO python bindings

@@ -22,8 +22,6 @@ cleo_build_flags=${6:-"-DCLEO_COUPLED_DYNAMICS="numpy" \
 # Necessary Levante packages
 levante_gcc="gcc/11.2.0-gcc-11.2.0" # bcn7mbu # module load
 levante_gcc_openmpi="openmpi/4.1.2-gcc-11.2.0" # module load
-levante_gcc_netcdf_yac="netcdf-c/4.8.1-openmpi-4.1.2-gcc-11.2.0" # module load
-levante_gcc_openblas_yac="openblas@0.3.18%gcc@=11.2.0" # spack load
 ### ---------------------------------------------------- ###
 
 ### ------------------ check arguments ----------------- ###
@@ -42,8 +40,6 @@ fi
 
 ### ---- set relevant packages and compiler settings --- ###
 module load ${levante_gcc} ${levante_gcc_openmpi} # for CLEO
-module load ${levante_gcc_netcdf_yac} # for CLEO's YAC depedency
-spack load ${levante_gcc_openblas_yac} # for CLEO's YAC depedency
 
 levante_gxx_compiler="$(command -v mpic++)"
 levante_gcc_compiler="$(command -v mpicc)"
