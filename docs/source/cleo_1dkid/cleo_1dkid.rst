@@ -15,7 +15,7 @@ To build the python bindings for CLEO you can simply do
 `` cmake -S ./cleo_1dkid/ -B ./build && cd build && make pycleo``. However,
 you need to have certain :ref:`requirements <requirements>` fulfilled first
 (compiler versions etc.). On Levante, we therefore reccomend you use the bash helper script
-``scripts/compile_pycleo_levante.sh`` instead of directly calling cmake.
+``cleo_1dkid/scripts/bash/compile_pycleo_levante.sh`` instead of directly calling cmake.
 
 First activate the python environment you want to use, e.g.
 ``micromamba activate superdrops-in-action``.
@@ -23,7 +23,7 @@ Then call the helper script with the source and build directories you want to us
 
 .. code-block:: console
 
-  $ ./cleo_1dkid/scripts/compile_pycleo_levante.sh $HOME/superdrops-in-action/cleo_1dkid/cleo_deps $HOME/superdrops-in-action/build
+  $ ./cleo_1dkid/scripts/bash/compile_pycleo_levante.sh $HOME/superdrops-in-action/cleo_1dkid/cleo_deps $HOME/superdrops-in-action/build
 
 After making the bindings, the ``pycleo`` Python module can used just like an ordinary python module.
 
