@@ -17,9 +17,9 @@ https://opensource.org/licenses/BSD-3-Clause
 File Description:
 wrapper function for an instance of CleoSDM microphysics ccheme so it can be used by
 generic test cases and run scripts.
-NOTE: To use the wrapper, you must first export "PYCLEO_DIR". E.g. is python bindings are
-built in $HOME/superdrops-in-action/cleo_1dkid/build/, do:
-export PYCLEO_DIR=$HOME/superdrops-in-action/cleo_1dkid/build/pycleo/
+NOTE: To use the wrapper, you must first export "PYCLEO_DIR". E.g. if python bindings are
+built in $HOME/superdrops-in-action/build/, do:
+export PYCLEO_DIR=$HOME/superdrops-in-action/build/pycleo/
 """
 
 import os

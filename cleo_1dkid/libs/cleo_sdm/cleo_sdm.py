@@ -17,9 +17,9 @@ https://opensource.org/licenses/BSD-3-Clause
 File Description:
 class and functions for handing setup and running of CLEO via python bindings adapted from
 CLEO v0.44.0 python_bindings example.
-NOTE: To use the wrapper, you must first export "PYCLEO_DIR". E.g. is python bindings are
-built in $HOME/superdrops-in-action/cleo_1dkid/build/, do:
-export PYCLEO_DIR=$HOME/superdrops-in-action/cleo_1dkid/build/pycleo/
+NOTE: To use the wrapper, you must first export "PYCLEO_DIR". E.g. if python bindings are
+built in $HOME/superdrops-in-action/build/, do:
+export PYCLEO_DIR=$HOME/superdrops-in-action/build/pycleo/
 """
 
 import os

@@ -17,7 +17,7 @@ executables=${4:-"pycleo"}                 # list of executables to compile
 
 # CLEO (openmp with gcc compiler) extra build parameters
 cleo_build_flags=${6:-"-DCLEO_COUPLED_DYNAMICS="numpy" \
-  -DCLEO_PYTHON=/work/bm1183/m300950/bin/envs/microtestsenv/bin/python"} # CLEO_BUILD_FLAGS
+  -DCLEO_PYTHON=/work/bm1183/m300950/bin/envs/superdrops-in-action/bin/python"} # CLEO_BUILD_FLAGS
 
 # Necessary Levante packages
 levante_gcc="gcc/11.2.0-gcc-11.2.0" # bcn7mbu # module load
