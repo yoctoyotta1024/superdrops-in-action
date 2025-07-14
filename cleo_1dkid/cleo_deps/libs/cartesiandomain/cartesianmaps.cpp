@@ -26,7 +26,7 @@
 KOKKOS_FUNCTION
 unsigned int get_no_decomposition_bounding_gridbox(const CartesianMaps &gbxmaps,
                                                    const unsigned int gbxindex, double &coord3,
-                                                   double &coord1, double &coord2);
+                                                   double &coord1, double &coord2, double &radius);
 
 /* on host, throws error if maps are not all
 the same size, else returns size of maps */
@@ -70,7 +70,8 @@ size_t CartesianMaps::local_to_global_gridbox_index(unsigned int local_gridbox_i
 // TODO(ALL) make domain_decomp call compatible with GPUs and then remove comm_size guard
 KOKKOS_FUNCTION
 unsigned int CartesianMaps::get_local_bounding_gridbox(const unsigned int gbxindex, double &coord3,
-                                                       double &coord1, double &coord2) const {
+                                                       double &coord1, double &coord2,
+                                                       double &radius) const {
   if (is_decomp) {
     auto coordinates = std::array<double, 3>{coord3, coord1, coord2};
     const auto idx = domain_decomposition.get_local_bounding_gridbox(coordinates);
@@ -79,7 +80,7 @@ unsigned int CartesianMaps::get_local_bounding_gridbox(const unsigned int gbxind
     coord2 = coordinates[2];
     return idx;
   }
-  return get_no_decomposition_bounding_gridbox(*this, gbxindex, coord3, coord1, coord2);
+  return get_no_decomposition_bounding_gridbox(*this, gbxindex, coord3, coord1, coord2, radius);
 }
 
 /* returns flag to keep idx the same (flag = 0) or
@@ -185,7 +186,7 @@ forwards coord3 (z) direction and to update superdrop coord3
 if it has exceeded the z upper domain boundary */
 KOKKOS_FUNCTION
 unsigned int change_to_forwards_coord3nghbr(const unsigned int idx, const CartesianMaps &gbxmaps,
-                                            double &coord3) {
+                                            double &coord3, double &radius) {
   const auto nghbr = (unsigned int)gbxmaps.coord3forward(idx);
   const auto incre = (unsigned int)1;  // increment
   // drop was upper z edge of domain (now moving above it)
@@ -193,6 +194,7 @@ unsigned int change_to_forwards_coord3nghbr(const unsigned int idx, const Cartes
     const auto lim1 = gbxmaps.coord3bounds(nghbr).first;  // lower lim of forward neighbour
     const auto lim2 = gbxmaps.coord3bounds(idx).second;   // upper lim of current gbx
     coord3 = DoublyPeriodicDomain::boundarycond_coord3(coord3, lim1, lim2);
+    radius = kid_reinitialise_radius(radius);
   }
   return nghbr;  // gbxindex of z forwards (up) neighbour
 }
@@ -202,7 +204,7 @@ in backwards coord3 (z) direction and to update superdrop
 coord3 if its has exceeded the z lower domain boundary */
 KOKKOS_FUNCTION
 unsigned int change_to_backwards_coord3nghbr(const unsigned int idx, const CartesianMaps &gbxmaps,
-                                             double &coord3) {
+                                             double &coord3, double &radius) {
   const auto nghbr = gbxmaps.coord3backward(idx);
   const auto incre = (unsigned int)1;  // increment
   // drop was at lower z edge of domain (now moving below it)
@@ -210,6 +212,7 @@ unsigned int change_to_backwards_coord3nghbr(const unsigned int idx, const Carte
     const auto lim1 = gbxmaps.coord3bounds(nghbr).second;  // upper lim of backward neighbour
     const auto lim2 = gbxmaps.coord3bounds(idx).first;     // lower lim of current gbx
     coord3 = DoublyPeriodicDomain::boundarycond_coord3(coord3, lim1, lim2);
+    radius = kid_reinitialise_radius(radius);
   }
   return nghbr;  // gbxindex of z backwards (down) neighbour
 }
@@ -264,14 +267,15 @@ if flag = 2 idx updated to forwards neighbour gbxindex.
 _Note:_ backwards/forwards functions may change the
 superdroplet's coords e.g. if it leaves the domain. */
 KOKKOS_FUNCTION
-unsigned int change_if_coord3nghbr(const CartesianMaps &gbxmaps, unsigned int idx, double &coord3) {
+unsigned int change_if_coord3nghbr(const CartesianMaps &gbxmaps, unsigned int idx, double &coord3,
+                                    double &radius) {
   const auto flag = flag_sdgbxindex(idx, gbxmaps.coord3bounds(idx), coord3);  // !=0 idx shld change
   switch (flag) {
     case 1:
-      idx = change_to_backwards_coord3nghbr(idx, gbxmaps, coord3);
+      idx = change_to_backwards_coord3nghbr(idx, gbxmaps, coord3, radius);
       break;
     case 2:
-      idx = change_to_forwards_coord3nghbr(idx, gbxmaps, coord3);
+      idx = change_to_forwards_coord3nghbr(idx, gbxmaps, coord3, radius);
       break;
   }
   return idx;
@@ -280,8 +284,8 @@ unsigned int change_if_coord3nghbr(const CartesianMaps &gbxmaps, unsigned int id
 KOKKOS_FUNCTION
 unsigned int get_no_decomposition_bounding_gridbox(const CartesianMaps &gbxmaps,
                                                    const unsigned int gbxindex, double &coord3,
-                                                   double &coord1, double &coord2) {
-  auto idx = (unsigned int)change_if_coord3nghbr(gbxmaps, gbxindex, coord3);
+                                                   double &coord1, double &coord2, double &radius) {
+  auto idx = (unsigned int)change_if_coord3nghbr(gbxmaps, gbxindex, coord3, radius);
   idx = change_if_coord1nghbr(gbxmaps, idx, coord1);
   idx = change_if_coord2nghbr(gbxmaps, idx, coord2);
   return idx;
