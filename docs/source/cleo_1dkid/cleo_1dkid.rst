@@ -8,7 +8,7 @@ Creating The Python Bindings
 ----------------------------
 
 To build the python bindings for CLEO you can simply do
-`` cmake -S ./ -B ./build && cd build && make pycleo`` inside the ``cleo_1dkid`` directory. However,
+`` cmake -S ./cleo_1dkid/ -B ./build && cd build && make pycleo``. However,
 you need to have certain :ref:`requirements <requirements>` fulfilled first
 (compiler versions etc.). On Levante, we therefore reccomend you use the bash helper script
 ``scripts/compile_pycleo_levante.sh`` instead of directly calling cmake.
