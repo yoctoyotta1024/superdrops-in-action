@@ -8,7 +8,7 @@ set(LIBNAME "pycleo")
 message(STATUS "CLEO using ${LIBNAME} with LIBRARY_SOURCE_DIR: ${CMAKE_CURRENT_SOURCE_DIR}")
 
 # explicitly set library executables path to /lib in top level of build tree
-set(LIB_BINARY_DIR ${CLEO_BINARY_DIR}/pycleo)
+set(LIB_BINARY_DIR ${CLEO_1dkid_BINARY_DIR}/pycleo)
 
 # require MPI and YAC explicitly for this library
 find_package(MPI REQUIRED COMPONENTS C)
@@ -50,7 +50,7 @@ pybind11_add_module(${LIBNAME} MODULE ${SOURCES})
 
 # Add directories for target library
 target_include_directories(${LIBNAME} PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}")
-target_include_directories(${LIBNAME} PRIVATE "${CLEO_SOURCE_DIR}/libs" ${MPI_INCLUDE_PATH})
+target_include_directories(${LIBNAME} PRIVATE "${CLEO_1dkid_SOURCE_DIR}/libs" ${MPI_INCLUDE_PATH})
 
 # Link libraries to target library
 set(LINKLIBS configuration initialise gridboxes observers superdrops zarr runcleo cartesiandomain)

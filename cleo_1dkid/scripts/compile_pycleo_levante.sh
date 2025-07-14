@@ -16,7 +16,6 @@ make_clean=${3:-false}                     # == "true" or otherwise false
 executables=${4:-"pycleo"}                 # list of executables to compile
 
 # CLEO (openmp with gcc compiler) extra build parameters
-cleo_yacyaxtroot=${5:-/work/bm1183/m300950/yacyaxt/gcc} # yac and yaxt in yacyaxtroot/yac and yacyaxtroot/yaxt
 cleo_build_flags=${6:-"-DCLEO_COUPLED_DYNAMICS="numpy" \
   -DCLEO_PYTHON=/work/bm1183/m300950/bin/envs/microtestsenv/bin/python"} # CLEO_BUILD_FLAGS
 
@@ -56,9 +55,6 @@ CLEO_BUILD_FLAGS="${cleo_build_flags}"
 CLEO_KOKKOS_BASIC_FLAGS="-DKokkos_ARCH_NATIVE=ON -DKokkos_ENABLE_SERIAL=ON"
 CLEO_KOKKOS_HOST_FLAGS="-DKokkos_ENABLE_OPENMP=ON"
 CLEO_KOKKOS_DEVICE_FLAGS=""
-CLEO_YAC_FLAGS="-DCLEO_YAC_MODULE_PATH="${path2build}/_deps/cleo-src/libs/coupldyn_yac/cmake" \
-  -DCLEO_YAXT_ROOT=${cleo_yacyaxtroot}/yaxt \
-  -DCLEO_YAC_ROOT=${cleo_yacyaxtroot}/yac"
 ### ---------------------------------------------------- ###
 
 ### -------------------- build bindings ---------------- ###
@@ -72,7 +68,6 @@ echo "CMAKE_CXX_FLAGS="${cxx_flags}""
 echo "CLEO_BUILD_FLAGS=${CLEO_BUILD_FLAGS}"
 echo "CLEO_KOKKOS_FLAGS=${CLEO_KOKKOS_BASIC_FLAGS}\
   ${CLEO_KOKKOS_HOST_FLAGS} ${CLEO_KOKKOS_DEVICE_FLAGS}"
-echo "CLEO_YAC_FLAGS=${CLEO_YAC_FLAGS}"
 echo "### ------------------------------------------- ###"
 
 cmake -DCMAKE_CXX_COMPILER=${levante_gxx_compiler} \
@@ -80,7 +75,7 @@ cmake -DCMAKE_CXX_COMPILER=${levante_gxx_compiler} \
     -DCMAKE_CXX_FLAGS="${cxx_flags}" \
     -S ${path2source} -B ${path2build} \
     ${CLEO_KOKKOS_BASIC_FLAGS} ${CLEO_KOKKOS_HOST_FLAGS} ${CLEO_KOKKOS_DEVICE_FLAGS} \
-    ${CLEO_BUILD_FLAGS} ${CLEO_YAC_FLAGS}
+    ${CLEO_BUILD_FLAGS}
 ### ---------------------------------------------------- ###
 
 ### ------------------ compile bindings ---------------- ###

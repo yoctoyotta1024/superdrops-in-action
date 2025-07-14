@@ -10,7 +10,7 @@ message(STATUS "CLEO using ${LIBNAME} with LIBRARY_SOURCE_DIR: ${CMAKE_CURRENT_S
 add_subdirectory(sdmmonitor)
 
 # explicitly set library executables path to /lib in top level of build tree
-set(LIB_BINARY_DIR ${CLEO_BINARY_DIR}/lib)
+set(LIB_BINARY_DIR ${CLEO_1dkid_BINARY_DIR}/lib)
 
 # Add executables and create library target
 set(SOURCES
@@ -22,7 +22,7 @@ add_library("${LIBNAME}" STATIC ${SOURCES})
 
 # Add directories for target library
 #target_include_directories(${LIBNAME} PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}")
-target_include_directories(${LIBNAME} PRIVATE "${CLEO_SOURCE_DIR}/libs") # CLEO libs directory
+target_include_directories(${LIBNAME} PRIVATE "${CLEO_1dkid_SOURCE_DIR}/libs") # CLEO libs directory
 
 # Link libraries to target library
 set(LINKLIBS sdmmonitor gridboxes superdrops zarr)

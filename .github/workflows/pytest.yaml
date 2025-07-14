@@ -125,8 +125,6 @@ jobs:
             -DCLEO_COUPLED_DYNAMICS=numpy \
             -DCLEO_DOMAIN=cartesian \
             -DCLEO_PYTHON=python_path \
-            -DCLEO_YAXT_ROOT=${{ runner.temp }}/yaxt \
-            -DCLEO_YAC_ROOT=${{ runner.temp }}/yac \
             -DCMAKE_MODULE_PATH=${PWD}/libs/coupldyn_yac/cmake
           cd build && make && cd ..
 

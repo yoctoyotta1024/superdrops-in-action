@@ -26,7 +26,7 @@ add_library("${LIBNAME}" STATIC ${SOURCES})
 
 # Add directories for target library
 #target_include_directories(${LIBNAME} PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}")
-target_include_directories(${LIBNAME} PRIVATE "${CLEO_SOURCE_DIR}/libs" ${MPI_INCLUDE_PATH})
+target_include_directories(${LIBNAME} PRIVATE "${CLEO_1dkid_SOURCE_DIR}/libs" ${MPI_INCLUDE_PATH})
 
 # Link libraries to target library
 set(LINKLIBS configuration)
