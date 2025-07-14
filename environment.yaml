@@ -1,0 +1,11 @@
+name: superdrops-in-action
+channels:
+    - conda-forge
+dependencies:
+    - python>=3.10
+    - pytest
+    - sphinx
+    - conda-forge::doxygen>=1.10.0
+    - pip
+    - pip:
+      - -r requirements.txt
