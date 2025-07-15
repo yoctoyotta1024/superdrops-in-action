@@ -9,7 +9,7 @@
  * Author: Clara Bayley (CB)
  * Additional Contributors:
  * -----
- * Last Modified: Friday 21st June 2024
+ * Last Modified: Tuesday 15th July 2025
  * Modified By: CB
  * -----
  * License: BSD 3-Clause "New" or "Revised" License
@@ -22,13 +22,14 @@
 #ifndef CLEO_1DKID_CLEO_DEPS_LIBS_ZARR_CHUNKS_HPP_
 #define CLEO_1DKID_CLEO_DEPS_LIBS_ZARR_CHUNKS_HPP_
 
+#include <mpi.h>
+
 #include <Kokkos_Core.hpp>
 #include <Kokkos_Pair.hpp>
 #include <cassert>
 #include <string>
 #include <string_view>
 #include <vector>
-#include <mpi.h>
 
 #include "zarr/buffer.hpp"
 

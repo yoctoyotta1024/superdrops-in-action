@@ -112,4 +112,4 @@ inline Observer auto MonitorCondensationObserver(const unsigned int interval, Da
   return ConstTstepObserver(interval, do_obs);
 }
 
-#endif  //  CLEO_1DKID_CLEO_DEPS_LIBS_OBSERVERS_SDMMONITOR_MONITOR_CONDENSATION_OBSERVER_HPP_
+#endif  // CLEO_1DKID_CLEO_DEPS_LIBS_OBSERVERS_SDMMONITOR_MONITOR_CONDENSATION_OBSERVER_HPP_

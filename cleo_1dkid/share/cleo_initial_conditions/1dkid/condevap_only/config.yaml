@@ -69,3 +69,11 @@ pycleo:
   enable_terminal_velocity : false                                 # true enables terminal velocity in superdroplet motion
   enable_condensation : true                                       # true enables condensation in microphysics
   enable_collisions : false                                        # true enables collisions in microphysics
+  enable_observers:                                                 # true for the following set enables various observers
+    time : true
+    gbxindex : true                                                 # currently only true is allowed for gbxindex observer
+    totnsupers : true
+    massmoms : true
+    rainmassmoms : true
+    gridboxes : true
+    superdrops : true
