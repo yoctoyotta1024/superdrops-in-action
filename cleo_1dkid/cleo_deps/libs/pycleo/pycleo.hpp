@@ -9,7 +9,7 @@
  * Author: Clara Bayley (CB)
  * Additional Contributors:
  * -----
- * Last Modified: Tuesday 1st July 2025
+ * Last Modified: Tuesday 15th July 2025
  * Modified By: CB
  * -----
  * License: BSD 3-Clause "New" or "Revised" License
@@ -109,13 +109,12 @@ PYBIND11_MODULE(pycleo, m) {
   pyFSStore(m);
   pySimpleDataset(m);
   pyNullObserver(m);
-  pyKiDObserver(m);
-  pycreate_kid_observer(m);
+  pyObserver(m);
+  pycreate_observer(m);
 
   /* sdmmethods */
   pyCartesianNullSDMMethods(m);
   pyCartesianSDMMethods(m);
-  pyKiDSDMMethods(m);
 }
 
 #endif  // CLEO_1DKID_CLEO_DEPS_LIBS_PYCLEO_PYCLEO_HPP_

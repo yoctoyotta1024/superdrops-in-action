@@ -7,8 +7,9 @@ PYMPDATA, we first make the pycleo Python module using pybind11.
 CLEO's libraries (``libs``) and external depenencies (``extern``) from v0.50.0 have been copied
 into the directory ``cleo_1dkid/cleo_deps``. Some files in the cartesiandomain and gridboxes
 libraries, e.g. to set the KiD boundary conditions have since been modified. The CMakeLists.txt
-files in the libs has also been modified because the coupldyn_yac library has been deleted.
-Accordingly, the CMake project is called ``CLEO_1dkid`` instead of ``CLEO``.
+files in the libs has also been modified because the coupldyn_yac library has been deleted. Also
+the header guards have been updated across all the libraries. Accordingly, the CMake project is
+called ``CLEO_1dkid`` instead of ``CLEO``.
 
 Creating The Python Bindings
 ----------------------------

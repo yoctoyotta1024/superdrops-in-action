@@ -9,7 +9,7 @@
  * Author: Clara Bayley (CB)
  * Additional Contributors:
  * -----
- * Last Modified: Tuesday 24th June 2025
+ * Last Modified: Tuesday 15th July 2025
  * Modified By: CB
  * -----
  * License: BSD 3-Clause "New" or "Revised" License
@@ -34,9 +34,9 @@
 #include "gridboxes/movesupersindomain.hpp"
 #include "initialise/init_supers_from_binary.hpp"
 #include "initialise/initgbxsnull.hpp"
-#include "observers/observers.hpp"
 #include "observers/consttstep_observer.hpp"
 #include "observers/gbxindex_observer.hpp"
+#include "observers/observers.hpp"
 #include "observers/time_observer.hpp"
 #include "runcleo/creategbxs.hpp"
 #include "runcleo/createsupers.hpp"
@@ -44,8 +44,8 @@
 #include "superdrops/condensation.hpp"
 #include "superdrops/microphysicalprocess.hpp"
 #include "superdrops/motion.hpp"
-#include "zarr/simple_dataset.hpp"
 #include "zarr/fsstore.hpp"
+#include "zarr/simple_dataset.hpp"
 
 namespace py = pybind11;
 namespace pyca = pycleo_aliases;
@@ -56,6 +56,5 @@ void pycreate_gbxs_cartesian_null(py::module &m);
 
 void pyCartesianNullSDMMethods(py::module &m);
 void pyCartesianSDMMethods(py::module &m);
-void pyKiDSDMMethods(py::module &m);
 
 #endif  // CLEO_1DKID_CLEO_DEPS_LIBS_PYCLEO_PY_RUNCLEO_HPP_

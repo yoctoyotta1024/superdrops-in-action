@@ -51,7 +51,7 @@ def create_sdm(config, tsteps, is_motion):
     print("PYCLEO STATUS: creating Observer")
     store = pycleo.FSStore(config.get_zarrbasedir())
     dataset = pycleo.SimpleDataset(store)
-    obs = pycleo.pycreate_kid_observer(config, tsteps, dataset, store)
+    obs = pycleo.pycreate_observer(config, tsteps, dataset, store)
 
     print("PYCLEO STATUS: creating MicrophysicalProcess")
     micro = pycleo.pycreate_microphysical_process(

@@ -9,7 +9,7 @@
  * Author: Clara Bayley (CB)
  * Additional Contributors:
  * -----
- * Last Modified: Tuesday 1st July 2025
+ * Last Modified: Tuesday 15th July 2025
  * Modified By: CB
  * -----
  * License: BSD 3-Clause "New" or "Revised" License
@@ -61,7 +61,7 @@ void pyCartesianNullSDMMethods(py::module &m) {
 void pyCartesianSDMMethods(py::module &m) {
   py::class_<pyca::sdm_cart_all>(m, "CartesianSDMMethods")
       .def(py::init<const unsigned int, pyca::map_cart, pyca::micro_all, pyca::move_cart,
-                    pyca::obs_null>())
+                    pyobserver::obs>())
       .def_readonly("gbxmaps", &pyca::sdm_cart_all::gbxmaps)
       .def_readonly("obs", &pyca::sdm_cart_all::obs)
       .def("get_couplstep", &pyca::sdm_cart_all::get_couplstep)
@@ -77,31 +77,6 @@ void pyCartesianSDMMethods(py::module &m) {
       .def(
           "run_step",
           [](const pyca::sdm_cart_all &self, const unsigned int t_mdl,
-             const unsigned int t_mdl_next, const dualview_gbx gbxs, SupersInDomain &allsupers) {
-            self.run_step(t_mdl, t_mdl_next, gbxs.view_device(), allsupers);
-          },
-          py::arg("t_mdl"), py::arg("t_mdl_next"), py::arg("gbxs"), py::arg("allsupers"));
-}
-
-void pyKiDSDMMethods(py::module &m) {
-  py::class_<pyca::sdm_kid_all>(m, "KiDSDMMethods")
-      .def(py::init<const unsigned int, pyca::map_cart, pyca::micro_all, pyca::move_cart,
-                    kid_observer::obs>())
-      .def_readonly("gbxmaps", &pyca::sdm_kid_all::gbxmaps)
-      .def_readonly("obs", &pyca::sdm_kid_all::obs)
-      .def("get_couplstep", &pyca::sdm_kid_all::get_couplstep)
-      .def("next_couplstep", &pyca::sdm_kid_all::next_couplstep, py::arg("t_mdl"))
-      .def(
-          "prepare_to_timestep",
-          [](const pyca::sdm_kid_all &self, const dualview_gbx gbxs) {
-            self.prepare_to_timestep(gbxs.view_device());
-          },
-          py::arg("gbxs"))
-      .def("at_start_step", &pyca::sdm_kid_all::at_start_step, py::arg("t_mdl"), py::arg("gbxs"),
-           py::arg("allsupers"))
-      .def(
-          "run_step",
-          [](const pyca::sdm_kid_all &self, const unsigned int t_mdl,
              const unsigned int t_mdl_next, const dualview_gbx gbxs, SupersInDomain &allsupers) {
             self.run_step(t_mdl, t_mdl_next, gbxs.view_device(), allsupers);
           },
