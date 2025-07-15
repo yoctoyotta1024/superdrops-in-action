@@ -2,6 +2,26 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## [v0.4.0](https://github.com/yoctoyotta1024/superdrops-in-action/compare/146be40a605cad491e8e97a3f811944d65355650..v0.4.0) - 2025-07-15
+#### Documentation
+- more detail on CLEO modifications note - ([8334180](https://github.com/yoctoyotta1024/superdrops-in-action/commit/8334180282a5738b99b91c7a6d2bedf115950703)) - clara.bayley
+#### Features
+- new SDMMethods specifically for KiD test case - ([146be40](https://github.com/yoctoyotta1024/superdrops-in-action/commit/146be40a605cad491e8e97a3f811944d65355650)) - clara.bayley
+#### Miscellaneous Chores
+- copy libs from CLEO v0.51.0 - ([96611a3](https://github.com/yoctoyotta1024/superdrops-in-action/commit/96611a32d85e97e7cb39ff79b2f5c90542673b8b)) - clara.bayley
+- copy libs from CLEO v0.50.0 - ([fb5ac90](https://github.com/yoctoyotta1024/superdrops-in-action/commit/fb5ac90af0803724f6d8b00fe396883ff0eb69b5)) - clara.bayley
+- formatting - ([449c3df](https://github.com/yoctoyotta1024/superdrops-in-action/commit/449c3df7612c2461b3793e5072a6534e015667e3)) - clara.bayley
+#### Refactoring
+- use new observers in 1dkid examples - ([e6d1f42](https://github.com/yoctoyotta1024/superdrops-in-action/commit/e6d1f426abc5a2e1d4414e46fb5debb65982faff)) - clara.bayley
+- make scripts compatible with updated cleo version libraries - ([8d5e536](https://github.com/yoctoyotta1024/superdrops-in-action/commit/8d5e536b3ba7ed3add29bcb9cfe0addcbfce5f9f)) - clara.bayley
+- replace dokidobs observer with gbxindex observer - ([69d2b90](https://github.com/yoctoyotta1024/superdrops-in-action/commit/69d2b90bad9b7fbc0e69921bc13569600966c47b)) - clara.bayley
+- use alias - ([b6e6737](https://github.com/yoctoyotta1024/superdrops-in-action/commit/b6e6737a65d6b3da0089c38aa1ab93948ae91c53)) - clara.bayley
+- kid observer is combination of observers - ([f364395](https://github.com/yoctoyotta1024/superdrops-in-action/commit/f3643956f4424290abff21df4fad6e6cc2dcf2c2)) - clara.bayley
+- time observations working with kid observer - ([e97a00a](https://github.com/yoctoyotta1024/superdrops-in-action/commit/e97a00a14fcf0fb2d07faf92ec8dbad54f44386d)) - clara.bayley
+- add zarr dependency - ([ef90bf7](https://github.com/yoctoyotta1024/superdrops-in-action/commit/ef90bf79ccdb41093ee2671a41c7e3a54622b83a)) - clara.bayley
+
+- - -
+
 ## [v0.3.0](https://github.com/yoctoyotta1024/superdrops-in-action/compare/ef7e3fa1db74be595bbd2e1a2a4f175a0ea633a4..v0.3.0) - 2025-07-14
 #### Bug Fixes
 - correct links to files in CI - ([ef7e3fa](https://github.com/yoctoyotta1024/superdrops-in-action/commit/ef7e3fa1db74be595bbd2e1a2a4f175a0ea633a4)) - clara.bayley
