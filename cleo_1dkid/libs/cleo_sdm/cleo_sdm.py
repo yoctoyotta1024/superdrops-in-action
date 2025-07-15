@@ -71,7 +71,7 @@ def create_sdm(config, tsteps, is_motion):
     move = pycleo.CartesianMoveSupersInDomain(motion, transport, boundary_conditions)
 
     print("PYCLEO STATUS: creating SDM Methods")
-    sdm = pycleo.KiDSDMMethods(tsteps.get_couplstep(), gbxmaps, micro, move, obs)
+    sdm = pycleo.CartesianSDMMethods(tsteps.get_couplstep(), gbxmaps, micro, move, obs)
 
     print(f"PYCLEO STATUS: SDM created with couplstep = {sdm.get_couplstep()}")
     return sdm, dataset, store
