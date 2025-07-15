@@ -167,6 +167,11 @@ struct OptionalConfigParams {
     struct Observers {
       bool time = false;
       bool gbxindex = true;
+      bool totnsupers = false;
+      bool massmoms = false;
+      bool rainmassmoms = false;
+      bool gridboxes = false;
+      bool superdrops = false;
     } enable_observers; /**< true for set of booleans in struct enables various observers */
   } pycleo;
 };

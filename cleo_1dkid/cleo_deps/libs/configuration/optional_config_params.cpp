@@ -340,6 +340,21 @@ void OptionalConfigParams::PycleoParams::set_params(const YAML::Node &config) {
     if (obs_node["gbxindex"]) {
       enable_observers.gbxindex = obs_node["gbxindex"].as<bool>();
     }
+    if (obs_node["totnsupers"]) {
+      enable_observers.totnsupers = obs_node["totnsupers"].as<bool>();
+    }
+    if (obs_node["massmoms"]) {
+      enable_observers.massmoms = obs_node["massmoms"].as<bool>();
+    }
+    if (obs_node["rainmassmoms"]) {
+      enable_observers.rainmassmoms = obs_node["rainmassmoms"].as<bool>();
+    }
+    if (obs_node["gridboxes"]) {
+      enable_observers.gridboxes = obs_node["gridboxes"].as<bool>();
+    }
+    if (obs_node["superdrops"]) {
+      enable_observers.superdrops = obs_node["superdrops"].as<bool>();
+    }
   }
 }
 
@@ -350,5 +365,10 @@ void OptionalConfigParams::PycleoParams::print_params() const {
             << "\nenable_collisions: " << enable_collisions
             << "\nenable_observers.time: " << enable_observers.time
             << "\nenable_observers.gbxindex: " << enable_observers.gbxindex
+            << "\nenable_observers.totnsupers: " << enable_observers.totnsupers
+            << "\nenable_observers.massmoms: " << enable_observers.massmoms
+            << "\nenable_observers.rainmassmoms: " << enable_observers.rainmassmoms
+            << "\nenable_observers.gridboxes: " << enable_observers.gridboxes
+            << "\nenable_observers.superdrops: " << enable_observers.superdrops
             << "\n---------------------------------------------------------\n";
 }
