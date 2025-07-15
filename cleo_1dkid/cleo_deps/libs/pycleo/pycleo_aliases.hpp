@@ -36,6 +36,7 @@
 #include "observers/observers.hpp"
 #include "observers/consttstep_observer.hpp"
 #include "observers/kid_observer.hpp"
+#include "observers/time_observer.hpp"
 #include "runcleo/sdmmethods.hpp"
 #include "superdrops/collisions/coalescence.hpp"
 #include "superdrops/collisions/collisions.hpp"
@@ -45,6 +46,19 @@
 #include "superdrops/motion.hpp"
 #include "zarr/simple_dataset.hpp"
 #include "zarr/fsstore.hpp"
+
+/*
+ * aliases as abbreviations of observer types, to make long template of observer for KiD
+ * test case managable
+ */
+namespace kid_observer {
+using time = ConstTstepObserver<DoTimeObs<SimpleDataset<FSStore>, FSStore>>;
+using kid = ConstTstepObserver<DoKiDObs<SimpleDataset<FSStore>, FSStore>>;
+using nullmo = NullSDMMonitor;
+
+using mo = CombinedSDMMonitor<nullmo, nullmo>;
+using obs =  CombinedObserver<kid, time, mo>;
+}
 
 /*
  * aliases as abbreviations of types, to make long template instantiations readable.
@@ -79,13 +93,12 @@ using move_cart_null = MoveSupersInDomain<map_cart, mo_null, trans_cart, bcs_nul
 using move_cart = MoveSupersInDomain<map_cart, mo_cart_predcorr, trans_cart, bcs_null>;
 
 using obs_null = NullObserver;
-using obs_kid =  ConstTstepObserver<DoKiDObs<SimpleDataset<FSStore>, FSStore>>;
 
 using sdm_cart_null = SDMMethods<map_cart, micro_null, mo_null, trans_cart, bcs_null, obs_null>;
 using sdm_cart_all =
 SDMMethods<map_cart, micro_all, mo_cart_predcorr, trans_cart, bcs_null, obs_null>;
 using sdm_kid_all =
-SDMMethods<map_cart, micro_all, mo_cart_predcorr, trans_cart, bcs_null, obs_kid>;
+SDMMethods<map_cart, micro_all, mo_cart_predcorr, trans_cart, bcs_null, kid_observer::obs>;
 }  // namespace pycleo_aliases
 
 #endif  // CLEO_1DKID_CLEO_DEPS_LIBS_PYCLEO_PYCLEO_ALIASES_HPP_

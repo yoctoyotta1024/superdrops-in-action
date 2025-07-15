@@ -62,8 +62,8 @@ class DoKiDObs {
    * @param t_mdl Current model time.
    */
   void at_start_step(const unsigned int t_mdl) const {
-    const auto ntimes = size_t{dataset.get_dimension("time") + 1};
-    const auto timedim = std::pair<std::string, size_t>({"time", ntimes});
+    const auto ntimes = size_t{dataset.get_dimension("time_2") + 1};
+    const auto timedim = std::pair<std::string, size_t>({"time_2", ntimes});
     dataset.set_dimension(timedim);
 
     const auto time = static_cast<float>(step2dimlesstime(t_mdl));
@@ -82,7 +82,8 @@ class DoKiDObs {
             const std::function<double(unsigned int)> step2dimlesstime)
       : dataset(dataset),
         xzarr_ptr(std::make_shared<XarrayZarrArray<Store, float>>(
-            dataset.template create_coordinate_array<float>("time", "s", dlc::TIME0, maxchunk, 0))),
+            dataset.template create_coordinate_array<float>("time_2",
+              "s", dlc::TIME0, maxchunk, 0))),
         step2dimlesstime(step2dimlesstime) {}
 
   /**

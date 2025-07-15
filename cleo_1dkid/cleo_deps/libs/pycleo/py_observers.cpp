@@ -21,6 +21,9 @@
 
 #include "./py_observers.hpp"
 
+kid_observer::obs create_kid_observer(const Config &config, const Timesteps &tsteps,
+                                    SimpleDataset<FSStore> &dataset, FSStore &store);
+
 void pyNullObserver(py::module &m) {
   py::class_<pyca::obs_null>(m, "NullObserver")
       .def(py::init())
@@ -28,20 +31,26 @@ void pyNullObserver(py::module &m) {
 }
 
 void pyKiDObserver(py::module &m) {
-  py::class_<pyca::obs_kid>(m, "KiDObserver")
-      .def(py::init<unsigned int, DoKiDObs<SimpleDataset<FSStore>, FSStore>>())
-      .def("next_obs", &pyca::obs_kid::next_obs, py::arg("t_mdl"));
+  py::class_<kid_observer::obs>(m, "KiDObserver")
+      .def(py::init<kid_observer::kid, kid_observer::time, kid_observer::mo>())
+      .def("next_obs", &kid_observer::obs::next_obs, py::arg("t_mdl"));
 }
 
 void pycreate_kid_observer(py::module &m) {
   m.def(
-      "pycreate_kid_observer", [](const Config &config, const Timesteps &tsteps,
-                                    SimpleDataset<FSStore> &dataset, FSStore &store) {
-        const auto interval = tsteps.get_obsstep();
-        const auto maxchunk = config.get_maxchunk();
-
-        return ConstTstepObserver(interval, DoKiDObs(dataset, store, maxchunk, &step2dimlesstime));
-      },
-      "returns KiDObserver instance",
+      "pycreate_kid_observer", &create_kid_observer,
+      "returns type of Observer suitable for KiD test case",
       py::arg("config"), py::arg("tsteps"), py::arg("dataset"), py::arg("store"));
+}
+
+kid_observer::obs create_kid_observer(const Config &config, const Timesteps &tsteps,
+                                    SimpleDataset<FSStore> &dataset, FSStore &store) {
+  const auto obsstep = tsteps.get_obsstep();
+  const auto maxchunk = config.get_maxchunk();
+
+  const Observer auto obs1 = TimeObserver(obsstep, dataset, store, maxchunk,
+                                            &step2dimlesstime);
+  const Observer auto obs2 = ConstTstepObserver(obsstep, DoKiDObs(dataset, store, maxchunk,
+                                                                    &step2dimlesstime));
+  return obs2 >> obs1;
 }

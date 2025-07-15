@@ -86,7 +86,7 @@ void pyCartesianSDMMethods(py::module &m) {
 void pyKiDSDMMethods(py::module &m) {
   py::class_<pyca::sdm_kid_all>(m, "KiDSDMMethods")
       .def(py::init<const unsigned int, pyca::map_cart, pyca::micro_all, pyca::move_cart,
-                    pyca::obs_kid>())
+                    kid_observer::obs>())
       .def_readonly("gbxmaps", &pyca::sdm_kid_all::gbxmaps)
       .def_readonly("obs", &pyca::sdm_kid_all::obs)
       .def("get_couplstep", &pyca::sdm_kid_all::get_couplstep)
