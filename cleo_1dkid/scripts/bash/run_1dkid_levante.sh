@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH --job-name=speedtest
+#SBATCH --job-name=kid
 #SBATCH --partition=compute
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=1
