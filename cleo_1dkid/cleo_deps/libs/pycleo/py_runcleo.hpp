@@ -35,13 +35,17 @@
 #include "initialise/init_supers_from_binary.hpp"
 #include "initialise/initgbxsnull.hpp"
 #include "observers/observers.hpp"
-#include "observers/kid_observer.hpp"
+#include "observers/consttstep_observer.hpp"
+#include "observers/gbxindex_observer.hpp"
+#include "observers/time_observer.hpp"
 #include "runcleo/creategbxs.hpp"
 #include "runcleo/createsupers.hpp"
 #include "runcleo/sdmmethods.hpp"
 #include "superdrops/condensation.hpp"
 #include "superdrops/microphysicalprocess.hpp"
 #include "superdrops/motion.hpp"
+#include "zarr/simple_dataset.hpp"
+#include "zarr/fsstore.hpp"
 
 namespace py = pybind11;
 namespace pyca = pycleo_aliases;

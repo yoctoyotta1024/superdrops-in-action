@@ -29,7 +29,7 @@
 #include "initialise/timesteps.hpp"
 #include "observers/observers.hpp"
 #include "observers/consttstep_observer.hpp"
-#include "observers/kid_observer.hpp"
+#include "observers/gbxindex_observer.hpp"
 #include "observers/time_observer.hpp"
 #include "zarr/simple_dataset.hpp"
 #include "zarr/fsstore.hpp"

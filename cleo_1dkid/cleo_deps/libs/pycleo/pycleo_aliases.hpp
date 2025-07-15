@@ -35,7 +35,7 @@
 #include "gridboxes/predcorrmotion.hpp"
 #include "observers/observers.hpp"
 #include "observers/consttstep_observer.hpp"
-#include "observers/kid_observer.hpp"
+#include "observers/gbxindex_observer.hpp"
 #include "observers/time_observer.hpp"
 #include "runcleo/sdmmethods.hpp"
 #include "superdrops/collisions/coalescence.hpp"
@@ -53,11 +53,11 @@
  */
 namespace kid_observer {
 using time = ConstTstepObserver<DoTimeObs<SimpleDataset<FSStore>, FSStore>>;
-using kid = ConstTstepObserver<DoKiDObs<SimpleDataset<FSStore>, FSStore>>;
+using gbx =  GbxindexObserver<SimpleDataset<FSStore>, FSStore>;
 using nullmo = NullSDMMonitor;
 
 using mo = CombinedSDMMonitor<nullmo, nullmo>;
-using obs =  CombinedObserver<kid, time, mo>;
+using obs =  CombinedObserver<gbx, time, mo>;
 }
 
 /*

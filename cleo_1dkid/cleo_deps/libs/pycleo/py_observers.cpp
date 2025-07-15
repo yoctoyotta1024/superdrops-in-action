@@ -32,7 +32,7 @@ void pyNullObserver(py::module &m) {
 
 void pyKiDObserver(py::module &m) {
   py::class_<kid_observer::obs>(m, "KiDObserver")
-      .def(py::init<kid_observer::kid, kid_observer::time, kid_observer::mo>())
+      .def(py::init<kid_observer::gbx, kid_observer::time, kid_observer::mo>())
       .def("next_obs", &kid_observer::obs::next_obs, py::arg("t_mdl"));
 }
 
@@ -47,10 +47,11 @@ kid_observer::obs create_kid_observer(const Config &config, const Timesteps &tst
                                     SimpleDataset<FSStore> &dataset, FSStore &store) {
   const auto obsstep = tsteps.get_obsstep();
   const auto maxchunk = config.get_maxchunk();
+  const auto ngbxs = config.get_ngbxs();
 
   const Observer auto obs1 = TimeObserver(obsstep, dataset, store, maxchunk,
                                             &step2dimlesstime);
-  const Observer auto obs2 = ConstTstepObserver(obsstep, DoKiDObs(dataset, store, maxchunk,
-                                                                    &step2dimlesstime));
+  const Observer auto obs2 = GbxindexObserver(dataset, store, maxchunk, ngbxs);
+
   return obs2 >> obs1;
 }
