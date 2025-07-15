@@ -252,9 +252,12 @@
 <h1>CLEO 1-D KiD Test Case<a class="headerlink" href="#cleo-1-d-kid-test-case" title="Link to this heading">¶</a></h1>
 <p>The 1-D KiD test case uses the PYMPDATA libray alongside CLEO SDM. To run CLEO’s C++ code alongside
 PYMPDATA, we first make the pycleo Python module using pybind11.</p>
-<p>CLEO’s libraries (<code class="docutils literal notranslate"><span class="pre">libs</span></code>) and external depenencies (<code class="docutils literal notranslate"><span class="pre">extern</span></code>) from v0.49.0 have been copied
-into the directory <code class="docutils literal notranslate"><span class="pre">cleo_1dkid/cleo_deps</span></code>. Some files, e.g. to set the KiD boundary conditions
-have since been modified.</p>
+<p>CLEO’s libraries (<code class="docutils literal notranslate"><span class="pre">libs</span></code>) and external depenencies (<code class="docutils literal notranslate"><span class="pre">extern</span></code>) from v0.51.0 have been copied
+into the directory <code class="docutils literal notranslate"><span class="pre">cleo_1dkid/cleo_deps</span></code>. Some files in the cartesiandomain and gridboxes
+libraries, e.g. to set the KiD boundary conditions have since been modified. The CMakeLists.txt
+files in the libs has also been modified because the coupldyn_yac library has been deleted. Also
+the header guards have been updated across all the libraries. Accordingly, the CMake project is
+called <code class="docutils literal notranslate"><span class="pre">CLEO_1dkid</span></code> instead of <code class="docutils literal notranslate"><span class="pre">CLEO</span></code>.</p>
 <section id="creating-the-python-bindings">
 <h2>Creating The Python Bindings<a class="headerlink" href="#creating-the-python-bindings" title="Link to this heading">¶</a></h2>
 <p>To build the python bindings for CLEO you can simply do
@@ -309,7 +312,7 @@ Then call the helper script with the source and build directories you want to us
             
             <a href="https://github.com/pradyunsg/furo">Furo</a>
             <div class="last-updated">
-              Last updated on 14 July 2025</div>
+              Last updated on 15 July 2025</div>
           </div>
           <div class="right-details">
             
