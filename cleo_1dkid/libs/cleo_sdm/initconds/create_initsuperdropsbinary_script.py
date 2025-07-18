@@ -67,10 +67,10 @@ dryradiigen = dryrgens.ScaledRadiiGen(dryr_sf)  # dryradii are 1/sf of radii [m]
 geomean = 0.04e-6
 geosig = 1.4
 numconc = 50 * 1e6
-spectrum = spectra.Lognormal(norm_factor=numconc, m_mode=geomean, s_geom=geosig)
+spectrum = spectra.Lognormal(norm_factor=1.0, m_mode=geomean, s_geom=geosig)
 
 ### --- Choice of Superdroplet  --- ###
-alpha = 0
+alpha = 0.75
 default_cdf_range = (0.00001, 0.99999)
 rspan = spectrum.percentiles(
     default_cdf_range
