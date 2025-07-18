@@ -110,7 +110,7 @@ class KiDDynamics:
             np.arange(0, self.settings.z_max + self.settings.dz, self.settings.dz), 2
         )[1:-1]
         wmagnitude = self.settings.rhod_w(
-            (time + 0.5) * self.settings.dt
+            time + self.settings.dt / 2
         ) / self.settings.rhod(z_half_reps)
         assert np.ones_like(thermo.wvel).shape == wmagnitude.shape
         thermo.wvel[:] = wmagnitude
@@ -133,12 +133,10 @@ class KiDDynamics:
             Thermodynamics: Updated thermodynamic state.
         """
         assert timestep == self.settings.dt, "Timestep must match initialised value."
-
-        t = int(time / timestep)
         assert time % timestep == 0, "Time not a multiple of the timestep."
 
         GC = (
-            self.settings.rhod_w((t + 0.5) * self.settings.dt)
+            self.settings.rhod_w(time + self.settings.dt / 2)
             * self.settings.dt
             / self.settings.dz
         )
