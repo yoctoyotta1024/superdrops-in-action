@@ -52,10 +52,10 @@ zgrid = [zmin, zmax, zdelta]
 # zgrid = np.arange(zmin, zmax+zdelta, zdelta)
 
 ### input parameters for x coords of gridbox boundaries
-xgrid = [0, 25, 25]
+xgrid = np.asarray([0, 1])
 
 ### input parameters for y coords of gridbox boundaries
-ygrid = np.asarray([0, 25])
+ygrid = np.asarray([0, 1])
 ### ---------------------------------------------------------------- ###
 
 
