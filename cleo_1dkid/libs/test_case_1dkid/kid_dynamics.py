@@ -27,22 +27,6 @@ from .mpdata import MPDATA
 from .settings import Settings
 
 
-class UpdraftVelocity:
-    """class for equation (6) of Shipway and Hill (2012), 'Diagnosis of systematic differences
-    between multiple parametrizations of warm rain microphysics using a kinematic framework'
-    """
-
-    def __init__(self, w1, t1):
-        self.w1 = w1
-        self.t1 = t1
-
-    def magnitude(self, time):
-        if time < self.t1:
-            return self.w1 * np.sin(np.pi * time / self.t1)
-        else:
-            return 0.0
-
-
 class KiDDynamics:
     """A class for driving the KiD rainshaft test case, based on Shipway and Hill 2012.
 
@@ -100,8 +84,6 @@ class KiDDynamics:
         qvap0 = self.mpdata["qvap"].advectee.get()
         self.press_prof = SH2012formulae.pressure(self.rhod_prof, self.temp_prof, qvap0)
 
-        self.updraught_velocity = UpdraftVelocity(WMAX, TSCALE)
-
         key = f"nr={self.mpdata.nr}, dz={self.settings.dz}, dt={self.settings.dt}, options={options}"
         print(f"Simulating {self.settings.nt} timesteps using {key}")
 
@@ -124,10 +106,14 @@ class KiDDynamics:
         thermo.massmix_ratios["qsnow"][:] = self.mpdata["qsnow"].advectee.get()
         thermo.massmix_ratios["qgrau"][:] = self.mpdata["qgrau"].advectee.get()
 
-        wmagnitude = self.updraught_velocity.magnitude(
-            time
-        )  # TODO(CB: get from mpdata directly
-        thermo.wvel[:] = np.ones_like(thermo.wvel) * wmagnitude
+        z_half_reps = np.repeat(
+            np.arange(0, self.settings.z_max + self.settings.dz, self.settings.dz), 2
+        )[1:-1]
+        wmagnitude = self.settings.rhod_w(
+            (time + 0.5) * self.settings.dt
+        ) / self.settings.rhod(z_half_reps)
+        assert np.ones_like(thermo.wvel).shape == wmagnitude.shape
+        thermo.wvel[:] = wmagnitude
 
         return thermo
 
