@@ -43,11 +43,11 @@ timesteps:
 ### Initialisation Parameters ###
 inputfiles:
   constants_filename : ./cleo_1dkid/cleo_deps/libs/cleoconstants.hpp  # name of file for values of physical constants
-  grid_filename : ./cleo_1dkid/share/cleo_initial_conditions/1dkid/condevap_only/dimlessGBxboundaries.dat  # binary filename for initialisation of GBxs / GbxMaps
+  grid_filename : ./build/share/dimlessGBxboundaries.dat  # binary filename for initialisation of GBxs / GbxMaps
 
 initsupers:
   type: frombinary                                     # type of initialisation of super-droplets
-  initsupers_filename : ./cleo_1dkid/share/cleo_initial_conditions/1dkid/condevap_only/dimlessSDsinit.dat  # binary filename for initialisation of SDs
+  initsupers_filename : ./build/share/dimlessSDsinit.dat  # binary filename for initialisation of SDs
 
 ### Output Parameters ###
 outputdata:
