@@ -50,7 +50,7 @@ class KiDDynamics:
 
         WMAX = 3  # maximum vertical velocity [m/s], 'w1' of equation (6) in Shipway and Hill (2012)
         TSCALE = 600  # timescale of sinusoid [s], 't1' of equation (6) in Shipway and Hill (2012)
-        P0 = 990 * si.hPa
+        P0 = 1000 * si.hPa
         self.settings = Settings(
             dt=timestep,
             dz=z_delta,
