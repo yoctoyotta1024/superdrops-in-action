@@ -29,6 +29,11 @@ Then call the helper script with the source and build directories you want to us
   $ ./cleo_1dkid/scripts/bash/compile_pycleo_levante.sh $HOME/superdrops-in-action/cleo_1dkid/cleo_deps $HOME/superdrops-in-action/build
 
 After making the bindings, the ``pycleo`` Python module can used just like an ordinary python module.
+There's even a helper script to run the ``condevap_only`` and ``fullscheme`` examples:
+
+.. code-block:: console
+
+  $ ./cleo_1dkid/scripts/bash/run_1dkid_levante.sh
 
 You can find out more about pybind11 by visiting
 `their repository <https://github.com/pybind/pybind11/>`_
