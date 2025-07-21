@@ -271,10 +271,19 @@ Then call the helper script with the source and build directories you want to us
 </pre></div>
 </div>
 <p>After making the bindings, the <code class="docutils literal notranslate"><span class="pre">pycleo</span></code> Python module can used just like an ordinary python module.
-There’s even a helper script to run the <code class="docutils literal notranslate"><span class="pre">condevap_only</span></code> and <code class="docutils literal notranslate"><span class="pre">fullscheme</span></code> examples:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>./cleo_1dkid/scripts/bash/run_1dkid_levante.sh
+To run the <code class="docutils literal notranslate"><span class="pre">condevap_only</span></code> and <code class="docutils literal notranslate"><span class="pre">fullscheme</span></code> examples you can use the helper scripts to
+first generate the initial conditions and then run the executables:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>./cleo_1dkid/scripts/bash/inputfiles_cleo_1dkid.sh<span class="w"> </span><span class="se">\</span>
+<span class="gp">  $</span>HOME/superdrops-in-action/cleo_1dkid/share/cleo_initial_conditions/1dkid/condevap_only/config.yaml<span class="w"> </span><span class="se">\</span>
+<span class="gp">  $</span>HOME/superdrops-in-action/build
+<span class="gp">$ </span>./cleo_1dkid/scripts/bash/inputfiles_cleo_1dkid.sh<span class="w"> </span><span class="se">\</span>
+<span class="gp">  $</span>HOME/superdrops-in-action/cleo_1dkid/share/cleo_initial_conditions/1dkid/fullscheme/config.yaml<span class="w"> </span><span class="se">\</span>
+<span class="gp">  $</span>HOME/superdrops-in-action/build
+<span class="gp">$ </span>./cleo_1dkid/scripts/bash/run_cleo_1dkid.sh
 </pre></div>
 </div>
+<p>Checkout the quickplots plotting script <code class="docutils literal notranslate"><span class="pre">./cleo_1dkid/scripts/quickplot_cleo_1dkid.py</span></code>
+to help you view your results.</p>
 <p>You can find out more about pybind11 by visiting
 <a class="reference external" href="https://github.com/pybind/pybind11/">their repository</a></p>
 </section>
