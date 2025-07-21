@@ -33,7 +33,7 @@ There's even a helper script to run the ``condevap_only`` and ``fullscheme`` exa
 
 .. code-block:: console
 
-  $ ./cleo_1dkid/scripts/bash/run_1dkid_levante.sh
+  $ ./cleo_1dkid/scripts/bash/run_cleo_1dkid.sh
 
 You can find out more about pybind11 by visiting
 `their repository <https://github.com/pybind/pybind11/>`_

@@ -16,9 +16,8 @@
 ### ----- default compiler and python environment   ---- ###
 ### ----  and paths for CLEO and build directories  ---- ###
 path2CLEO=${HOME}/CLEO
-path2scripts=/home/m/m300950/superdrops-in-action/cleo_1dkid/libs/cleo_sdm/initconds
-condaenv=/work/bm1183/m300950/bin/envs/superdrops-in-action
-python=${condaenv}/bin/python
+path2scripts=${HOME}/superdrops-in-action/cleo_1dkid/libs/cleo_sdm/initconds
+python=/work/bm1183/m300950/bin/envs/superdrops-in-action/bin/python
 ### ---------------------------------------------------- ###
 
 configfile=$1
