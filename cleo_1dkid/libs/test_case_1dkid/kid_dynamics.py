@@ -140,7 +140,7 @@ class KiDDynamics:
             self.settings.rhod_w(time + self.settings.dt / 2)
             * self.settings.dt
             / self.settings.dz
-        )
+        )  # courant_number * velocity * density (i.e. momentum * dt/dz)
         advector_0 = np.ones_like(self.settings.z_vec) * GC
 
         if self.advect_hydrometeors:
