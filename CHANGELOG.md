@@ -2,6 +2,22 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## [v0.5.0](https://github.com/yoctoyotta1024/superdrops-in-action/compare/24b831b360dade48ecea6df27b72fa77bacca536..v0.5.0) - 2025-07-21
+#### Bug Fixes
+- correct time given to momentum profile - ([1fe29a2](https://github.com/yoctoyotta1024/superdrops-in-action/commit/1fe29a29bc3c28b0831211b415764484ebb861ed)) - clara.bayley
+- use vertical velocity for SDs consistant with pympdata density profile - ([0c1b467](https://github.com/yoctoyotta1024/superdrops-in-action/commit/0c1b46744d49c2ffada008c196046ae1ad35d68c)) - clara.bayley
+#### Features
+- helper bash script to run 1dkid from - ([ac1f78f](https://github.com/yoctoyotta1024/superdrops-in-action/commit/ac1f78f9688bb7ea181dbc1283047acebea76a0c)) - clara.bayley
+#### Refactoring
+- raise p0 to standard value - ([f347c81](https://github.com/yoctoyotta1024/superdrops-in-action/commit/f347c812c6511e5f7284ef598b572b93a354a5ae)) - clara.bayley
+- explicitly set approx flag to true - ([97c4422](https://github.com/yoctoyotta1024/superdrops-in-action/commit/97c44229fed2c89533bbb5585586ab9176b731ab)) - clara.bayley
+- lower p0 of kid to 990 - ([3b02e12](https://github.com/yoctoyotta1024/superdrops-in-action/commit/3b02e1230c1908aa70dc979e8a964d16fd9dab64)) - clara.bayley
+- rename slurm job - ([54118ce](https://github.com/yoctoyotta1024/superdrops-in-action/commit/54118ce25f305e80c7495339f39b73ef5d0ee950)) - clara.bayley
+- add slurm settings to compilation script - ([7f3eaf2](https://github.com/yoctoyotta1024/superdrops-in-action/commit/7f3eaf26fc7c360ce2bff5049a4b80a5d78e3e1c)) - clara.bayley
+- adjust timesteps of kid config - ([24b831b](https://github.com/yoctoyotta1024/superdrops-in-action/commit/24b831b360dade48ecea6df27b72fa77bacca536)) - clara.bayley
+
+- - -
+
 ## [v0.4.0](https://github.com/yoctoyotta1024/superdrops-in-action/compare/146be40a605cad491e8e97a3f811944d65355650..v0.4.0) - 2025-07-15
 #### Documentation
 - more detail on CLEO modifications note - ([8334180](https://github.com/yoctoyotta1024/superdrops-in-action/commit/8334180282a5738b99b91c7a6d2bedf115950703)) - clara.bayley
