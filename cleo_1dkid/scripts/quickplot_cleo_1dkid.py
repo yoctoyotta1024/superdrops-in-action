@@ -34,7 +34,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument(
     "--binpath",
     type=Path,
-    default="/home/m/m300950/superdrops-in-action/build/bin/condevap_only",
+    default="/home/m/m300950/superdrops-in-action/build/bin/fullscheme",
     help="path to CLEO run output files",
 )
 parser.add_argument(
@@ -46,7 +46,7 @@ parser.add_argument(
 parser.add_argument(
     "--figpath",
     type=Path,
-    default="/home/m/m300950/superdrops-in-action/build/bin/condevap_only",
+    default="/home/m/m300950/superdrops-in-action/build/bin/fullscheme",
     help="path to save figures in",
 )
 parser.add_argument(
@@ -384,8 +384,8 @@ plt.show()
 # %%
 fig, axs = plt.subplots(nrows=4, ncols=1, figsize=(5, 10), sharex=True)
 
-fig.suptitle("Fig. 1, N$_a$ = {:.0f} ".format(numconc[0, 0, 0, 0]) + "cm$^{-3}$")
-islog = True
+fig.suptitle("Fig. 4, N$_a$ = {:.0f} ".format(numconc[0, 0, 0, 0]) + "cm$^{-3}$")
+islogx = False
 
 lwpmax = np.take_along_axis(lwpath, lwpmax_idxs, axis=-1)[:, 0, 0, 0]
 axs[0].set_title("(a)", loc="left")
@@ -428,7 +428,7 @@ axs[2].plot(time.secs, dvolmax * 1e6, color="purple", linestyle="--")
 axs[2].plot(time.secs, wghtd_dvolmax * 1e6, color="b", linestyle="--")
 axs[2].set_title("(g)", loc="left")
 axs[2].set_ylabel("D$_{vol}$ / \u03BCm")
-axs[2].set_ylim([10, 70])
+
 
 sumxi = ak.to_numpy(ak.sum(_xi, axis=2), allow_missing=False)
 di = (6.0 / np.pi / rhol * m_water_corrected) ** (1 / 3)
@@ -440,10 +440,15 @@ axs[3].plot(time.secs, wghtd_sigmamax * 1e6, color="b")
 axs[3].set_title("(j)", loc="left")
 axs[3].set_yscale("log")
 axs[3].set_ylabel("\u03C3 / \u03BCm")
-axs[3].set_ylim([0.1, 50])
 
-if islog:
+if islogx:
     axs[0].set_xscale("log")
+    axs[2].set_ylim([10, 70])
+    axs[3].set_ylim([0.1, 50])
+else:
+    axs[2].set_yscale("log")
+    axs[2].set_ylim([10, 1150])
+    axs[3].set_ylim([1, 1050])
 axs[0].set_xlim([60, 3600])
 axs[-1].set_xlabel("time / s")
 
