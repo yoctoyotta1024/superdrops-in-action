@@ -2,6 +2,34 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## [v0.6.0](https://github.com/yoctoyotta1024/superdrops-in-action/compare/5a9e3bc2cbe8aa2719d2f899e7b3e7ecbb90c419..v0.6.0) - 2025-07-21
+#### Bug Fixes
+- don't set wvel when its an empty array - ([62f2e0e](https://github.com/yoctoyotta1024/superdrops-in-action/commit/62f2e0e7774d44429bb97f005d8d34b66b5dcfcb)) - clara.bayley
+- correc normalisation - ([f6d4608](https://github.com/yoctoyotta1024/superdrops-in-action/commit/f6d46084c879c5d73d5130a8f219dbe371be6ebd)) - clara.bayley
+#### Continuous Integration
+- fix condition on wvel - ([354717c](https://github.com/yoctoyotta1024/superdrops-in-action/commit/354717c6d536e7b4ebffe8dfee8219fd1e6be627)) - clara.bayley
+- edit cleo init cond file locations - ([8aacb51](https://github.com/yoctoyotta1024/superdrops-in-action/commit/8aacb514ad104c6956068591e4cbffb66a402e54)) - clara.bayley
+- lower python version requirement - ([bfea9d6](https://github.com/yoctoyotta1024/superdrops-in-action/commit/bfea9d61bf90a0da3c7d2d866f6b20f8d52d36c4)) - clara.bayley
+#### Documentation
+- note on plotting script - ([1304d93](https://github.com/yoctoyotta1024/superdrops-in-action/commit/1304d93cb06b94e7c7a3a2903425ec9be2b3a893)) - clara.bayley
+- how to generate input files - ([68b9c7e](https://github.com/yoctoyotta1024/superdrops-in-action/commit/68b9c7e830f2960b099729953ad4c22d4e772161)) - clara.bayley
+#### Features
+- new file for quickplotting cleo 1dkid dataset - ([21e3fb2](https://github.com/yoctoyotta1024/superdrops-in-action/commit/21e3fb2b85edfdbfa4753ec949d4d35ba60dc98b)) - clara.bayley
+- files to create CLEO kid init conds with alpha sampling - ([cceaec4](https://github.com/yoctoyotta1024/superdrops-in-action/commit/cceaec4a2a8e40a8ef1ffaba433a7dfb55b1daf0)) - clara.bayley
+#### Miscellaneous Chores
+- move files - ([b29161b](https://github.com/yoctoyotta1024/superdrops-in-action/commit/b29161b3d27dfbdc16e563050a96a2c5b3f066ea)) - clara.bayley
+#### Refactoring
+- correct labels for args to scriptS - ([e142f83](https://github.com/yoctoyotta1024/superdrops-in-action/commit/e142f833f7562c8794cc3603cd8338b5a734839d)) - clara.bayley
+- use cleo numconc tolerance argument - ([ae5174a](https://github.com/yoctoyotta1024/superdrops-in-action/commit/ae5174ac0c95f9339bda4b994968d2868e1cb85f)) - clara.bayley
+- add note on meaning of GC - ([24a79fe](https://github.com/yoctoyotta1024/superdrops-in-action/commit/24a79fea256ae3829cd9068ffc431e9aabb6eae5)) - clara.bayley
+- reduce subtimestep for NR method - ([a111a02](https://github.com/yoctoyotta1024/superdrops-in-action/commit/a111a020f116e8deb3149ab8cced5d4c0113fa35)) - clara.bayley
+- increase nsupers in config - ([98f2ee7](https://github.com/yoctoyotta1024/superdrops-in-action/commit/98f2ee73dfb9504b0edb8d0c8e72518aebaf3143)) - clara.bayley
+- change init cond paths in config - ([3a5dffa](https://github.com/yoctoyotta1024/superdrops-in-action/commit/3a5dffad79954d93c5ffa2fe5ec184f6c46585c5)) - clara.bayley
+- smaller x and y grid spacing - ([3df89d6](https://github.com/yoctoyotta1024/superdrops-in-action/commit/3df89d6f90c144ae467cedc46c3b3fd7b828c3a3)) - clara.bayley
+- require pysdm branch with alpha sampling - ([5a9e3bc](https://github.com/yoctoyotta1024/superdrops-in-action/commit/5a9e3bc2cbe8aa2719d2f899e7b3e7ecbb90c419)) - clara.bayley
+
+- - -
+
 ## [v0.5.0](https://github.com/yoctoyotta1024/superdrops-in-action/compare/24b831b360dade48ecea6df27b72fa77bacca536..v0.5.0) - 2025-07-21
 #### Bug Fixes
 - correct time given to momentum profile - ([1fe29a2](https://github.com/yoctoyotta1024/superdrops-in-action/commit/1fe29a29bc3c28b0831211b415764484ebb861ed)) - clara.bayley
