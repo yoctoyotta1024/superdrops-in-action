@@ -107,14 +107,16 @@ class KiDDynamics:
         thermo.massmix_ratios["qsnow"][:] = self.mpdata["qsnow"].advectee.get()
         thermo.massmix_ratios["qgrau"][:] = self.mpdata["qgrau"].advectee.get()
 
-        z_half_reps = np.repeat(
-            np.arange(0, self.settings.z_max + self.settings.dz, self.settings.dz), 2
-        )[1:-1]
-        wmagnitude = self.settings.rhod_w(
-            time + self.settings.dt / 2
-        ) / self.settings.rhod(z_half_reps)
-        assert np.ones_like(thermo.wvel).shape == wmagnitude.shape
-        thermo.wvel[:] = wmagnitude
+        if np.any(thermo.wvel is not None):
+            z_half_reps = np.repeat(
+                np.arange(0, self.settings.z_max + self.settings.dz, self.settings.dz),
+                2,
+            )[1:-1]
+            wmagnitude = self.settings.rhod_w(
+                time + self.settings.dt / 2
+            ) / self.settings.rhod(z_half_reps)
+            assert np.ones_like(thermo.wvel).shape == wmagnitude.shape
+            thermo.wvel[:] = wmagnitude
 
         return thermo
 
