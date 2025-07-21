@@ -34,7 +34,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument(
     "--binpath",
     type=Path,
-    default="/home/m/m300950/superdrops-in-action/build/bin/fullscheme",
+    default="/home/m/m300950/superdrops-in-action/build/bin/condevap_only",
     help="path to CLEO run output files",
 )
 parser.add_argument(
@@ -46,7 +46,7 @@ parser.add_argument(
 parser.add_argument(
     "--figpath",
     type=Path,
-    default="/home/m/m300950/superdrops-in-action/build/bin/fullscheme",
+    default="/home/m/m300950/superdrops-in-action/build/bin/condevap_only",
     help="path to save figures in",
 )
 parser.add_argument(
@@ -385,7 +385,7 @@ plt.show()
 fig, axs = plt.subplots(nrows=4, ncols=1, figsize=(5, 10), sharex=True)
 
 fig.suptitle("Fig. 4, N$_a$ = {:.0f} ".format(numconc[0, 0, 0, 0]) + "cm$^{-3}$")
-islogx = False
+islogx = True
 
 lwpmax = np.take_along_axis(lwpath, lwpmax_idxs, axis=-1)[:, 0, 0, 0]
 axs[0].set_title("(a)", loc="left")
