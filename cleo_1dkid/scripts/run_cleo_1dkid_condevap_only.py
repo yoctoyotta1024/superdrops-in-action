@@ -1,7 +1,7 @@
 """
 Copyright (c) 2025 MPI-M, Clara Bayley
 
------ Microphysics Test Cases -----
+----- superdrops-in-action -----
 File: run_cleo_1dkid_condevap_only.py
 Project: scripts
 Created Date: Monday 14th July 2025
