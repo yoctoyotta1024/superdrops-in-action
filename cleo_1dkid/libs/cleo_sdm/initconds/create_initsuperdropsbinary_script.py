@@ -76,6 +76,9 @@ rspan = spectrum.percentiles(
     default_cdf_range
 )  # min and max range of radii to sample [m]
 radiigen, xiprobdist = alphasampling.AlphaSamplingWrapper(spectrum, alpha, rspan)
+numconc_tolerance = (
+    0.001  # 0.1% tolerance on resultant numconc not being equal to input numconc
+)
 ### --------------------------------------------------------- ###
 
 ### --- Choice of Superdroplet Coords Generator --- ###
@@ -107,6 +110,7 @@ geninitconds.generate_initial_superdroplet_conditions(
     grid_filename,
     nsupers,
     numconc,
+    numconc_tolerance=numconc_tolerance,
     isprintinfo=True,
     isfigures=isfigures,
     savefigpath=savefigpath,
