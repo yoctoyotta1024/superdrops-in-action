@@ -60,7 +60,7 @@ microphysics:
   condensation:
     do_alter_thermo : true                             # true = cond/evap alters the thermodynamic state
     maxniters : 50                                     # maximum no. iterations of Newton Raphson Method
-    MINSUBTSTEP : 0.005                                # minimum subtimestep in cases of substepping [s]
+    MINSUBTSTEP : 0.0005                               # minimum subtimestep in cases of substepping [s]
     rtol : 0.0                                         # relative tolerance for implicit Euler integration
     atol : 0.001                                       # absolute tolerance for implicit Euler integration
 
