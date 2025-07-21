@@ -1,7 +1,7 @@
 """
 Copyright (c) 2025 MPI-M, Clara Bayley
 
------ Microphysics Test Cases -----
+----- superdrops-in-action -----
 File: run_cleo_1dkid_fullscheme.py
 Project: scripts
 Created Date: Monday 14th July 2025
@@ -34,13 +34,13 @@ parser.add_argument(
     "--run_name",
     type=str,
     default="cleo_fullscheme",
-    help="path to pycleo python module",
+    help="label for test run",
 )
 parser.add_argument(
     "--config_filename",
     type=Path,
     default="/home/m/m300950/superdrops-in-action/cleo_1dkid/share/cleo_initial_conditions/1dkid/fullscheme/config.yaml",
-    help="path to pycleo python module",
+    help="path to configuration yaml for test run",
 )
 parser.add_argument(
     "--binpath",

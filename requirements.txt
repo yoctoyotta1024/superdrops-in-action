@@ -21,3 +21,4 @@ mpi4py
 openmpi
 ruamel.yaml
 zarr
+git+https://github.com/emmacware/PySDM.git@alpha_sampling
