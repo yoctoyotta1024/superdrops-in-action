@@ -9,9 +9,6 @@
  * Author: Clara Bayley (CB)
  * Additional Contributors:
  * -----
- * Last Modified: Friday 20th June 2025
- * Modified By: CB
- * -----
  * License: BSD 3-Clause "New" or "Revised" License
  * https://opensource.org/licenses/BSD-3-Clause
  * -----
@@ -86,7 +83,7 @@ class DoTotNsupersObs {
    * @brief Placeholder for before timestepping functionality and to make class satisfy observer
    * concept.
    */
-  void before_timestepping(const viewd_constgbx d_gbxs) const {
+  void before_timestepping(const viewd_constgbx d_gbxs, const subviewd_constsupers d_supers) const {
     std::cout << "observer includes totnsupers observer\n";
   }
 
