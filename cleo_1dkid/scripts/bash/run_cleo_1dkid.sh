@@ -17,8 +17,9 @@
 ### ---- build type, directories, the executable(s) ---- ###
 ### -------- to compile, and your python script -------- ###
 ### ---------------------------------------------------- ###
+### _NOTE_: best to use absolute paths here
 path2superdropsinaction="${HOME}/superdrops-in-action"
-path2build=${HOME}/superdrops-in-action/build                    # build directory (should be absolute path)
+path2build="/work/bm1183/m300950/superdrops-in-action/cleo_1dkid/build"
 python=/work/bm1183/m300950/bin/envs/superdrops-in-action/bin/python
 ### ---------------------------------------------------- ###
 ### ---------------------------------------------------- ###

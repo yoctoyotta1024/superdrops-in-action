@@ -42,19 +42,19 @@ parser.add_argument(
 parser.add_argument(
     "--binpath",
     type=Path,
-    default="/home/m/m300950/superdrops-in-action/build/bin/condevap_only",
+    default="/work/bm1183/m300950/superdrops-in-action/cleo_1dkid/build/bin/condevap_only",
     help="path to CLEO run output files",
 )
 parser.add_argument(
     "--figpath",
     type=Path,
-    default="/home/m/m300950/superdrops-in-action/build/bin/condevap_only",
+    default="/work/bm1183/m300950/superdrops-in-action/cleo_1dkid/build/bin/condevap_only",
     help="path to save figures in",
 )
 parser.add_argument(
     "--path2pycleo",
     type=Path,
-    default="/home/m/m300950/superdrops-in-action/build/pycleo",
+    default="/work/bm1183/m300950/superdrops-in-action/cleo_1dkid/build/pycleo",
     help="path to pycleo python module",
 )
 args = parser.parse_args()

@@ -31,19 +31,19 @@ parser = argparse.ArgumentParser()
 parser.add_argument(
     "--binpath",
     type=Path,
-    default="/home/m/m300950/superdrops-in-action/build/bin/condevap_only",
+    default="/work/bm1183/m300950/superdrops-in-action/cleo_1dkid/build/bin/condevap_only",
     help="path to CLEO run output files",
 )
 parser.add_argument(
     "--grid_filename",
     type=Path,
-    default="/home/m/m300950/superdrops-in-action/build/share/dimlessGBxboundaries.dat",
+    default="/work/bm1183/m300950/superdrops-in-action/cleo_1dkid/build/share/dimlessGBxboundaries.dat",
     help="path to gridbox boundaries binary file",
 )
 parser.add_argument(
     "--figpath",
     type=Path,
-    default="/home/m/m300950/superdrops-in-action/build/bin/condevap_only",
+    default="/work/bm1183/m300950/superdrops-in-action/cleo_1dkid/build/bin/condevap_only",
     help="path to save figures in",
 )
 parser.add_argument(
