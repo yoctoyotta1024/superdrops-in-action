@@ -18,8 +18,8 @@
 ### -------- to compile, and your python script -------- ###
 ### ---------------------------------------------------- ###
 ### _NOTE_: best to use absolute paths here
-path2superdropsinaction="${HOME}/superdrops-in-action"
-path2build="/work/bm1183/m300950/superdrops-in-action/cleo_1dkid/build"
+path2cleo1dkid=$1
+path2build=$2
 python=/work/bm1183/m300950/bin/envs/superdrops-in-action/bin/python
 ### ---------------------------------------------------- ###
 ### ---------------------------------------------------- ###
@@ -36,7 +36,7 @@ fi
 
 # ensure these directories exist (it's a good idea for later use)
 mkdir ${path2build}/bin && mkdir ${path2build}/bin/condevap_only && mkdir ${path2build}/bin/fullscheme
-cd ${path2superdropsinaction} && pwd
-${python} ./cleo_1dkid/scripts/run_cleo_1dkid_condevap_only.py
-${python} ./cleo_1dkid/scripts/run_cleo_1dkid_fullscheme.py
+cd ${path2cleo1dkid} && pwd
+${python} ./scripts/run_cleo_1dkid_condevap_only.py
+${python} ./scripts/run_cleo_1dkid_fullscheme.py
 ### ---------------------------------------------------- ###

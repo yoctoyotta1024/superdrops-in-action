@@ -15,10 +15,11 @@
 ### ----- You need to edit these lines to set your ----- ###
 ### ----- default compiler and python environment   ---- ###
 ### ----  and paths for CLEO and build directories  ---- ###
-path2build=$1 # should be abolute path
+### _NOTE_: best to use absolute paths here
+path2cleo1dkid=$1
+path2build=$2
 path2CLEO=${HOME}/CLEO
 python=/work/bm1183/m300950/bin/envs/superdrops-in-action/bin/python
-path2cleo1dkid=${HOME}/superdrops-in-action/cleo_1dkid
 path2scripts=${path2cleo1dkid}/libs/cleo_sdm/initconds
 
 cleoconstants_filepath="${path2cleo1dkid}/cleo_deps/libs/"
