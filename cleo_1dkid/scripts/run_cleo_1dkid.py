@@ -2,7 +2,7 @@
 Copyright (c) 2025 MPI-M, Clara Bayley
 
 ----- superdrops-in-action -----
-File: run_cleo_1dkid_fullscheme.py
+File: run_cleo_1dkid.py
 Project: scripts
 Created Date: Monday 14th July 2025
 Author: Clara Bayley (CB)
@@ -30,25 +30,25 @@ parser = argparse.ArgumentParser()
 parser.add_argument(
     "--run_name",
     type=str,
-    default="cleo_fullscheme",
+    default="cleo_condevap_only",
     help="label for test run",
 )
 parser.add_argument(
     "--config_filename",
     type=Path,
-    default="/home/m/m300950/superdrops-in-action/cleo_1dkid/share/cleo_initial_conditions/1dkid/fullscheme/config.yaml",
+    default="/home/m/m300950/superdrops-in-action/cleo_1dkid/share/cleo_initial_conditions/1dkid/condevap_only/config.yaml",
     help="path to configuration yaml for test run",
 )
 parser.add_argument(
     "--binpath",
     type=Path,
-    default="/work/bm1183/m300950/superdrops-in-action/cleo_1dkid/build/bin/fullscheme",
+    default="/work/bm1183/m300950/superdrops-in-action/cleo_1dkid/build/bin/condevap_only",
     help="path to CLEO run output files",
 )
 parser.add_argument(
     "--figpath",
     type=Path,
-    default="/work/bm1183/m300950/superdrops-in-action/cleo_1dkid/build/bin/fullscheme",
+    default="/work/bm1183/m300950/superdrops-in-action/cleo_1dkid/build/bin/condevap_only",
     help="path to save figures in",
 )
 parser.add_argument(

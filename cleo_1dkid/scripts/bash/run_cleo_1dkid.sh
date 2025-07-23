@@ -21,6 +21,12 @@
 path2cleo1dkid=$1
 path2build=$2
 python=/work/bm1183/m300950/bin/envs/superdrops-in-action/bin/python
+
+run_name=condevap_only
+config_filename="${path2build}/tmp/condevap_only/config.yaml"
+binpath="${path2build}/bin/condevap_only"
+figpath="${path2build}/bin/condevap_only"
+path2pycleo="${path2build}/pycleo"
 ### ---------------------------------------------------- ###
 ### ---------------------------------------------------- ###
 ### ---------------------------------------------------- ###
@@ -36,7 +42,10 @@ fi
 
 # ensure these directories exist (it's a good idea for later use)
 mkdir ${path2build}/bin && mkdir ${path2build}/bin/condevap_only && mkdir ${path2build}/bin/fullscheme
-cd ${path2cleo1dkid} && pwd
-${python} ./scripts/run_cleo_1dkid_condevap_only.py
-${python} ./scripts/run_cleo_1dkid_fullscheme.py
+${python} ${path2cleo1dkid}/scripts/run_cleo_1dkid.py \
+  --run_name="${run_name}" \
+  --config_filename="${config_filename}" \
+  --binpath="${binpath}" \
+  --figpath="${figpath}" \
+  --path2pycleo="${path2pycleo}"
 ### ---------------------------------------------------- ###

@@ -20,7 +20,7 @@ path2cleo1dkid=$1
 path2build=$2
 path2CLEO=${HOME}/CLEO
 python=/work/bm1183/m300950/bin/envs/superdrops-in-action/bin/python
-path2scripts=${path2cleo1dkid}/libs/cleo_sdm/initconds
+path2initcondsscripts=${path2cleo1dkid}/libs/cleo_sdm/initconds
 
 cleoconstants_filepath="${path2cleo1dkid}/cleo_deps/libs/"
 grid_filename="${path2build}/share/dimlessGBxboundaries.dat"
@@ -64,7 +64,7 @@ do
 
   ### --------------- create configuration file -------------- ###
   echo "${python} create_config.py ${path2CLEO} ${src_configfile} ${dest_configfile} [...]"
-  ${python} ${path2scripts}/create_config.py ${path2CLEO} ${src_configfile} ${dest_configfile} \
+  ${python} ${path2initcondsscripts}/create_config.py ${path2CLEO} ${src_configfile} ${dest_configfile} \
     --cleoconstants_filepath="${cleoconstants_filepath}" \
     --grid_filename="${grid_filename}" \
     --initsupers_filename="${initsupers_filename}" \
@@ -74,11 +74,11 @@ do
 
   ### --------------- create gbx boundaries -------------- ###
   echo "${python} create_gbxboundariesbinary_script.py ${path2CLEO} ${path2build} ${dest_configfile}"
-  ${python} ${path2scripts}/create_gbxboundariesbinary_script.py ${path2CLEO} ${path2build} ${dest_configfile}
+  ${python} ${path2initcondsscripts}/create_gbxboundariesbinary_script.py ${path2CLEO} ${path2build} ${dest_configfile}
   ### ---------------------------------------------------- ###
 
   ### -------- create superdrop initial conditions ------- ###
   echo "${python} create_initsuperdropsbinary_script.py ${path2CLEO} ${path2build} ${dest_configfile}"
-  ${python} ${path2scripts}/create_initsuperdropsbinary_script.py ${path2CLEO} ${path2build} ${dest_configfile}
+  ${python} ${path2initcondsscripts}/create_initsuperdropsbinary_script.py ${path2CLEO} ${path2build} ${dest_configfile}
   ### ---------------------------------------------------- ###
 done
