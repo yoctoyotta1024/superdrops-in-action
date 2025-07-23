@@ -4,7 +4,7 @@ CLEO 1-D KiD Test Case
 The 1-D KiD test case uses the PYMPDATA libray alongside CLEO SDM. To run CLEO's C++ code alongside
 PYMPDATA, we first make the pycleo Python module using pybind11.
 
-CLEO's libraries (``libs``) and external depenencies (``extern``) from v0.51.0 have been copied
+CLEO's libraries (``libs``) and external depenencies (``extern``) from v0.52.0 have been copied
 into the directory ``cleo_1dkid/cleo_deps``. Some files in the cartesiandomain and gridboxes
 libraries, e.g. to set the KiD boundary conditions have since been modified. The CMakeLists.txt
 files in the libs has also been modified because the coupldyn_yac library has been deleted. Also

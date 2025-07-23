@@ -77,3 +77,4 @@ pycleo:
     rainmassmoms : true
     gridboxes : true
     superdrops : true
+    precip : true

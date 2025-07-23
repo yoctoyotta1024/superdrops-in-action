@@ -91,7 +91,7 @@ def prepare_to_timestep_sdm(config, sdm):
     gbxs = pycleo.create_gbxs_cartesian_null(sdm.gbxmaps, initgbxs, allsupers)
 
     print("PYCLEO STATUS: preparing sdm")
-    sdm.prepare_to_timestep(gbxs)
+    sdm.prepare_to_timestep(gbxs, allsupers)
 
     print("PYCLEO STATUS: preparation complete")
     return sdm, gbxs, allsupers
