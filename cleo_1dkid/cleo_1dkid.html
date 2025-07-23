@@ -251,7 +251,7 @@
 <h1>CLEO 1-D KiD Test Case<a class="headerlink" href="#cleo-1-d-kid-test-case" title="Link to this heading">¶</a></h1>
 <p>The 1-D KiD test case uses the PYMPDATA libray alongside CLEO SDM. To run CLEO’s C++ code alongside
 PYMPDATA, we first make the pycleo Python module using pybind11.</p>
-<p>CLEO’s libraries (<code class="docutils literal notranslate"><span class="pre">libs</span></code>) and external depenencies (<code class="docutils literal notranslate"><span class="pre">extern</span></code>) from v0.51.0 have been copied
+<p>CLEO’s libraries (<code class="docutils literal notranslate"><span class="pre">libs</span></code>) and external depenencies (<code class="docutils literal notranslate"><span class="pre">extern</span></code>) from v0.52.0 have been copied
 into the directory <code class="docutils literal notranslate"><span class="pre">cleo_1dkid/cleo_deps</span></code>. Some files in the cartesiandomain and gridboxes
 libraries, e.g. to set the KiD boundary conditions have since been modified. The CMakeLists.txt
 files in the libs has also been modified because the coupldyn_yac library has been deleted. Also
@@ -267,7 +267,9 @@ you need to have certain <a class="reference internal" href="../usage/requiremen
 <p>First activate the python environment you want to use, e.g.
 <code class="docutils literal notranslate"><span class="pre">micromamba</span> <span class="pre">activate</span> <span class="pre">superdrops-in-action</span></code>.
 Then call the helper script with the source and build directories you want to use, e.g.</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>./cleo_1dkid/scripts/bash/compile_pycleo_levante.sh<span class="w"> </span><span class="nv">$HOME</span>/superdrops-in-action/cleo_1dkid/cleo_deps<span class="w"> </span><span class="nv">$HOME</span>/superdrops-in-action/build
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>./cleo_1dkid/scripts/bash/compile_pycleo_levante.sh<span class="w"> </span><span class="se">\</span>
+<span class="gp">    $</span>HOME/superdrops-in-action/cleo_1dkid/cleo_deps<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>/work/bm1183/m300950/superdrops-in-action/cleo_1dkid/build
 </pre></div>
 </div>
 <p>After making the bindings, the <code class="docutils literal notranslate"><span class="pre">pycleo</span></code> Python module can used just like an ordinary python module.
@@ -275,10 +277,10 @@ To run the <code class="docutils literal notranslate"><span class="pre">condevap
 first generate the initial conditions and then run the executables:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>./cleo_1dkid/scripts/bash/inputfiles_cleo_1dkid.sh<span class="w"> </span><span class="se">\</span>
 <span class="gp">  $</span>HOME/superdrops-in-action/cleo_1dkid/share/cleo_initial_conditions/1dkid/condevap_only/config.yaml<span class="w"> </span><span class="se">\</span>
-<span class="gp">  $</span>HOME/superdrops-in-action/build
+<span class="w">  </span>/work/bm1183/m300950/superdrops-in-action/cleo_1dkid/build
 <span class="gp">$ </span>./cleo_1dkid/scripts/bash/inputfiles_cleo_1dkid.sh<span class="w"> </span><span class="se">\</span>
 <span class="gp">  $</span>HOME/superdrops-in-action/cleo_1dkid/share/cleo_initial_conditions/1dkid/fullscheme/config.yaml<span class="w"> </span><span class="se">\</span>
-<span class="gp">  $</span>HOME/superdrops-in-action/build
+<span class="w">  </span>/work/bm1183/m300950/superdrops-in-action/cleo_1dkid/build
 <span class="gp">$ </span>./cleo_1dkid/scripts/bash/run_cleo_1dkid.sh
 </pre></div>
 </div>
@@ -324,7 +326,7 @@ to help you view your results.</p>
             
             <a href="https://github.com/pradyunsg/furo">Furo</a>
             <div class="last-updated">
-              Last updated on 21 July 2025</div>
+              Last updated on 23 July 2025</div>
           </div>
           <div class="right-details">
             
