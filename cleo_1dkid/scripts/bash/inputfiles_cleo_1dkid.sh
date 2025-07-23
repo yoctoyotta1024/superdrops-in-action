@@ -20,25 +20,26 @@ path2scripts=${HOME}/superdrops-in-action/cleo_1dkid/libs/cleo_sdm/initconds
 python=/work/bm1183/m300950/bin/envs/superdrops-in-action/bin/python
 ### ---------------------------------------------------- ###
 
-configfile=$1
-path2build=$2
+path2build=$1 # should be abolute path
+configfiles=("${@:2}") # list of absolute paths separated by spaces with "", e.g. "$HOME/config0.yaml $HOME/config1.yaml"
 
-if [[ "${configfile}" == "" || "${path2build}" == "" ]]
+if [[ "${configfiles}" == "" || "${path2build}" == "" ]]
 then
-  echo "Please specify config file and path2build"
+  echo "Please specify config files and path2build"
 else
+  for configfile in ${configfiles};
+  do
+    echo "config file: ${configfile}"
+    echo "path to build directory: ${path2build}"
 
-  echo "config file: ${configfile}"
-  echo "path to build directory: ${path2build}"
+    ### --------------- create gbx boundaries -------------- ###
+    echo "${python} create_gbxboundariesbinary_script.py ${path2CLEO} ${path2build} ${configfile}"
+    ${python} ${path2scripts}/create_gbxboundariesbinary_script.py ${path2CLEO} ${path2build} ${configfile}
+    ### ---------------------------------------------------- ###
 
-  ### --------------- create gbx boundaries -------------- ###
-  echo "${python} create_gbxboundariesbinary_script.py ${path2CLEO} ${path2build} ${configfile}"
-  ${python} ${path2scripts}/create_gbxboundariesbinary_script.py ${path2CLEO} ${path2build} ${configfile}
-  ### ---------------------------------------------------- ###
-
-  ### -------- create superdrop initial conditions ------- ###
-  echo "${python} create_initsuperdropsbinary_script.py ${path2CLEO} ${path2build} ${configfile}"
-  ${python} ${path2scripts}/create_initsuperdropsbinary_script.py ${path2CLEO} ${path2build} ${configfile}
-  ### ---------------------------------------------------- ###
-
+    ### -------- create superdrop initial conditions ------- ###
+    echo "${python} create_initsuperdropsbinary_script.py ${path2CLEO} ${path2build} ${configfile}"
+    ${python} ${path2scripts}/create_initsuperdropsbinary_script.py ${path2CLEO} ${path2build} ${configfile}
+    ### ---------------------------------------------------- ###
+  done
 fi

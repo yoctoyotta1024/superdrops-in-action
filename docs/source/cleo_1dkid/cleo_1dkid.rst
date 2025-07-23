@@ -37,11 +37,9 @@ first generate the initial conditions and then run the executables:
 .. code-block:: console
 
   $ ./cleo_1dkid/scripts/bash/inputfiles_cleo_1dkid.sh \
-    $HOME/superdrops-in-action/cleo_1dkid/share/cleo_initial_conditions/1dkid/condevap_only/config.yaml \
-    /work/bm1183/m300950/superdrops-in-action/cleo_1dkid/build
-  $ ./cleo_1dkid/scripts/bash/inputfiles_cleo_1dkid.sh \
-    $HOME/superdrops-in-action/cleo_1dkid/share/cleo_initial_conditions/1dkid/fullscheme/config.yaml \
-    /work/bm1183/m300950/superdrops-in-action/cleo_1dkid/build
+    /work/bm1183/m300950/superdrops-in-action/cleo_1dkid/build \
+    "$HOME/superdrops-in-action/cleo_1dkid/share/cleo_initial_conditions/1dkid/condevap_only/config.yaml \
+    $HOME/superdrops-in-action/cleo_1dkid/share/cleo_initial_conditions/1dkid/fullscheme/config.yaml"
   $ ./cleo_1dkid/scripts/bash/run_cleo_1dkid.sh
 
 Checkout the quickplots plotting script ``./cleo_1dkid/scripts/quickplot_cleo_1dkid.py``
