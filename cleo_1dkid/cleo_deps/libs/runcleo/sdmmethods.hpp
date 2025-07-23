@@ -8,9 +8,6 @@
  * Author: Clara Bayley (CB)
  * Additional Contributors: Tobias Kölling (TK)
  * -----
- * Last Modified: Wednesday 11th June 2025
- * Modified By: CB
- * -----
  * License: BSD 3-Clause "New" or "Revised" License
  * https://opensource.org/licenses/BSD-3-Clause
  * -----
@@ -244,7 +241,11 @@ class SDMMethods {
    *
    * @param d_gbxs View of gridboxes on device.
    */
-  void prepare_to_timestep(const viewd_constgbx d_gbxs) const { obs.before_timestepping(d_gbxs); }
+  void prepare_to_timestep(const dualview_gbx gbxs, const SupersInDomain &allsupers) const {
+    const auto d_gbxs = gbxs.view_device();
+    const auto domainsupers = allsupers.domain_supers_readonly();
+    obs.before_timestepping(d_gbxs, domainsupers);
+  }
 
   /**
    * @brief Execute at the start of each coupled model timestep.

@@ -9,9 +9,6 @@
  * Author: Clara Bayley (CB)
  * Additional Contributors:
  * -----
- * Last Modified: Friday 20th June 2025
- * Modified By: CB
- * -----
  * License: BSD 3-Clause "New" or "Revised" License
  * https://opensource.org/licenses/BSD-3-Clause
  * -----
@@ -32,6 +29,8 @@
 #include "superdrops/sdmmonitor.hpp"
 #include "zarr/buffer.hpp"
 #include "zarr/xarray_zarr_array.hpp"
+
+namespace KCS = KokkosCleoSettings;
 
 /**
  * @class DoSDMMonitorObs
@@ -78,8 +77,18 @@ class DoSDMMonitorObs {
    * @brief Placeholder for before timestepping functionality and to make class satisfy observer
    * concept.
    */
-  void before_timestepping(const viewd_constgbx d_gbxs) const {
+  void before_timestepping(const viewd_constgbx d_gbxs,
+                           const subviewd_constsupers domainsupers) const {
     std::cout << "observer includes SDM monitor observer\n";
+
+    const size_t ngbxs(d_gbxs.extent(0));
+    Kokkos::parallel_for(
+        "monitor_before_timestepping", TeamPolicy(ngbxs, KCS::team_size),
+        KOKKOS_CLASS_LAMBDA(const TeamMember &team_member) {
+          const auto ii = team_member.league_rank();
+          const auto supers = d_gbxs(ii).supersingbx.readonly(domainsupers);
+          monitor.before_timestepping(team_member, supers);
+        });
   }
 
   /**

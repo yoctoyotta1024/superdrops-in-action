@@ -4,7 +4,7 @@ CLEO 1-D KiD Test Case
 The 1-D KiD test case uses the PYMPDATA libray alongside CLEO SDM. To run CLEO's C++ code alongside
 PYMPDATA, we first make the pycleo Python module using pybind11.
 
-CLEO's libraries (``libs``) and external depenencies (``extern``) from v0.51.0 have been copied
+CLEO's libraries (``libs``) and external depenencies (``extern``) from v0.52.0 have been copied
 into the directory ``cleo_1dkid/cleo_deps``. Some files in the cartesiandomain and gridboxes
 libraries, e.g. to set the KiD boundary conditions have since been modified. The CMakeLists.txt
 files in the libs has also been modified because the coupldyn_yac library has been deleted. Also
@@ -26,7 +26,9 @@ Then call the helper script with the source and build directories you want to us
 
 .. code-block:: console
 
-  $ ./cleo_1dkid/scripts/bash/compile_pycleo_levante.sh $HOME/superdrops-in-action/cleo_1dkid/cleo_deps $HOME/superdrops-in-action/build
+  $ ./cleo_1dkid/scripts/bash/compile_pycleo_levante.sh \
+      $HOME/superdrops-in-action/cleo_1dkid/cleo_deps \
+      /work/bm1183/m300950/superdrops-in-action/cleo_1dkid/build
 
 After making the bindings, the ``pycleo`` Python module can used just like an ordinary python module.
 To run the ``condevap_only`` and ``fullscheme`` examples you can use the helper scripts to
@@ -36,10 +38,10 @@ first generate the initial conditions and then run the executables:
 
   $ ./cleo_1dkid/scripts/bash/inputfiles_cleo_1dkid.sh \
     $HOME/superdrops-in-action/cleo_1dkid/share/cleo_initial_conditions/1dkid/condevap_only/config.yaml \
-    $HOME/superdrops-in-action/build
+    /work/bm1183/m300950/superdrops-in-action/cleo_1dkid/build
   $ ./cleo_1dkid/scripts/bash/inputfiles_cleo_1dkid.sh \
     $HOME/superdrops-in-action/cleo_1dkid/share/cleo_initial_conditions/1dkid/fullscheme/config.yaml \
-    $HOME/superdrops-in-action/build
+    /work/bm1183/m300950/superdrops-in-action/cleo_1dkid/build
   $ ./cleo_1dkid/scripts/bash/run_cleo_1dkid.sh
 
 Checkout the quickplots plotting script ``./cleo_1dkid/scripts/quickplot_cleo_1dkid.py``

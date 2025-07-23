@@ -9,9 +9,6 @@
  * Author: Clara Bayley (CB)
  * Additional Contributors:
  * -----
- * Last Modified: Tuesday 15th July 2025
- * Modified By: CB
- * -----
  * License: BSD 3-Clause "New" or "Revised" License
  * https://opensource.org/licenses/BSD-3-Clause
  * -----
@@ -172,6 +169,7 @@ struct OptionalConfigParams {
       bool rainmassmoms = false;
       bool gridboxes = false;
       bool superdrops = false;
+      bool precip = false;
     } enable_observers; /**< true for set of booleans in struct enables various observers */
   } pycleo;
 };

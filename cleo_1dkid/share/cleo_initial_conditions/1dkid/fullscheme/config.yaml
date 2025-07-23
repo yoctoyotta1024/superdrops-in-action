@@ -42,17 +42,17 @@ timesteps:
 
 ### Initialisation Parameters ###
 inputfiles:
-  constants_filename : ./cleo_1dkid/cleo_deps/libs/cleoconstants.hpp  # name of file for values of physical constants
-  grid_filename : ./build/share/dimlessGBxboundaries.dat  # binary filename for initialisation of GBxs / GbxMaps
+  constants_filename : ./cleo_1dkid/cleo_deps/libs/cleoconstants.hpp  # (relative path working for pytests in CI) name of file for values of physical constants
+  grid_filename : ./build/share/dimlessGBxboundaries.dat  # (relative path working for pytests in CI) binary filename for initialisation of GBxs / GbxMaps
 
 initsupers:
-  type: frombinary                                     # type of initialisation of super-droplets
-  initsupers_filename : ./build/share/dimlessSDsinit.dat  # binary filename for initialisation of SDs
+  type: frombinary                                        # type of initialisation of super-droplets
+  initsupers_filename : ./build/share/dimlessSDsinit.dat  # (relative path working for pytests in CI) binary filename for initialisation of SDs
 
 ### Output Parameters ###
 outputdata:
-  setup_filename : ./build/bin/fullscheme/setup.txt     # .txt filename to copy configuration to
-  zarrbasedir : ./build/bin/fullscheme/sol.zarr         # zarr store base directory
+  setup_filename : ./build/bin/fullscheme/setup.txt     # (relative path working for pytests in CI) .txt filename to copy configuration to
+  zarrbasedir : ./build/bin/fullscheme/sol.zarr         # (relative path working for pytests in CI) zarr store base directory
   maxchunk : 2500000                                    # maximum no. of elements in chunks of zarr store array
 
 ### Microphysics Parameters ###
@@ -77,3 +77,4 @@ pycleo:
     rainmassmoms : true
     gridboxes : true
     superdrops : true
+    precip : true
