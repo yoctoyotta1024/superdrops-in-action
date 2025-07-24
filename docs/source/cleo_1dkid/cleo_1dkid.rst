@@ -43,7 +43,7 @@ first generate the initial conditions and then run the executables:
       ${HOME}/superdrops-in-action/cleo_1dkid \
       /work/bm1183/m300950/superdrops-in-action/cleo_1dkid/build
 
-Checkout the quickplots plotting script ``./cleo_1dkid/scripts/quickplot_cleo_1dkid.py``
+Checkout the quickplots plotting script ``cleo_1dkid/scripts/quickplot_cleo_1dkid.py``
 to help you view your results.
 
 You can find out more about pybind11 by visiting
