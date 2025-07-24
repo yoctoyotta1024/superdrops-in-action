@@ -29,10 +29,16 @@ from pathlib import Path
 
 parser = argparse.ArgumentParser()
 parser.add_argument(
-    "--binpath",
+    "--dataset",
     type=Path,
-    default="/work/bm1183/m300950/superdrops-in-action/cleo_1dkid/build/bin/fullscheme",
-    help="path to CLEO run output files",
+    default="/work/bm1183/m300950/superdrops-in-action/cleo_1dkid/build/bin/fullscheme/sol.zarr",
+    help="path to CLEO output .zarr dataset",
+)
+parser.add_argument(
+    "--setupfile",
+    type=Path,
+    default="/work/bm1183/m300950/superdrops-in-action/cleo_1dkid/build/bin/fullscheme/setup.txt",
+    help="path to CLEO run output .txt setup file",
 )
 parser.add_argument(
     "--grid_filename",
@@ -47,12 +53,6 @@ parser.add_argument(
     help="path to save figures in",
 )
 parser.add_argument(
-    "--run_name",
-    type=str,
-    default="cleo_condevap_only",
-    help="label for test case",
-)
-parser.add_argument(
     "--path2cleo",
     type=Path,
     default="/home/m/m300950/CLEO/",
@@ -60,8 +60,13 @@ parser.add_argument(
 )
 args = parser.parse_args()
 
-dataset = args.binpath / "sol.zarr"
-setupfile = args.binpath / "setup.txt"
+dataset = args.dataset
+setupfile = args.setupfile
+assert dataset.is_dir()
+assert setupfile.exists()
+assert setupfile.suffix == ".txt"
+assert dataset.suffix == ".zarr"
+
 # %%
 sys.path.append(str(args.path2cleo))  # imports from pySD
 sys.path.append(

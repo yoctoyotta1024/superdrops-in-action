@@ -31,31 +31,26 @@ parser.add_argument(
 parser.add_argument(
     "--cleoconstants_filepath",
     type=Path,
-    default="NONE",
     help="path to cleoconstants.hpp file",
 )
 parser.add_argument(
     "--grid_filename",
     type=Path,
-    default="NONE",
     help="path to gridbox binary file",
 )
 parser.add_argument(
     "--initsupers_filename",
     type=Path,
-    default="NONE",
     help="path to initial superdroplets binary file",
 )
 parser.add_argument(
     "--setup_filename",
     type=Path,
-    default="NONE",
     help="path to output .txt file",
 )
 parser.add_argument(
     "--zarrbasedir",
     type=Path,
-    default="NONE",
     help="path to output .zarr directory",
 )
 args = parser.parse_args()

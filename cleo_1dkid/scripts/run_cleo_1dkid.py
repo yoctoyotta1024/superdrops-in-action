@@ -30,25 +30,25 @@ parser = argparse.ArgumentParser()
 parser.add_argument(
     "--run_name",
     type=str,
-    default="cleo_condevap_only",
+    default="cleo_fullscheme",
     help="label for test run",
 )
 parser.add_argument(
     "--config_filename",
     type=Path,
-    default="/home/m/m300950/superdrops-in-action/cleo_1dkid/share/cleo_initial_conditions/1dkid/condevap_only/config.yaml",
+    default="/home/m/m300950/superdrops-in-action/cleo_1dkid/share/cleo_initial_conditions/1dkid/fullscheme/config.yaml",
     help="path to configuration yaml for test run",
 )
 parser.add_argument(
     "--binpath",
     type=Path,
-    default="/work/bm1183/m300950/superdrops-in-action/cleo_1dkid/build/bin/condevap_only",
+    default="/work/bm1183/m300950/superdrops-in-action/cleo_1dkid/build/bin/fullscheme",
     help="path to CLEO run output files",
 )
 parser.add_argument(
     "--figpath",
     type=Path,
-    default="/work/bm1183/m300950/superdrops-in-action/cleo_1dkid/build/bin/condevap_only",
+    default="/work/bm1183/m300950/superdrops-in-action/cleo_1dkid/build/bin/fullscheme",
     help="path to save figures in",
 )
 parser.add_argument(
@@ -59,6 +59,7 @@ parser.add_argument(
 )
 args = parser.parse_args()
 
+assert args.path2pycleo.is_dir()
 os.environ["PYCLEO_DIR"] = str(args.path2pycleo)
 sys.path.append("/home/m/m300950/superdrops-in-action/cleo_1dkid/")
 from libs.test_case_1dkid.perform_1dkid_test_case import perform_1dkid_test_case
@@ -70,9 +71,9 @@ run_name = args.run_name
 config_filename = args.config_filename
 binpath = args.binpath
 figpath = args.figpath
-
-### path to directory to save data/plots in after model run
-Path(figpath).mkdir(parents=False, exist_ok=True)
+assert config_filename.exists()
+assert binpath.is_dir()
+assert figpath.is_dir()
 
 ### time and grid parameters
 # NOTE: these must be consistent with CLEO initial condition binary files(!)
