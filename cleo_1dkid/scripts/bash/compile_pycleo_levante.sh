@@ -22,13 +22,14 @@ spack unload --all
 ### ----- your build configuration and executables ----- ###
 ### ---------------------------------------------------- ###
 # generic input parameters
-path2source=$1                             # source directory (should be absolute path)
-path2build=$2                              # build directory (should be absolute path)
+### _NOTE_: best to use absolute paths here
+path2source="$1/cleo_deps"                 # source directory, $1 is path to cleo_1dkid/
+path2build=$2                              # build directory
 make_clean=${3:-false}                     # == "true" or otherwise false
 executables=${4:-"pycleo"}                 # list of executables to compile
 
 # CLEO (openmp with gcc compiler) extra build parameters
-cleo_build_flags=${6:-"-DCLEO_COUPLED_DYNAMICS="numpy" \
+cleo_build_flags=${5:-"-DCLEO_COUPLED_DYNAMICS="numpy" \
   -DCLEO_PYTHON=/work/bm1183/m300950/bin/envs/superdrops-in-action/bin/python"} # CLEO_BUILD_FLAGS
 
 # Necessary Levante packages

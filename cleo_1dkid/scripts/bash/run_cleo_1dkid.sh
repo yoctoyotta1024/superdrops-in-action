@@ -18,25 +18,71 @@
 ### -------- to compile, and your python script -------- ###
 ### ---------------------------------------------------- ###
 ### _NOTE_: best to use absolute paths here
-path2superdropsinaction="${HOME}/superdrops-in-action"
-path2build="/work/bm1183/m300950/superdrops-in-action/cleo_1dkid/build"
+path2cleo1dkid=$1
+path2build=$2
+start_id=$3 # inclusive start of run_ids
+end_id=$4 # inclusive end of run_ids
+path2pycleo="${path2build}/pycleo"
 python=/work/bm1183/m300950/bin/envs/superdrops-in-action/bin/python
-### ---------------------------------------------------- ###
-### ---------------------------------------------------- ###
-### ---------------------------------------------------- ###
 
+### loop over configs_directory for all different for run_ids
+configs_directory=("${path2build}/tmp/condevap_only"
+                 "${path2build}/tmp/fullscheme")
+run_labels=("condevap_only" "fullscheme")
+fig_directory=("${path2build}/bin/condevap_only"
+                "${path2build}/bin/fullscheme")
+
+### IDs of ensemble members (diff superdrop initial conditions) for each src_configs to create
+if [[ "${start_id}" == "" || "${end_id}" == "" ]]
+then
+  echo "Please specify start and end id"
+  exit 1
+fi
+run_ids=($(seq $start_id 1 $end_id))
+### ---------------------------------------------------- ###
+### ---------------------------------------------------- ###
+### ---------------------------------------------------- ###
 
 ### ------------------ check arguments ----------------- ###
-if [[ "${path2build}" == "" ]]
+if [[ ${#configs_directory[@]} -eq 0 ||
+      "${path2build}" == "" ||
+      "${run_ids}" == "" ]]
 then
-  echo "Please provide absolute path to build directory"
+  echo "Please specify path2build, runs for ensemble," \
+          "and source and destination config files"
+  exit 1
+fi
+
+if [[ ${#configs_directory[@]} -ne ${#run_labels[@]} ||
+      ${#configs_directory[@]} -ne ${#fig_directory[@]} ]]
+then
+  echo "Please specify as many source configuration files as destinations"
+  echo "(${#configs_directory[@]}, ${#run_labels[@]}, ${#fig_directory[@]})"
   exit 1
 fi
 ### ---------------------------------------------------- ###
 
-# ensure these directories exist (it's a good idea for later use)
-mkdir ${path2build}/bin && mkdir ${path2build}/bin/condevap_only && mkdir ${path2build}/bin/fullscheme
-cd ${path2superdropsinaction} && pwd
-${python} ./cleo_1dkid/scripts/run_cleo_1dkid_condevap_only.py
-${python} ./cleo_1dkid/scripts/run_cleo_1dkid_fullscheme.py
+for i in "${!configs_directory[@]}"
+do
+  echo "---------------------- src ${i} ----------------------"
+  for j in "${!run_ids[@]}"
+  do
+    config_filename="${configs_directory[i]}/config_${j}.yaml"
+    run_name="${run_labels[i]}_${j}"
+    figpath="${fig_directory[i]}"
+    echo "---- src ${i}, run number: ${j} ----"
+    echo "--run_name=${run_name}"
+    echo "--config_filename=${config_filename}"
+    echo "--figpath=${figpath}"
+    echo "--path2pycleo=${path2pycleo}"
+
+    echo "${python} ${path2cleo1dkid}/scripts/run_cleo_1dkid.py --config_filename=${config_filename} [...]"
+    ${python} ${path2cleo1dkid}/scripts/run_cleo_1dkid.py \
+      --run_name="${run_name}" \
+      --config_filename="${config_filename}" \
+      --figpath="${figpath}" \
+      --path2pycleo="${path2pycleo}"
+    done
+  echo "---------------------------------------------------"
+done
 ### ---------------------------------------------------- ###

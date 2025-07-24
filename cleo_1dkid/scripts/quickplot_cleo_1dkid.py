@@ -29,10 +29,16 @@ from pathlib import Path
 
 parser = argparse.ArgumentParser()
 parser.add_argument(
-    "--binpath",
+    "--dataset",
     type=Path,
-    default="/work/bm1183/m300950/superdrops-in-action/cleo_1dkid/build/bin/condevap_only",
-    help="path to CLEO run output files",
+    default="/work/bm1183/m300950/superdrops-in-action/cleo_1dkid/build/bin/fullscheme/sol.zarr",
+    help="path to CLEO output .zarr dataset",
+)
+parser.add_argument(
+    "--setupfile",
+    type=Path,
+    default="/work/bm1183/m300950/superdrops-in-action/cleo_1dkid/build/bin/fullscheme/setup.txt",
+    help="path to CLEO run output .txt setup file",
 )
 parser.add_argument(
     "--grid_filename",
@@ -43,14 +49,8 @@ parser.add_argument(
 parser.add_argument(
     "--figpath",
     type=Path,
-    default="/work/bm1183/m300950/superdrops-in-action/cleo_1dkid/build/bin/condevap_only",
+    default="/work/bm1183/m300950/superdrops-in-action/cleo_1dkid/build/bin/fullscheme",
     help="path to save figures in",
-)
-parser.add_argument(
-    "--run_name",
-    type=str,
-    default="cleo_condevap_only",
-    help="label for test case",
 )
 parser.add_argument(
     "--path2cleo",
@@ -60,8 +60,13 @@ parser.add_argument(
 )
 args = parser.parse_args()
 
-dataset = args.binpath / "sol.zarr"
-setupfile = args.binpath / "setup.txt"
+dataset = args.dataset
+setupfile = args.setupfile
+assert dataset.is_dir()
+assert setupfile.exists()
+assert setupfile.suffix == ".txt"
+assert dataset.suffix == ".zarr"
+
 # %%
 sys.path.append(str(args.path2cleo))  # imports from pySD
 sys.path.append(
@@ -379,78 +384,35 @@ fig.tight_layout()
 plt.show()
 
 # %%
-fig, axs = plt.subplots(nrows=4, ncols=1, figsize=(5, 10), sharex=True)
+xi = reshape_superdrops_pergbx(superdrops["xi"], ds.nsupers.values)
 
-fig.suptitle("Fig. 4, N$_a$ = {:.0f} ".format(numconc[0, 0, 0, 0]) + "cm$^{-3}$")
-islogx = True
-
-lwpmax = np.take_along_axis(lwpath, lwpmax_idxs, axis=-1)[:, 0, 0, 0]
-axs[0].set_title("(a)", loc="left")
-axs[0].plot(time.secs, lwpmax, color="b")
-axs[0].set_ylabel("LWP / kg m$^{-2}$")
-axs[0].set_ylim(bottom=0)
-
-_xi = reshape_superdrops_pergbx(superdrops["xi"], ds.nsupers.values)
-xi_incloud = ak.where(incloudmask[:, :, None], _xi, np.nan)
+xi_incloud = ak.where(incloudmask[:, :, None], xi, np.nan)
 sumxi_incloud = ak.to_numpy(ak.sum(xi_incloud, axis=2), allow_missing=False)
 numconc_d = sumxi_incloud / gbxs["gbxvols"][None, 0, 0, :] / 1e6
-mean_numconc_d = np.nan_to_num(np.nanmean(numconc_d, axis=1))
-# axs[1].plot(time.secs, numconc_d, linewidth=0.8, alpha=0.3)
-axs[1].plot(time.secs, mean_numconc_d, color="b")
-axs[1].set_title("(d)", loc="left")
-axs[1].set_ylabel("mean N$_d$ / cm$^{-3}$")
-axs[1].set_ylim(bottom=0)
 
 m_water = superdrops.m_water(superdrops.radius(), superdrops.msol()) / 1000  # [kg]
 m_water = reshape_superdrops_pergbx(m_water, ds.nsupers.values)
 m_water_corrected = np.where(m_water <= 0.0, np.nan, m_water)
 dvol_mean = ak.to_numpy(
-    ak.mean(m_water_corrected, weight=_xi, axis=2), allow_missing=False
+    ak.mean(m_water_corrected, weight=xi, axis=2), allow_missing=False
 )
 dvol = (6.0 / np.pi / rhol * dvol_mean) ** (1 / 3)
 
 weighted_water_corrected = ak.to_numpy(
-    ak.sum((m_water_corrected) ** (4 / 3) * _xi, axis=2), allow_missing=False
+    ak.sum((m_water_corrected) ** (4 / 3) * xi, axis=2), allow_missing=False
 )
 summ_water_corrected = ak.to_numpy(
-    ak.sum(m_water_corrected * _xi, axis=2), allow_missing=False
+    ak.sum(m_water_corrected * xi, axis=2), allow_missing=False
 )
 wghtd_dvol = (
     (6.0 / np.pi / rhol) ** (1 / 3) * weighted_water_corrected / summ_water_corrected
 )
 
-dvolmax = np.take_along_axis(dvol, lwpmax_idxs[:, 0, 0, :], axis=-1)[:, 0]
-wghtd_dvolmax = np.take_along_axis(wghtd_dvol, lwpmax_idxs[:, 0, 0, :], axis=-1)[:, 0]
-axs[2].plot(time.secs, dvolmax * 1e6, color="purple", linestyle="--")
-axs[2].plot(time.secs, wghtd_dvolmax * 1e6, color="b", linestyle="--")
-axs[2].set_title("(g)", loc="left")
-axs[2].set_ylabel("D$_{vol}$ / \u03BCm")
-
-
-sumxi = ak.to_numpy(ak.sum(_xi, axis=2), allow_missing=False)
+sumxi = ak.to_numpy(ak.sum(xi, axis=2), allow_missing=False)
 di = (6.0 / np.pi / rhol * m_water_corrected) ** (1 / 3)
-diffssqrd = _xi * (di - wghtd_dvol) ** 2
+diffssqrd = xi * (di - wghtd_dvol) ** 2
 sumdiffssqrd = ak.to_numpy(ak.sum(diffssqrd, axis=2), allow_missing=False)
 wghtd_sigma = (1 / (sumxi - 1) * sumdiffssqrd) ** (1 / 2)
-wghtd_sigmamax = np.take_along_axis(wghtd_sigma, lwpmax_idxs[:, 0, 0, :], axis=-1)[:, 0]
-axs[3].plot(time.secs, wghtd_sigmamax * 1e6, color="b")
-axs[3].set_title("(j)", loc="left")
-axs[3].set_yscale("log")
-axs[3].set_ylabel("\u03C3 / \u03BCm")
-
-if islogx:
-    axs[0].set_xscale("log")
-    axs[2].set_ylim([10, 70])
-    axs[3].set_ylim([0.1, 50])
-else:
-    axs[2].set_yscale("log")
-    axs[2].set_ylim([10, 1150])
-    axs[3].set_ylim([1, 1050])
-axs[0].set_xlim([60, 3600])
-axs[-1].set_xlabel("time / s")
-
-fig.tight_layout()
-plt.show()
 
 # %%
 fig, axs = plt.subplots(nrows=4, ncols=1, figsize=(5, 10), sharey=True)
@@ -493,4 +455,65 @@ for ax in axs:
 
 fig.tight_layout()
 plt.show()
+
 # %%
+isfig4 = True  # else fig1
+if isfig4:
+    figtitle = "Fig. 4, N$_a$ = {:.0f} ".format(numconc[0, 0, 0, 0]) + "cm$^{-3}$"
+    nrows = 5
+else:
+    figtitle = "Fig. 1, N$_a$ = {:.0f} ".format(numconc[0, 0, 0, 0]) + "cm$^{-3}$"
+    nrows = 4
+
+fig, axs = plt.subplots(nrows=nrows, ncols=1, figsize=(5, 10), sharex=True)
+fig.suptitle(figtitle)
+
+lwpmax = np.take_along_axis(lwpath, lwpmax_idxs, axis=-1)[:, 0, 0, 0]
+axs[0].set_title("(a)", loc="left")
+axs[0].plot(time.secs, lwpmax, color="b")
+axs[0].set_ylabel("LWP / kg m$^{-2}$")
+axs[0].set_ylim(bottom=0)
+
+mean_numconc_d = np.nan_to_num(np.nanmean(numconc_d, axis=1))
+# axs[1].plot(time.secs, numconc_d, linewidth=0.8, alpha=0.3)
+axs[1].plot(time.secs, mean_numconc_d, color="b")
+axs[1].set_title("(d)", loc="left")
+axs[1].set_ylabel("mean N$_d$ / cm$^{-3}$")
+axs[1].set_ylim(bottom=0)
+
+dvolmax = np.take_along_axis(dvol, lwpmax_idxs[:, 0, 0, :], axis=-1)[:, 0]
+wghtd_dvolmax = np.take_along_axis(wghtd_dvol, lwpmax_idxs[:, 0, 0, :], axis=-1)[:, 0]
+axs[2].plot(time.secs, dvolmax * 1e6, color="purple", linestyle="--")
+axs[2].plot(time.secs, wghtd_dvolmax * 1e6, color="b", linestyle="--")
+axs[2].set_title("(g)", loc="left")
+axs[2].set_ylabel("D$_{vol}$ / \u03BCm")
+
+wghtd_sigmamax = np.take_along_axis(wghtd_sigma, lwpmax_idxs[:, 0, 0, :], axis=-1)[:, 0]
+axs[3].plot(time.secs, wghtd_sigmamax * 1e6, color="b")
+axs[3].set_title("(j)", loc="left")
+axs[3].set_ylabel("\u03C3 / \u03BCm")
+axs[3].set_yscale("log")
+
+if isfig4:
+    axs[2].set_yscale("log")
+    axs[2].set_ylim([10, 1175])
+    axs[3].set_ylim([1, 1100])
+
+    surf_precip = (
+        ds.precip.sel(height=np.amin(ds.height)) * 1000 / (config["OBSTSTEP"] / 3600)
+    )  # [mm/hr]
+    surf_precip.attrs["units"] = "mm hr$^{-1}$"
+    axs[4].plot(time.secs, surf_precip, color="b")
+    axs[4].set_title("(d)", loc="left")
+    axs[4].set_ylabel(f"surface precip / {surf_precip.units}")
+    axs[4].set_ylim(bottom=0)
+else:
+    axs[0].set_xscale("log")
+    axs[2].set_ylim([10, 70])
+    axs[3].set_ylim([0.1, 50])
+
+axs[0].set_xlim([60, 3600])
+axs[-1].set_xlabel("time / s")
+
+fig.tight_layout()
+plt.show()

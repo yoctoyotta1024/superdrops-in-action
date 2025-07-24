@@ -2,7 +2,7 @@
 Copyright (c) 2025 MPI-M, Clara Bayley
 
 ----- superdrops-in-action -----
-File: run_cleo_1dkid_fullscheme.py
+File: run_cleo_1dkid.py
 Project: scripts
 Created Date: Monday 14th July 2025
 Author: Clara Bayley (CB)
@@ -59,6 +59,7 @@ parser.add_argument(
 )
 args = parser.parse_args()
 
+assert args.path2pycleo.is_dir()
 os.environ["PYCLEO_DIR"] = str(args.path2pycleo)
 sys.path.append("/home/m/m300950/superdrops-in-action/cleo_1dkid/")
 from libs.test_case_1dkid.perform_1dkid_test_case import perform_1dkid_test_case
@@ -70,9 +71,9 @@ run_name = args.run_name
 config_filename = args.config_filename
 binpath = args.binpath
 figpath = args.figpath
-
-### path to directory to save data/plots in after model run
-Path(figpath).mkdir(parents=False, exist_ok=True)
+assert config_filename.exists()
+assert binpath.is_dir()
+assert figpath.is_dir()
 
 ### time and grid parameters
 # NOTE: these must be consistent with CLEO initial condition binary files(!)
