@@ -268,7 +268,7 @@ you need to have certain <a class="reference internal" href="../usage/requiremen
 <code class="docutils literal notranslate"><span class="pre">micromamba</span> <span class="pre">activate</span> <span class="pre">superdrops-in-action</span></code>.
 Then call the helper script with the source and build directories you want to use, e.g.</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>./cleo_1dkid/scripts/bash/compile_pycleo_levante.sh<span class="w"> </span><span class="se">\</span>
-<span class="gp">    $</span>HOME/superdrops-in-action/cleo_1dkid/cleo_deps<span class="w"> </span><span class="se">\</span>
+<span class="gp">    $</span>HOME/superdrops-in-action/cleo_1dkid<span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>/work/bm1183/m300950/superdrops-in-action/cleo_1dkid/build
 </pre></div>
 </div>
@@ -276,15 +276,14 @@ Then call the helper script with the source and build directories you want to us
 To run the <code class="docutils literal notranslate"><span class="pre">condevap_only</span></code> and <code class="docutils literal notranslate"><span class="pre">fullscheme</span></code> examples you can use the helper scripts to
 first generate the initial conditions and then run the executables:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>./cleo_1dkid/scripts/bash/inputfiles_cleo_1dkid.sh<span class="w"> </span><span class="se">\</span>
-<span class="gp">  $</span>HOME/superdrops-in-action/cleo_1dkid/share/cleo_initial_conditions/1dkid/condevap_only/config.yaml<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>/work/bm1183/m300950/superdrops-in-action/cleo_1dkid/build
-<span class="gp">$ </span>./cleo_1dkid/scripts/bash/inputfiles_cleo_1dkid.sh<span class="w"> </span><span class="se">\</span>
-<span class="gp">  $</span>HOME/superdrops-in-action/cleo_1dkid/share/cleo_initial_conditions/1dkid/fullscheme/config.yaml<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>/work/bm1183/m300950/superdrops-in-action/cleo_1dkid/build
-<span class="gp">$ </span>./cleo_1dkid/scripts/bash/run_cleo_1dkid.sh
+<span class="gp">    $</span><span class="o">{</span>HOME<span class="o">}</span>/superdrops-in-action/cleo_1dkid<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>/work/bm1183/m300950/superdrops-in-action/cleo_1dkid/build<span class="w"> </span><span class="m">0</span><span class="w"> </span><span class="m">100</span>
+<span class="gp">$ </span>./cleo_1dkid/scripts/bash/run_cleo_1dkid.sh<span class="w"> </span><span class="se">\</span>
+<span class="gp">    $</span><span class="o">{</span>HOME<span class="o">}</span>/superdrops-in-action/cleo_1dkid<span class="w"> </span><span class="se">\</span>
+<span class="w">    </span>/work/bm1183/m300950/superdrops-in-action/cleo_1dkid/build<span class="w"> </span><span class="m">0</span><span class="w"> </span><span class="m">100</span>
 </pre></div>
 </div>
-<p>Checkout the quickplots plotting script <code class="docutils literal notranslate"><span class="pre">./cleo_1dkid/scripts/quickplot_cleo_1dkid.py</span></code>
+<p>Checkout the quickplots plotting script <code class="docutils literal notranslate"><span class="pre">cleo_1dkid/scripts/quickplot_cleo_1dkid.py</span></code>
 to help you view your results.</p>
 <p>You can find out more about pybind11 by visiting
 <a class="reference external" href="https://github.com/pybind/pybind11/">their repository</a></p>
@@ -326,7 +325,7 @@ to help you view your results.</p>
             
             <a href="https://github.com/pradyunsg/furo">Furo</a>
             <div class="last-updated">
-              Last updated on 23 July 2025</div>
+              Last updated on 24 July 2025</div>
           </div>
           <div class="right-details">
             
