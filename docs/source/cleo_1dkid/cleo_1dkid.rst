@@ -38,10 +38,10 @@ first generate the initial conditions and then run the executables:
 
   $ ./cleo_1dkid/scripts/bash/inputfiles_cleo_1dkid.sh \
       ${HOME}/superdrops-in-action/cleo_1dkid \
-      /work/bm1183/m300950/superdrops-in-action/cleo_1dkid/build 0 10
+      /work/bm1183/m300950/superdrops-in-action/cleo_1dkid/build 0 100
   $ ./cleo_1dkid/scripts/bash/run_cleo_1dkid.sh \
       ${HOME}/superdrops-in-action/cleo_1dkid \
-      /work/bm1183/m300950/superdrops-in-action/cleo_1dkid/build
+      /work/bm1183/m300950/superdrops-in-action/cleo_1dkid/build 0 100
 
 Checkout the quickplots plotting script ``cleo_1dkid/scripts/quickplot_cleo_1dkid.py``
 to help you view your results.
