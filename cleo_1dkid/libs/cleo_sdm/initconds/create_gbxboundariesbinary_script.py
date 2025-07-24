@@ -19,30 +19,64 @@ uses pySD module to create gridbox boundaries
 binary file for input to CLEO SDM
 """
 
+import argparse
 import sys
 import numpy as np
 from pathlib import Path
-
-sys.path.append(sys.argv[1])  # path to pySD (same as to CLEO)
-from pySD import geninitconds
+import yaml
 
 ### ----------------------- INPUT PARAMETERS ----------------------- ###
-### absolute or relative paths for build and CLEO directories
-path2CLEO = Path(sys.argv[1])
-path2build = Path(sys.argv[2])
-config_filename = Path(sys.argv[3])
+parser = argparse.ArgumentParser()
+parser.add_argument(
+    "--path2CLEO",
+    type=Path,
+    help="path to CLEO pySD python module",
+)
+parser.add_argument(
+    "--config_filename",
+    type=Path,
+    help="path to configuration yaml for test run",
+)
+parser.add_argument(
+    "--isfigures",
+    type=str,
+    choices=["TRUE", "FALSE"],
+    default="FALSE",
+    help="=='TRUE', plot and save figures of initial conditions",
+)
+parser.add_argument(
+    "--figpath",
+    type=Path,
+    help="path to save figures in",
+)
+parser.add_argument(
+    "--figlabel",
+    type=str,
+    default="",
+    help="label for saving figures with",
+)
+args = parser.parse_args()
 
-# booleans for [making, saving] initialisation figures
-isfigures = [True, True]
+if args.isfigures == "TRUE":
+    isfigures = [True, True]
+else:
+    isfigures = [False, False]
+
+assert args.path2CLEO.is_dir()
+sys.path.append(str(args.path2CLEO))  # path to pySD (same as to CLEO)
+from pySD import geninitconds
 
 ### essential paths and filenames
-constants_filename = path2CLEO / "libs" / "cleoconstants.hpp"
-binariespath = path2build / "share"
-savefigpath = path2build / "bin"
-
-grid_filename = (
-    binariespath / "dimlessGBxboundaries.dat"
-)  # note this should match config.yaml
+config_filename = args.config_filename
+figpath = args.figpath
+cnfg = yaml.safe_load(open(config_filename))
+constants_filename = cnfg["inputfiles"]["constants_filename"]
+grid_filename = cnfg["inputfiles"]["grid_filename"]
+assert config_filename.exists()
+assert Path(constants_filename).exists()
+assert Path(grid_filename).parent.is_dir()
+if isfigures[1]:
+    figpath.is_dir()
 
 ### input parameters for zcoords of gridbox boundaries
 zmax = 3200  # maximum z coord [m]
@@ -60,22 +94,15 @@ ygrid = np.asarray([0, 1])
 
 
 ### -------------------- BINARY FILE GENERATION--------------------- ###
-### ensure build, share and bin directories exist
-if path2CLEO == path2build:
-    raise ValueError("build directory cannot be CLEO")
-else:
-    path2build.mkdir(exist_ok=True)
-    binariespath.mkdir(exist_ok=True)
-    if isfigures[1]:
-        savefigpath.mkdir(exist_ok=True)
 geninitconds.generate_gridbox_boundaries(
     grid_filename,
     zgrid,
     xgrid,
     ygrid,
     constants_filename,
-    isprintinfo=True,
+    isprintinfo=isfigures[0],
     isfigures=isfigures,
-    savefigpath=savefigpath,
+    savefigpath=figpath,
+    savelabel=args.figlabel,
 )
 ### ---------------------------------------------------------------- ###

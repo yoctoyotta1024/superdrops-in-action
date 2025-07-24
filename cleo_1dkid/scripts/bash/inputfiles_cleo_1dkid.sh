@@ -20,6 +20,7 @@ path2cleo1dkid=$1
 path2build=$2
 start_id=$3 # inclusive start of run_ids
 end_id=$4 # inclusive end of run_ids
+isfigures=FALSE
 path2CLEO=${HOME}/CLEO
 python=/work/bm1183/m300950/bin/envs/superdrops-in-action/bin/python
 path2initcondsscripts=${path2cleo1dkid}/libs/cleo_sdm/initconds
@@ -48,7 +49,7 @@ initsupers_directory="${path2build}/share"
 configs_directory=("${path2build}/tmp/condevap_only"
                  "${path2build}/tmp/fullscheme")
 bin_directory=("${path2build}/bin/condevap_only"
-                 "${path2build}/bin/fullscheme")
+                "${path2build}/bin/fullscheme")
 ### ---------------------------------------------------- ###
 ### ---------------------------------------------------- ###
 ### ---------------------------------------------------- ###
@@ -73,13 +74,14 @@ fi
 ### ---------------------------------------------------- ###
 
 ### --------------- make file directories -------------- ###
-mkdir -p "${grid_filename%/*}" # for grid_filename(s)
+grid_directory="${grid_filename%/*}"
+mkdir -p "${grid_directory}" # for grid_filename(s)
 mkdir -p "${initsupers_directory}" # for initsupers_filename(s)
 for i in "${!src_configs[@]}"
 do
-  config_directory="${configs_directory[i]}" # for dest_configfile(s)
-  bin_directory="${bin_directory[i]}" # for setup_filename(s) and zarrbasedir(s)
-  mkdir -p "${config_directory}" && mkdir -p "${bin_directory}"
+  config_directory_i="${configs_directory[i]}" # for dest_configfile(s)
+  bin_directory_i="${bin_directory[i]}" # for setup_filename(s) and zarrbasedir(s)
+  mkdir -p "${config_directory_i}" && mkdir -p "${bin_directory_i}"
 done
 ### ---------------------------------------------------- ###
 
@@ -103,7 +105,7 @@ do
     echo "-- ${setup_filename}"
     echo "-- ${zarrbasedir}"
 
-    echo "${python} create_config.py ${path2CLEO} ${src_configfile} ${dest_configfile} [...]"
+    echo "python create_config.py ${path2CLEO} ${src_configfile} ${dest_configfile} [...]"
     ${python} ${path2initcondsscripts}/create_config.py ${path2CLEO} ${src_configfile} ${dest_configfile} \
       --cleoconstants_filepath="${cleoconstants_filepath}" \
       --grid_filename="${grid_filename}" \
@@ -121,8 +123,13 @@ echo "---- gbxs using src 0, run number: 0 ----"
 dest_configfile="${configs_directory[0]}/config_0.yaml"
 echo "path to build directory: ${path2build}"
 echo "gbxs config file: ${dest_configfile}"
-echo "${python} create_gbxboundariesbinary_script.py ${path2CLEO} ${path2build} ${dest_configfile}"
-${python} ${path2initcondsscripts}/create_gbxboundariesbinary_script.py ${path2CLEO} ${path2build} ${dest_configfile}
+echo "python create_gbxboundariesbinary_script.py --config_filename=${dest_configfile} [...]"
+${python} ${path2initcondsscripts}/create_gbxboundariesbinary_script.py \
+  --path2CLEO="${path2CLEO}" \
+  --config_filename="${dest_configfile}" \
+  --isfigures="${isfigures}" \
+  --figpath="${grid_directory}" \
+  --figlabel="_0_0"
 ### ---------------------------------------------------- ###
 
 ### -------- create superdrop initial conditions ------- ###
@@ -134,7 +141,12 @@ do
   echo "path to build directory: ${path2build}"
   echo "supers config file: ${dest_configfile}"
 
-  echo "${python} create_initsuperdropsbinary_script.py ${path2CLEO} ${path2build} ${dest_configfile}"
-  ${python} ${path2initcondsscripts}/create_initsuperdropsbinary_script.py ${path2CLEO} ${path2build} ${dest_configfile}
+  echo "python create_initsuperdropsbinary_script.py ${path2CLEO} ${path2build} ${dest_configfile}"
+  ${python} ${path2initcondsscripts}/create_initsuperdropsbinary_script.py \
+    --path2CLEO="${path2CLEO}" \
+    --config_filename="${dest_configfile}" \
+    --isfigures="${isfigures}" \
+    --figpath="${initsupers_directory}" \
+    --figlabel="_0_${j}"
 done
 ### ---------------------------------------------------- ###
