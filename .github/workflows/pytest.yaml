@@ -76,8 +76,6 @@ jobs:
 
           pwd && echo "ls -l ./build/share/" && ls -l ./build/share/
           echo "ls -l ./cleo_1dkid/share/cleo_initial_conditions/1dkid/" && ls -l ./cleo_1dkid/share/cleo_initial_conditions/1dkid/
-          echo "ls -l ./cleo_1dkid/share/cleo_initial_conditions/1dkid/condevap_only/" && ls -l ./cleo_1dkid/share/cleo_initial_conditions/1dkid/condevap_only/
-          echo "ls -l ./cleo_1dkid/share/cleo_initial_conditions/1dkid/fullscheme/" && ls -l ./cleo_1dkid/share/cleo_initial_conditions/1dkid/fullscheme/
 
       - name: Test with pytest
         run: |
