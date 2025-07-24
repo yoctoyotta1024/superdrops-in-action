@@ -2,6 +2,37 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## [v0.7.0](https://github.com/yoctoyotta1024/superdrops-in-action/compare/4873a28c758a05778a1e72902d744111f789aa8f..v0.7.0) - 2025-07-24
+#### Documentation
+- correct example calls to inputfile and run functions - ([2427e10](https://github.com/yoctoyotta1024/superdrops-in-action/commit/2427e10545dd38f82340ad368e0371b1b50add4a)) - clara.bayley
+#### Features
+- use bash script to create configs for each run - ([a30c6e8](https://github.com/yoctoyotta1024/superdrops-in-action/commit/a30c6e80180c4cc1ed162eaa386accf7767145fb)) - clara.bayley
+- new script to copy config and edit parameters - ([b42412d](https://github.com/yoctoyotta1024/superdrops-in-action/commit/b42412d2470babbd300d4f0a2021b40de1543591)) - clara.bayley
+#### Miscellaneous Chores
+- edit commands in docs - ([9f2e175](https://github.com/yoctoyotta1024/superdrops-in-action/commit/9f2e175d262c599074a31419e45d116d14fc0e52)) - clara.bayley
+- remove last modified from file headers - ([c2ed388](https://github.com/yoctoyotta1024/superdrops-in-action/commit/c2ed388752d8e2c1122ef473063bceb792b7f1aa)) - clara.bayley
+- copy changes from CLEO 0.52.0 pycleo library into cleo_deps - ([32e3817](https://github.com/yoctoyotta1024/superdrops-in-action/commit/32e3817eafe8f25ded13a1189c253f1f304117eb)) - clara.bayley
+- copy changes from CLEO 0.52.0 runcleo library into cleo_deps - ([be99802](https://github.com/yoctoyotta1024/superdrops-in-action/commit/be99802e5e088fba898172d6290e2670a57e737e)) - clara.bayley
+- copy changes from CLEO 0.52.0 superdrops library into cleo_deps - ([12695ac](https://github.com/yoctoyotta1024/superdrops-in-action/commit/12695acccb0a930bf4d120c8c054506c01846554)) - clara.bayley
+- copy changes from CLEO 0.52.0 observers library into cleo_deps - ([258473e](https://github.com/yoctoyotta1024/superdrops-in-action/commit/258473e1a58dedbc5e18534d516fd39fb71fb1fb)) - clara.bayley
+- copy changes from CLEO 0.52.0 into cleo_deps - ([1b92521](https://github.com/yoctoyotta1024/superdrops-in-action/commit/1b92521cead9b3fab20f5cdc612b49ac809be14a)) - clara.bayley
+#### Refactoring
+- input scripts for gbxs and supers use argparse - ([8a03cfc](https://github.com/yoctoyotta1024/superdrops-in-action/commit/8a03cfcc7c4db6ec360321af2cb19aed1480cb3a)) - clara.bayley
+- modify defaults - ([903006b](https://github.com/yoctoyotta1024/superdrops-in-action/commit/903006ba73ca16309862bff9030b85a882c57070)) - clara.bayley
+- run script for ensemble of runs - ([60d1c89](https://github.com/yoctoyotta1024/superdrops-in-action/commit/60d1c89e6f73efb3ebdf0cc0ecc402540809bd11)) - clara.bayley
+- add precip to quickplots - ([10265ac](https://github.com/yoctoyotta1024/superdrops-in-action/commit/10265ac2eafc8cabc6ba55aabb0130fddded871d)) - clara.bayley
+- generalise run scripts - ([6d01774](https://github.com/yoctoyotta1024/superdrops-in-action/commit/6d017747120d151aecfc649c7458ca0e71949ca2)) - clara.bayley
+- homogenise bash script args - ([4c25bd9](https://github.com/yoctoyotta1024/superdrops-in-action/commit/4c25bd9dfe4b580e32757ef88bac1a82566adbd7)) - clara.bayley
+- give configs as list to input files creation - ([cabfad8](https://github.com/yoctoyotta1024/superdrops-in-action/commit/cabfad837515496e99e6ac8fa75a942cf3c3af37)) - clara.bayley
+- note on config relative paths - ([40d681b](https://github.com/yoctoyotta1024/superdrops-in-action/commit/40d681b1cab799c787b2c203019e6a316617fce8)) - clara.bayley
+- change default/example build directory location - ([ef59e6c](https://github.com/yoctoyotta1024/superdrops-in-action/commit/ef59e6c7b90ccc9901517668c5e282a9a2507721)) - clara.bayley
+- use cleo 0.52.0 python bindings - ([be4f501](https://github.com/yoctoyotta1024/superdrops-in-action/commit/be4f50173608899789bb6ccec24c1afc6a22e388)) - clara.bayley
+- plot for condevap_only - ([b2ebc31](https://github.com/yoctoyotta1024/superdrops-in-action/commit/b2ebc31752a99627c9961e706757f6bcc0325612)) - clara.bayley
+- plot for fullscheme - ([cbf930d](https://github.com/yoctoyotta1024/superdrops-in-action/commit/cbf930daca051648e263c0898c0f2451c435e0b3)) - clara.bayley
+- more quickplots - ([4873a28](https://github.com/yoctoyotta1024/superdrops-in-action/commit/4873a28c758a05778a1e72902d744111f789aa8f)) - clara.bayley
+
+- - -
+
 ## [v0.6.0](https://github.com/yoctoyotta1024/superdrops-in-action/compare/5a9e3bc2cbe8aa2719d2f899e7b3e7ecbb90c419..v0.6.0) - 2025-07-21
 #### Bug Fixes
 - don't set wvel when its an empty array - ([62f2e0e](https://github.com/yoctoyotta1024/superdrops-in-action/commit/62f2e0e7774d44429bb97f005d8d34b66b5dcfcb)) - clara.bayley
