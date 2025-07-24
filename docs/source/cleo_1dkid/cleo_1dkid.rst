@@ -38,7 +38,7 @@ first generate the initial conditions and then run the executables:
 
   $ ./cleo_1dkid/scripts/bash/inputfiles_cleo_1dkid.sh \
       ${HOME}/superdrops-in-action/cleo_1dkid \
-      /work/bm1183/m300950/superdrops-in-action/cleo_1dkid/build
+      /work/bm1183/m300950/superdrops-in-action/cleo_1dkid/build 100
   $ ./cleo_1dkid/scripts/bash/run_cleo_1dkid.sh \
       ${HOME}/superdrops-in-action/cleo_1dkid \
       /work/bm1183/m300950/superdrops-in-action/cleo_1dkid/build
