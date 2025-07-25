@@ -29,13 +29,13 @@ parser = argparse.ArgumentParser()
 parser.add_argument(
     "--dataset",
     type=Path,
-    default="/work/bm1183/m300950/superdrops-in-action/cleo_1dkid/build/bin/fullscheme/sol.zarr",
+    default="/work/bm1183/m300950/superdrops-in-action/cleo_1dkid/build/bin/fullscheme/sol_0.zarr",
     help="path to CLEO output .zarr dataset",
 )
 parser.add_argument(
     "--setupfile",
     type=Path,
-    default="/work/bm1183/m300950/superdrops-in-action/cleo_1dkid/build/bin/fullscheme/setup.txt",
+    default="/work/bm1183/m300950/superdrops-in-action/cleo_1dkid/build/bin/fullscheme/setup_0.txt",
     help="path to CLEO run output .txt setup file",
 )
 parser.add_argument(
@@ -47,7 +47,7 @@ parser.add_argument(
 parser.add_argument(
     "--figpath",
     type=Path,
-    default="/work/bm1183/m300950/superdrops-in-action/cleo_1dkid/build/bin/fullscheme",
+    default="/home/m/m300950/superdrops-in-action/plots/quickplots",
     help="path to save figures in",
 )
 parser.add_argument(
