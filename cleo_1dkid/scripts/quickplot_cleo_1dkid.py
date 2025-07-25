@@ -13,8 +13,6 @@ https://opensource.org/licenses/BSD-3-Clause
 -----
 File Description:
 Quickplots of 1-D kid test case dataset from CLEO SDM.
-
-NOTE: script assumes setup .txt file and .zarr dataset are in same directory
 """
 
 # %%
