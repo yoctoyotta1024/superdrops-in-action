@@ -134,6 +134,7 @@ ${python} ${path2initcondsscripts}/create_gbxboundariesbinary_script.py \
 
 ### -------- create superdrop initial conditions ------- ###
 ### make same superdroplets file for all src_configs
+sds_isfigures=${isfigures}
 for j in "${!run_ids[@]}"
 do
   dest_configfile="${configs_directory[0]}/config_${j}.yaml"
@@ -145,8 +146,9 @@ do
   ${python} ${path2initcondsscripts}/create_initsuperdropsbinary_script.py \
     --path2CLEO="${path2CLEO}" \
     --config_filename="${dest_configfile}" \
-    --isfigures="${isfigures}" \
+    --isfigures="${sds_isfigures}" \
     --figpath="${initsupers_directory}" \
     --figlabel="_0_${j}"
+  sds_isfigures=FALSE # never plot more than one realisation of SD initial conditions
 done
 ### ---------------------------------------------------- ###
