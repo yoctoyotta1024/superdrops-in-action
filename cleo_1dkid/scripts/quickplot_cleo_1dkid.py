@@ -113,15 +113,31 @@ ds = ds.assign_coords(height=("height", gbxs["zfull"]))
 ds["height"].attrs["units"] = "m"
 ds
 
+
+# %%
+def rho(press, temp, qvap):
+    p = press * 100  # [Pa]
+    qv = qvap / 1000  # [kg/kg]
+    Rd = 287.0027
+    Rv = 461.52998157941937
+    Rq = (Rv * qv + Rd) / (1 + qv)
+    return p / Rq / temp
+
+
 # %%
 fig, axs = plt.subplots(nrows=2, ncols=3, figsize=(12, 8))
 time2plot = 0  # [s]
 
-ds.press.sel(time=time2plot, method="nearest").T.plot(ax=axs[0, 0], y="height")
-ds.temp.sel(time=time2plot, method="nearest").T.plot(ax=axs[0, 1], y="height")
+press = ds.press.sel(time=time2plot, method="nearest")
+temp = ds.temp.sel(time=time2plot, method="nearest")
+qvap = ds.qvap.sel(time=time2plot, method="nearest")
+press.T.plot(ax=axs[0, 0], y="height")
+temp.T.plot(ax=axs[0, 1], y="height")
 ds.wvel.sel(time=time2plot, method="nearest").T.plot(ax=axs[0, 2], y="height")
-ds.qvap.sel(time=time2plot, method="nearest").T.plot(ax=axs[1, 0], y="height")
+qvap.T.plot(ax=axs[1, 0], y="height")
 ds.qcond.sel(time=time2plot, method="nearest").T.plot(ax=axs[1, 1], y="height")
+axs[1, 2].plot(rho(press, temp, qvap).T, ds.height)
+axs[1, 2].set_xlabel("density / kg m$^{-3}$")
 
 fig.tight_layout()
 plt.show()
