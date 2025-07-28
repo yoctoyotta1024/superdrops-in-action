@@ -93,8 +93,8 @@ numconc = 50 * 1e6
 spectrum = spectra.Lognormal(norm_factor=1.0, m_mode=geomean, s_geom=geosig)
 
 ### --- Choice of Superdroplet  --- ###
-nsupers = 128  # Number of Superdroplets per Gridbox
-alpha = 0.75  # sampling param: 0 -> const xi, 1 -> xi follows spectrum
+nsupers = 256  # Number of Superdroplets per Gridbox
+alpha = 0.0  # sampling param: 0 -> const xi, 1 -> xi follows spectrum
 default_cdf_range = (0.00001, 0.99999)
 rspan = spectrum.percentiles(
     default_cdf_range

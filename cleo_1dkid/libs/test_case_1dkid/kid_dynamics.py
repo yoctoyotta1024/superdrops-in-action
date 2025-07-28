@@ -57,7 +57,7 @@ class KiDDynamics:
             wmax_const=WMAX,
             tscale_const=TSCALE,
             t_max=t_end,
-            apprx_drhod_dz=True,
+            apprx_drhod_dz=False,
             p0=P0,
             z_max=z_max,
         )

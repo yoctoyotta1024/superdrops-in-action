@@ -44,7 +44,7 @@ class Settings:
         t_max: float = 15 * si.minutes,
         p0: Optional[float] = None,
         z_max: float = 3000 * si.metres,
-        apprx_drhod_dz: bool = True,
+        apprx_drhod_dz: bool = False,
     ):
         self.dt = dt
         self.dz = dz
