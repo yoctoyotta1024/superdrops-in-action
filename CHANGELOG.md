@@ -2,6 +2,16 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## [v0.7.1](https://github.com/yoctoyotta1024/superdrops-in-action/compare/4df85ad23ba7dce8dc47aee61e1a47ca2fa935f0..v0.7.1) - 2025-07-28
+#### Bug Fixes
+- missing (1+qv) factor in calculation of derivative of rho_d when accounting for water vapour - ([4701804](https://github.com/yoctoyotta1024/superdrops-in-action/commit/47018041d491a8c3592448c5ea4a627115da752a)) - clara.bayley
+- qv and _th bug on interpolation when apprx_drhod_dz is false - ([4df85ad](https://github.com/yoctoyotta1024/superdrops-in-action/commit/4df85ad23ba7dce8dc47aee61e1a47ca2fa935f0)) - clara.bayley
+#### Refactoring
+- add density to initial profiles quickplot - ([b63ebfc](https://github.com/yoctoyotta1024/superdrops-in-action/commit/b63ebfc19f0c42b0f0027e4591d32cd83c9c8c20)) - clara.bayley
+- edit superdrops in setup and don't use approximation to initial density profile - ([7f6c486](https://github.com/yoctoyotta1024/superdrops-in-action/commit/7f6c486b85b7a863800464351a45776b7bb6306e)) - clara.bayley
+
+- - -
+
 ## [v0.7.0](https://github.com/yoctoyotta1024/superdrops-in-action/compare/4873a28c758a05778a1e72902d744111f789aa8f..v0.7.0) - 2025-07-24
 #### Documentation
 - correct example calls to inputfile and run functions - ([2427e10](https://github.com/yoctoyotta1024/superdrops-in-action/commit/2427e10545dd38f82340ad368e0371b1b50add4a)) - clara.bayley
