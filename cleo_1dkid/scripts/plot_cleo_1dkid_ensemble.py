@@ -154,10 +154,20 @@ ds
 
 
 # %%
+def rho(press, temp, qvap):
+    p = press * 100  # [Pa]
+    qv = qvap / 1000  # [kg/kg]
+    Rd = 287.0027
+    Rv = 461.52998157941937
+    Rq = (Rv * qv + Rd) / (1 + qv)
+    return p / Rq / temp
+
+
+# %%
 def plot_vertical_profiles_timeslice(ds, time2plot):
     fig, axs = plt.subplots(nrows=2, ncols=3, figsize=(12, 8))
     axs = axs.flatten()
-
+    data = {}
     for v, var in enumerate(["press", "temp", "qvap", "wvel", "qcond"]):
         mean, err1, err2 = mean_stddev(ds[var], dim="ensemble")
         m2plt = mean.sel(time=time2plot, method="nearest")
@@ -170,7 +180,14 @@ def plot_vertical_profiles_timeslice(ds, time2plot):
             plot_mean=False,
         )
         m2plt.plot(ax=axs[v], y="height", color="k")
-    axs[-1].remove()
+        axs[v].set_xlabel(f"{ds[var].name} / {ds[var].units}")
+        axs[v].set_ylabel(f"{ds.height.name} / {ds.height.units}")
+        data[var] = m2plt
+
+    rho2plt = rho(data["press"], data["temp"], data["qvap"])
+    rho2plt.plot(ax=axs[-1], y="height", color="k")
+    axs[-1].set_xlabel("rho / kg m$^{-3}$")
+    axs[-1].set_ylabel(f"{ds.height.name} / {ds.height.units}")
 
     fig.tight_layout()
 
