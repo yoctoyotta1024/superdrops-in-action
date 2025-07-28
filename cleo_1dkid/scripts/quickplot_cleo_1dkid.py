@@ -134,7 +134,7 @@ temp.T.plot(ax=axs[0, 1], y="height")
 ds.wvel.sel(time=time2plot, method="nearest").T.plot(ax=axs[0, 2], y="height")
 qvap.T.plot(ax=axs[1, 0], y="height")
 ds.qcond.sel(time=time2plot, method="nearest").T.plot(ax=axs[1, 1], y="height")
-axs[1, 2].plot(rho(press, temp, qvap).T, ds.height)
+rho(press, temp, qvap).T.plot(ax=axs[1, 2], y="height")
 axs[1, 2].set_xlabel("density / kg m$^{-3}$")
 
 fig.tight_layout()
