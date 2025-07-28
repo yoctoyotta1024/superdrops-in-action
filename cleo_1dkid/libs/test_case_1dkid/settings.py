@@ -44,7 +44,7 @@ class Settings:
         t_max: float = 15 * si.minutes,
         p0: Optional[float] = None,
         z_max: float = 3000 * si.metres,
-        apprx_drhod_dz: bool = True,
+        apprx_drhod_dz: bool = False,
     ):
         self.dt = dt
         self.dz = dz
@@ -52,8 +52,12 @@ class Settings:
         self.z_max = z_max
         self.t_max = t_max
 
-        self.qv = interp1d((0, 740, 3260), (0.015, 0.0138, 0.0024))
-        self._th = interp1d((0, 740, 3260), (297.9, 297.9, 312.66))
+        self.qv = interp1d(
+            (0, 740, 3260), (0.015, 0.0138, 0.0024), fill_value="extrapolate"
+        )
+        self._th = interp1d(
+            (0, 740, 3260), (297.9, 297.9, 312.66), fill_value="extrapolate"
+        )
 
         # note: not in the paper,
         # https://github.com/BShipway/KiD/tree/master/src/physconst.f90#L43
@@ -69,7 +73,7 @@ class Settings:
             if not apprx_drhod_dz:  # to resolve issue #335
                 qv = self.qv(z)
                 dqv_dz = Derivative(self.qv)(z)
-                drhod_dz = drhod_dz / (1 + qv) - rhod * dqv_dz / (1 + qv)
+                drhod_dz = drhod_dz / (1 + qv) - rhod * dqv_dz / (1 + qv) ** 2
             return drhod_dz
 
         z_points = np.arange(0, self.z_max + self.dz / 2, self.dz / 2)
