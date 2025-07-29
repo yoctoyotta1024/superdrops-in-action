@@ -89,7 +89,7 @@ done
 for i in "${!src_configs[@]}"
 do
   echo "---------------------- src ${i} ----------------------"
-  for j in "${!run_ids[@]}"
+  for j in "${run_ids[@]}"
   do
     src_configfile="${src_configs[i]}"
     dest_configfile="${configs_directory[i]}/config_${j}.yaml"
@@ -135,7 +135,7 @@ ${python} ${path2initcondsscripts}/create_gbxboundariesbinary_script.py \
 ### -------- create superdrop initial conditions ------- ###
 ### make same superdroplets file for all src_configs
 sds_isfigures=${isfigures}
-for j in "${!run_ids[@]}"
+for j in "${run_ids[@]}"
 do
   dest_configfile="${configs_directory[0]}/config_${j}.yaml"
   echo "---- supers using src 0, run number: ${j} ----"
