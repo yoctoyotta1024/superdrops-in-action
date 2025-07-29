@@ -199,7 +199,7 @@ plt.show()
 
 
 # %%
-def plot_qvap_qcond(ds, times4xsection):
+def plot_qvap_qcond(ds, times4xsection, xsection_ylims=(0, 3200)):
     fig, axs = plt.subplots(nrows=2, ncols=2, figsize=(10, 6))
 
     for v, var in enumerate(["qvap", "qcond"]):
@@ -226,12 +226,12 @@ def plot_qvap_qcond(ds, times4xsection):
                 mean_kwargs={"color": c, "label": f"time={t}s"},
             )
             axs[v, 0].vlines(
-                t, ds.height.min(), ds.height.max(), linestyle=(0, (5, 6)), color=c
+                t, xsection_ylims[0], xsection_ylims[1], linestyle=(0, (5, 6)), color=c
             )
 
         axs[v, 1].set_xlabel(f"{var} / {ds[var].units}")
         axs[v, 1].set_ylabel("height / m")
-        axs[v, 1].set_ylim(0, 2000)
+        axs[v, 1].set_ylim(xsection_ylims)
         axs[v, 1].set_title("")
         axs[v, 1].legend()
 
