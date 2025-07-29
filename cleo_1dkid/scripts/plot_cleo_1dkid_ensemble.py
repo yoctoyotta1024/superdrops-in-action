@@ -64,7 +64,8 @@ from pySD.sdmout_src import pyzarr, pysetuptxt, pygbxsdat  # from plotssrc impor
 # %%
 def mean_stddev(arr, dim="ensemble"):
     """return mean +- stddev over dimension of array (default over ensemble)"""
-    mean, stddev = arr.mean(dim=dim), arr.std(dim=dim)
+    mean = arr.mean(dim=dim)
+    stddev = arr.std(dim=dim) / (arr[dim].size ** (0.5))
     return mean, -stddev, +stddev
 
 
