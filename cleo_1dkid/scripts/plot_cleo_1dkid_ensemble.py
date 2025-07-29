@@ -306,7 +306,7 @@ plt.show
 
 
 # %%
-def plot_hill_figure2(ds):
+def plot_hill_figure4(ds):
     fig, axs = plt.subplots(nrows=5, ncols=1, figsize=(5, 10), sharex=True)
 
     nc0 = ds.numconc.sel(time=0, method="nearest").mean().values
@@ -334,5 +334,5 @@ def plot_hill_figure2(ds):
     fig.tight_layout()
 
 
-plot_hill_figure2(ds)
+plot_hill_figure4(ds)
 plt.show()
