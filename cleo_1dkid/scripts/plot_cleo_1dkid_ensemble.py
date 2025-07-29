@@ -56,7 +56,7 @@ args = parser.parse_args()
 # %%
 sys.path.append(str(args.path2cleo))  # imports from pySD
 sys.path.append(
-    str(args.path2cleo) + "/examples" "/exampleplotting"
+    str(args.path2cleo / "examples" / "exampleplotting")
 )  # imports from example plots package
 from pySD.sdmout_src import pyzarr, pysetuptxt, pygbxsdat  # from plotssrc import pltsds
 
