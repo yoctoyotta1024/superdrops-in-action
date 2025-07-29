@@ -65,7 +65,7 @@ fi
 for i in "${!configs_directory[@]}"
 do
   echo "---------------------- src ${i} ----------------------"
-  for j in "${!run_ids[@]}"
+  for j in "${run_ids[@]}"
   do
     config_filename="${configs_directory[i]}/config_${j}.yaml"
     run_name="${run_labels[i]}_${j}"

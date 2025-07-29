@@ -13,8 +13,6 @@ https://opensource.org/licenses/BSD-3-Clause
 -----
 File Description:
 Quickplots of 1-D kid test case dataset from CLEO SDM.
-
-NOTE: script assumes setup .txt file and .zarr dataset are in same directory
 """
 
 # %%
@@ -31,13 +29,13 @@ parser = argparse.ArgumentParser()
 parser.add_argument(
     "--dataset",
     type=Path,
-    default="/work/bm1183/m300950/superdrops-in-action/cleo_1dkid/build/bin/fullscheme/sol.zarr",
+    default="/work/bm1183/m300950/superdrops-in-action/cleo_1dkid/build/bin/fullscheme/sol_0.zarr",
     help="path to CLEO output .zarr dataset",
 )
 parser.add_argument(
     "--setupfile",
     type=Path,
-    default="/work/bm1183/m300950/superdrops-in-action/cleo_1dkid/build/bin/fullscheme/setup.txt",
+    default="/work/bm1183/m300950/superdrops-in-action/cleo_1dkid/build/bin/fullscheme/setup_0.txt",
     help="path to CLEO run output .txt setup file",
 )
 parser.add_argument(
@@ -49,7 +47,7 @@ parser.add_argument(
 parser.add_argument(
     "--figpath",
     type=Path,
-    default="/work/bm1183/m300950/superdrops-in-action/cleo_1dkid/build/bin/fullscheme",
+    default="/home/m/m300950/superdrops-in-action/plots/quickplots",
     help="path to save figures in",
 )
 parser.add_argument(
@@ -136,7 +134,7 @@ temp.T.plot(ax=axs[0, 1], y="height")
 ds.wvel.sel(time=time2plot, method="nearest").T.plot(ax=axs[0, 2], y="height")
 qvap.T.plot(ax=axs[1, 0], y="height")
 ds.qcond.sel(time=time2plot, method="nearest").T.plot(ax=axs[1, 1], y="height")
-axs[1, 2].plot(rho(press, temp, qvap).T, ds.height)
+rho(press, temp, qvap).T.plot(ax=axs[1, 2], y="height")
 axs[1, 2].set_xlabel("density / kg m$^{-3}$")
 
 fig.tight_layout()
