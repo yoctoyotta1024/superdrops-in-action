@@ -2,6 +2,29 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## [v0.8.0](https://github.com/yoctoyotta1024/superdrops-in-action/compare/cad2dfb36a069faf69d8100e7ab75a605ac33927..v0.8.0) - 2025-07-29
+#### Bug Fixes
+- stddev of mean of population not just sample - ([1a86616](https://github.com/yoctoyotta1024/superdrops-in-action/commit/1a86616f9ace3b7aaff93a75858fdf92a2b71ed5)) - clara.bayley
+- false j loop for integers not run ids - ([b21187d](https://github.com/yoctoyotta1024/superdrops-in-action/commit/b21187d01091a749dc9815e4ce5870bb4721de9d)) - clara.bayley
+#### Continuous Integration
+- delete unneeded calls - ([cad2dfb](https://github.com/yoctoyotta1024/superdrops-in-action/commit/cad2dfb36a069faf69d8100e7ab75a605ac33927)) - clara.bayley
+#### Features
+- script specifically for plot in CLEO paper 2 - ([67f2800](https://github.com/yoctoyotta1024/superdrops-in-action/commit/67f28000757abcab8c28fe82517a9c6c737dbe13)) - clara.bayley
+- new file for plotting ensemble dataset - ([182f821](https://github.com/yoctoyotta1024/superdrops-in-action/commit/182f8210c2b3ec651f42100b423402487f58d42c)) - clara.bayley
+#### Miscellaneous Chores
+- delete unwanted statement - ([3e93009](https://github.com/yoctoyotta1024/superdrops-in-action/commit/3e93009e6b4d5afba5f199773089e147f461c56b)) - clara.bayley
+#### Refactoring
+- better way to write paths - ([baa566c](https://github.com/yoctoyotta1024/superdrops-in-action/commit/baa566ca238d22229b74bf38b3765b2de01275f4)) - clara.bayley
+- update gitignore - ([9cf6cfd](https://github.com/yoctoyotta1024/superdrops-in-action/commit/9cf6cfd6f657c9177834f1bdd3c945d3f4d9333d)) - clara.bayley
+- never plot more than one realisation of SD initial conditions - ([78b3195](https://github.com/yoctoyotta1024/superdrops-in-action/commit/78b31957d2c01e81af7186d26d22613f10892664)) - clara.bayley
+- lower surface pressure to 965hPa - ([2f61966](https://github.com/yoctoyotta1024/superdrops-in-action/commit/2f619668da36a43349d8c090b3754cb0e6665af4)) - clara.bayley
+- nicer way to write plotting - ([ddc551a](https://github.com/yoctoyotta1024/superdrops-in-action/commit/ddc551ab2bd6663c20765ac732820f8c664f83bd)) - clara.bayley
+- add density profile to timeslice plots - ([ca5121c](https://github.com/yoctoyotta1024/superdrops-in-action/commit/ca5121cb2d4b4c30cb51311d50d0058b1ea20af8)) - clara.bayley
+- add hill plots for ensemble - ([d182297](https://github.com/yoctoyotta1024/superdrops-in-action/commit/d1822972f9eeafc28272ac2e1f1f92d8eac01af5)) - clara.bayley
+- edit defaults - ([11f4690](https://github.com/yoctoyotta1024/superdrops-in-action/commit/11f46907b2a7c7a6a43e7e1359e6e8cd9220ba16)) - clara.bayley
+
+- - -
+
 ## [v0.7.1](https://github.com/yoctoyotta1024/superdrops-in-action/compare/4df85ad23ba7dce8dc47aee61e1a47ca2fa935f0..v0.7.1) - 2025-07-28
 #### Bug Fixes
 - missing (1+qv) factor in calculation of derivative of rho_d when accounting for water vapour - ([4701804](https://github.com/yoctoyotta1024/superdrops-in-action/commit/47018041d491a8c3592448c5ea4a627115da752a)) - clara.bayley
