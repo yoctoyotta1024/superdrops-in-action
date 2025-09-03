@@ -66,24 +66,26 @@ from pySD.sdmout_src import pysetuptxt, pygbxsdat  # from plotssrc import pltsds
 
 
 # %%
-def mean_stddev(arr, dim="ensemble"):
-    """return mean +- stddev over dimension of array (default over ensemble)"""
-    mean = arr.mean(dim=dim)
-    stddev = arr.std(dim=dim) / (arr[dim].size ** (0.5))
-    return mean, -stddev, +stddev
+def mean_iqr_ensemble(arr):
+    """return mean, lq and uq, over ensemble dimension of array"""
+    mean = arr.mean(dim="ensemble")
+    arr = arr.chunk(dict(ensemble=-1))
+    lq = arr.quantile(0.25, dim="ensemble", skipna=False)
+    uq = arr.quantile(0.75, dim="ensemble", skipna=False)
+    return mean, lq, uq
 
 
-def plot_vertical_error_shading(
+def plot_vertical_shading(
     ax,
     y,
     mean,
-    lower_error,
-    upper_error,
+    lower,
+    upper,
     plot_mean=False,
     shading_kwargs={"alpha": 0.3, "color": "pink"},
     mean_kwargs={"color": "black"},
 ):
-    ax.fill_betweenx(y, mean + lower_error, mean + upper_error, **shading_kwargs)
+    ax.fill_betweenx(y, lower, upper, **shading_kwargs)
     if plot_mean:
         ax.plot(mean, y, **mean_kwargs)
 
@@ -182,7 +184,7 @@ def plot_qcond(axs, ds, times4xsection, showlegend=True, xsection_ylims=(0, 1750
     cmap = "Greys"
     norm = colors.LogNorm(vmin=1e-2, vmax=20)
 
-    mean, err1, err2 = mean_stddev(ds[var], dim="ensemble")
+    mean, lq, uq = mean_iqr_ensemble(ds[var])
     timemin = ds.time.values / 60
     contf = axs[0].pcolormesh(
         timemin,
@@ -201,10 +203,10 @@ def plot_qcond(axs, ds, times4xsection, showlegend=True, xsection_ylims=(0, 1750
         tmin = ds.time.sel(time=t, method="nearest") / 60
         m2plt = mean.sel(time=t, method="nearest")
         e1, e2 = (
-            err1.sel(time=t, method="nearest"),
-            err2.sel(time=t, method="nearest"),
+            lq.sel(time=t, method="nearest"),
+            uq.sel(time=t, method="nearest"),
         )
-        plot_vertical_error_shading(
+        plot_vertical_shading(
             axs[1],
             ds.height,
             m2plt,
