@@ -107,7 +107,7 @@ class KiDDynamics:
         thermo.massmix_ratios["qsnow"][:] = self.mpdata["qsnow"].advectee.get()
         thermo.massmix_ratios["qgrau"][:] = self.mpdata["qgrau"].advectee.get()
 
-        if np.any(thermo.wvel):
+        if thermo.wvel.size != 0:
             z_half_reps = np.repeat(
                 np.arange(0, self.settings.z_max + self.settings.dz, self.settings.dz),
                 2,
