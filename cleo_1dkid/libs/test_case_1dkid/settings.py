@@ -42,9 +42,10 @@ class Settings:
         wmax_const: float,
         tscale_const: float,
         t_max: float = 15 * si.minutes,
-        p0: Optional[float] = None,
         z_max: float = 3000 * si.metres,
-        apprx_drhod_dz: bool = False,
+        is_uniform_density: Optional[bool] = False,
+        apprx_drhod_dz: Optional[bool] = False,
+        p0: Optional[float] = None,
     ):
         self.dt = dt
         self.dz = dz
@@ -59,33 +60,37 @@ class Settings:
             (0, 740, 3260), (297.9, 297.9, 312.66), fill_value="extrapolate"
         )
 
-        # note: not in the paper,
-        # https://github.com/BShipway/KiD/tree/master/src/physconst.f90#L43
-        p0 = p0 or 1000 * si.hPa
-
-        self.rhod0 = formulae.rho_d(p0, self.qv(0), self._th(0))
         self.thd = lambda z: formulae.th_dry(self._th(z), self.qv(z))
-
-        def drhod_dz(z, rhod):
-            T = formulae.temperature(rhod[0], self.thd(z))
-            p = formulae.pressure(rhod[0], T, self.qv(z))
-            drhod_dz = formulae.drho_dz(const.g, p, T, self.qv(z), const.lv)
-            if not apprx_drhod_dz:  # to resolve issue #335
-                qv = self.qv(z)
-                dqv_dz = Derivative(self.qv)(z)
-                drhod_dz = drhod_dz / (1 + qv) - rhod * dqv_dz / (1 + qv) ** 2
-            return drhod_dz
-
         z_points = np.arange(0, self.z_max + self.dz / 2, self.dz / 2)
-        rhod_solution = solve_ivp(
-            fun=drhod_dz,
-            t_span=(0, self.z_max),
-            y0=np.asarray((self.rhod0,)),
-            t_eval=z_points,
-        )
-        assert rhod_solution.success
 
-        self.rhod = interp1d(z_points, rhod_solution.y[0])
+        if is_uniform_density:
+            rhod0 = 1.0 * np.ones_like(z_points)  # [kg / m^3]
+            self.rhod = interp1d(z_points, rhod0)
+        else:
+            # note: not in the paper,
+            # https://github.com/BShipway/KiD/tree/master/src/physconst.f90#L43
+            p0 = p0 or 1000 * si.hPa
+            rhod0 = formulae.rho_d(p0, self.qv(0), self._th(0))
+
+            def drhod_dz(z, rhod):
+                T = formulae.temperature(rhod[0], self.thd(z))
+                p = formulae.pressure(rhod[0], T, self.qv(z))
+                drhod_dz = formulae.drho_dz(const.g, p, T, self.qv(z), const.lv)
+                if not apprx_drhod_dz:  # to resolve issue #335
+                    qv = self.qv(z)
+                    dqv_dz = Derivative(self.qv)(z)
+                    drhod_dz = drhod_dz / (1 + qv) - rhod * dqv_dz / (1 + qv) ** 2
+                return drhod_dz
+
+            rhod_solution = solve_ivp(
+                fun=drhod_dz,
+                t_span=(0, self.z_max),
+                y0=np.asarray((rhod0,)),
+                t_eval=z_points,
+            )
+            assert rhod_solution.success
+
+            self.rhod = interp1d(z_points, rhod_solution.y[0])
 
         rhod_w_const = wmax_const * si.m / si.s * si.kg / si.m**3
         self.t_1 = tscale_const * si.s
