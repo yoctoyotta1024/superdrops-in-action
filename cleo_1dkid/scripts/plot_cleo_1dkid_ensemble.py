@@ -187,6 +187,12 @@ def mass_weighted_volume_diameter_stddev(
     return ds, sigma
 
 
+def variable_at_lwcmax(ds, array):
+    height_lwcmax = ds.lwc.idxmax(dim="height")
+    atmax = array.sel(height=height_lwcmax)
+    return atmax
+
+
 # %%
 def rho(press, temp, qvap):
     p = press * 100  # [Pa]
@@ -398,6 +404,104 @@ plt.show()
 
 
 # %%
+def plot_lwc_max_height(ds, member="sol_0"):
+    fig, axs = plt.subplots(nrows=2, ncols=1)
+
+    maxlwc = variable_at_lwcmax(ds, ds.lwc)
+    height_maxlwc = ds.lwc.idxmax(dim="height")
+
+    ds.lwc.sel(ensemble=member).T.plot(ax=axs[0])
+    height_maxlwc.sel(ensemble=member).plot(ax=axs[0], color="grey")
+
+    ds.lwc.sel(height=height_maxlwc).sel(ensemble=member).plot(ax=axs[1])
+    maxlwc.sel(ensemble=member).plot(linestyle=":", ax=axs[1], color="grey")
+
+    fig.tight_layout()
+
+
+plot_lwc_max_height(ds)
+plt.show()
+
+
+# %%
+def plot_hill_figure1(ds):
+    fig, axs = plt.subplots(nrows=4, ncols=1, figsize=(5, 8), sharex=True)
+
+    nc0 = ds.numconc.sel(time=0, method="nearest").mean().values
+    fig.suptitle("Fig. 1, N$_a$ = {:.0f} ".format(nc0) + "cm$^{-3}$")
+
+    mean, err1, err2 = mean_stddev(ds.lwp, dim="ensemble")
+    plot_horizontal_error_shading(
+        axs[0],
+        ds.time,
+        mean,
+        err1,
+        err2,
+        shading_kwargs={"alpha": 0.3, "color": "orange"},
+        mean_kwargs={"color": "orange"},
+        plot_mean=True,
+    )
+    axs[0].set_ylabel("LWP / kg m$^{-2}$")
+    axs[0].set_ylim(bottom=0)
+
+    mean_numconc_d = ds.numconc_d.mean(dim="height")
+    mean, err1, err2 = mean_stddev(mean_numconc_d, dim="ensemble")
+    plot_horizontal_error_shading(
+        axs[1],
+        ds.time,
+        mean,
+        err1,
+        err2,
+        shading_kwargs={"alpha": 0.3, "color": "orange"},
+        mean_kwargs={"color": "orange"},
+        plot_mean=True,
+    )
+    axs[1].set_ylabel("mean N$_d$ / cm$^{-3}$")
+    axs[1].set_ylim(bottom=0)
+
+    dvol_atmaxlwc = variable_at_lwcmax(ds, ds.dvol)
+    mean, err1, err2 = mean_stddev(dvol_atmaxlwc, dim="ensemble")
+    plot_horizontal_error_shading(
+        axs[2],
+        ds.time,
+        mean,
+        err1,
+        err2,
+        shading_kwargs={"alpha": 0.3, "color": "orange"},
+        mean_kwargs={"color": "orange"},
+        plot_mean=True,
+    )
+    axs[2].set_ylabel("D$_{vol}$ / \u03BCm")
+    axs[2].set_ylim([15, 70])
+
+    sigma_atmaxlwc = variable_at_lwcmax(ds, ds.dvol_sigma)
+    mean, err1, err2 = mean_stddev(sigma_atmaxlwc, dim="ensemble")
+    plot_horizontal_error_shading(
+        axs[3],
+        ds.time,
+        mean,
+        err1,
+        err2,
+        shading_kwargs={"alpha": 0.3, "color": "orange"},
+        mean_kwargs={"color": "orange"},
+        plot_mean=True,
+    )
+    axs[3].set_ylabel("\u03C3 / \u03BCm")
+    axs[3].set_yscale("log")
+    axs[3].set_ylim([1e-1, 5e1])
+
+    axs[0].set_xlim([60, 3600])
+    axs[0].set_xscale("log")
+    axs[-1].set_xlabel("time / s")
+
+    fig.tight_layout()
+
+
+plot_hill_figure1(ds)
+plt.show()
+
+
+# %%
 def plot_hill_figure2(ds):
     fig, axs = plt.subplots(nrows=4, ncols=1, figsize=(5, 10), sharey=True)
 
@@ -491,26 +595,6 @@ fig, axs = plot_hill_figure2(ds)
 savename = args.figpath / "hill_figure2.png"
 save_figure(fig, savename)
 plt.show()
-
-
-# %%
-def plot_lwc_max_height(ds):
-    fig, axs = plt.subplots(nrows=2, ncols=1)
-
-    maxlwc = ds.lwc.max(dim="height")
-    height_maxlwc = ds.lwc.idxmax(dim="height")
-
-    ds.lwc.sel(ensemble="sol_0").T.plot(ax=axs[0])
-    height_maxlwc.sel(ensemble="sol_0").plot(ax=axs[0], color="grey")
-
-    ds.lwc.sel(height=height_maxlwc).sel(ensemble="sol_0").plot(ax=axs[1])
-    maxlwc.sel(ensemble="sol_0").plot(linestyle="--", ax=axs[1], color="grey")
-
-    fig.tight_layout()
-
-
-plot_lwc_max_height(ds)
-plt.show
 
 
 # %%
