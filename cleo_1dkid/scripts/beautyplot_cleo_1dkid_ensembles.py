@@ -24,9 +24,8 @@ import argparse
 import glob
 import os
 import sys
-
+import numpy as np
 import xarray as xr
-
 import matplotlib.pyplot as plt
 import matplotlib.colors as colors
 from pathlib import Path
@@ -66,24 +65,26 @@ from pySD.sdmout_src import pysetuptxt, pygbxsdat  # from plotssrc import pltsds
 
 
 # %%
-def mean_stddev(arr, dim="ensemble"):
-    """return mean +- stddev over dimension of array (default over ensemble)"""
-    mean = arr.mean(dim=dim)
-    stddev = arr.std(dim=dim) / (arr[dim].size ** (0.5))
-    return mean, -stddev, +stddev
+def mean_iqr_ensemble(arr):
+    """return mean, lq and uq, over ensemble dimension of array"""
+    mean = arr.mean(dim="ensemble")
+    arr = arr.chunk(dict(ensemble=-1))
+    lq = arr.quantile(0.25, dim="ensemble", skipna=False)
+    uq = arr.quantile(0.75, dim="ensemble", skipna=False)
+    return mean, lq, uq
 
 
-def plot_vertical_error_shading(
+def plot_vertical_shading(
     ax,
     y,
     mean,
-    lower_error,
-    upper_error,
+    lower,
+    upper,
     plot_mean=False,
     shading_kwargs={"alpha": 0.3, "color": "pink"},
     mean_kwargs={"color": "black"},
 ):
-    ax.fill_betweenx(y, mean + lower_error, mean + upper_error, **shading_kwargs)
+    ax.fill_betweenx(y, lower, upper, **shading_kwargs)
     if plot_mean:
         ax.plot(mean, y, **mean_kwargs)
 
@@ -176,13 +177,13 @@ for ensemb, ds in ensembles.items():
 
 
 # %%
-def plot_qcond(axs, ds, times4xsection, showlegend=True, xsection_ylims=(0, 1750)):
+def plot_qcond(axs, ds, times4xsection, xsection_ylims, showlegend=True):
     var = "qcond"
     label = "q$_l$ / g kg$^{-1}$"
     cmap = "Greys"
-    norm = colors.LogNorm(vmin=1e-2, vmax=20)
+    norm = colors.Normalize(vmin=0, vmax=6)
 
-    mean, err1, err2 = mean_stddev(ds[var], dim="ensemble")
+    mean, lq, uq = mean_iqr_ensemble(ds[var])
     timemin = ds.time.values / 60
     contf = axs[0].pcolormesh(
         timemin,
@@ -191,8 +192,8 @@ def plot_qcond(axs, ds, times4xsection, showlegend=True, xsection_ylims=(0, 1750
         cmap=cmap,
         norm=norm,
     )
-    plt.colorbar(contf, ax=axs[0], label=label)
-    axs[0].set_xlim(0, 60)
+    plt.colorbar(contf, ax=axs[0], label=label, extend="max")
+    axs[0].set_xlim(0, 61)
     axs[0].set_ylim(0, 3000)
     axs[0].set_ylabel("height / m")
     axs[0].set_xlabel("time / min")
@@ -201,10 +202,10 @@ def plot_qcond(axs, ds, times4xsection, showlegend=True, xsection_ylims=(0, 1750
         tmin = ds.time.sel(time=t, method="nearest") / 60
         m2plt = mean.sel(time=t, method="nearest")
         e1, e2 = (
-            err1.sel(time=t, method="nearest"),
-            err2.sel(time=t, method="nearest"),
+            lq.sel(time=t, method="nearest"),
+            uq.sel(time=t, method="nearest"),
         )
-        plot_vertical_error_shading(
+        plot_vertical_shading(
             axs[1],
             ds.height,
             m2plt,
@@ -229,7 +230,7 @@ def plot_qcond(axs, ds, times4xsection, showlegend=True, xsection_ylims=(0, 1750
     axs[1].set_xlabel(label)
     axs[1].set_ylabel("height / m")
     axs[1].set_ylim(xsection_ylims)
-    axs[1].set_xlim(0, 10)
+    axs[1].set_xlim(0, 7)
     axs[1].set_title("")
     if showlegend:
         axs[1].legend(loc=(0.6, 0.475))
@@ -238,32 +239,33 @@ def plot_qcond(axs, ds, times4xsection, showlegend=True, xsection_ylims=(0, 1750
 # %%
 fig, axs = plt.subplots(nrows=len(ensembles), ncols=2, figsize=(9, 5.2))
 times4xsection = {  # time[s]: color
-    120: "black",
-    300: "darkblue",
-    420: "purple",
-    540: "crimson",
+    240: "black",
+    480: "darkblue",
+    600: "purple",
+    720: "crimson",
     3600: "darkred",
 }
+xsection_ylims = [0, 3000]
 e = 0
 showlegend = True
 for ensemb, ds in ensembles.items():
     print(f"{ensemb} ensemble size: {ds.ensemble.size}")
-    plot_qcond(axs[e, :], ds, times4xsection, showlegend=showlegend)
+    plot_qcond(axs[e, :], ds, times4xsection, xsection_ylims, showlegend=showlegend)
     e += 1
     showlegend = False  # only show legend on first ensemble plot
 for ax in axs.flatten():
     ax.spines[["right", "top"]].set_visible(False)
 for ax in axs[:, 0]:
-    ax.set_xticks([0, 10, 20, 30, 40, 50, 60])
-    ax.set_yticks([0, 1000, 2000, 3000])
+    ax.set_xticks(np.arange(0, 70, 10))
+    ax.set_yticks(np.arange(0, 4000, 1000))
 for ax in axs[:, 1]:
-    ax.set_xticks([0, 2, 4, 6, 8, 10])
-    ax.set_yticks([0, 500, 1000, 1500])
+    ax.set_xticks(np.arange(0, 8, 2))
+    ax.set_yticks(np.arange(0, 4000, 1000))
 fig.tight_layout()
 
 
 if args.figpath.is_dir():
-    savename = args.figpath / "liquid_water_mass_mixing_ratios.png"
+    savename = args.figpath / "qcond_ensembles_comparison.png"
     fig.savefig(savename, dpi=800, bbox_inches="tight", facecolor="w")
 else:
     print("not saving figure, no existing directory provided")

@@ -612,6 +612,8 @@ plt.show()
 def plot_hill_figure4(ds):
     fig, axs = plt.subplots(nrows=5, ncols=1, figsize=(5, 10), sharex=True)
 
+    cloudbase = 700  # height of cloud base [m]
+
     nc0 = ds.numconc.sel(time=0, method="nearest").mean().values
     fig.suptitle("Fig. 4, N$_a$ = {:.0f} ".format(nc0) + "cm$^{-3}$")
 
@@ -659,8 +661,8 @@ def plot_hill_figure4(ds):
     axs[2].set_ylabel("mean N$_d$ / cm$^{-3}$")
     axs[2].set_ylim(bottom=0)
 
-    dvol_atmaxlwc = variable_at_lwcmax(ds, ds.dvol)
-    mean, err1, err2 = mean_stddev(dvol_atmaxlwc, dim="ensemble")
+    dvol_atcloudbase = ds.dvol.sel(height=cloudbase, method="nearest")
+    mean, err1, err2 = mean_stddev(dvol_atcloudbase, dim="ensemble")
     plot_horizontal_error_shading(
         axs[3],
         ds.time,
@@ -675,8 +677,8 @@ def plot_hill_figure4(ds):
     axs[3].set_yscale("log")
     axs[3].set_ylim(bottom=10)  # [10, 1175]
 
-    sigma_atmaxlwc = variable_at_lwcmax(ds, ds.dvol_sigma)
-    mean, err1, err2 = mean_stddev(sigma_atmaxlwc, dim="ensemble")
+    sigma_atcloudbase = ds.dvol_sigma.sel(height=cloudbase, method="nearest")
+    mean, err1, err2 = mean_stddev(sigma_atcloudbase, dim="ensemble")
     plot_horizontal_error_shading(
         axs[4],
         ds.time,
