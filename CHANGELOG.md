@@ -2,6 +2,13 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## [v0.8.1](https://github.com/yoctoyotta1024/superdrops-in-action/compare/1297e05337525a50ce0fc70c40a800899d0bcdc1..v0.8.1) - 2025-09-04
+#### Bug Fixes
+- missing binpath in run script args to python script - ([a984fc3](https://github.com/yoctoyotta1024/superdrops-in-action/commit/a984fc3f4ebe265168e6b25663bcef5098422432)) - clara.bayley
+- major bugfix of bad check for empty arrays in 1dkid dynamics update of wvel - ([1297e05](https://github.com/yoctoyotta1024/superdrops-in-action/commit/1297e05337525a50ce0fc70c40a800899d0bcdc1)) - clara.bayley
+
+- - -
+
 ## [v0.8.0](https://github.com/yoctoyotta1024/superdrops-in-action/compare/cad2dfb36a069faf69d8100e7ab75a605ac33927..v0.8.0) - 2025-07-29
 #### Bug Fixes
 - stddev of mean of population not just sample - ([1a86616](https://github.com/yoctoyotta1024/superdrops-in-action/commit/1a86616f9ace3b7aaff93a75858fdf92a2b71ed5)) - clara.bayley
