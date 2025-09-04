@@ -24,9 +24,8 @@ import argparse
 import glob
 import os
 import sys
-
+import numpy as np
 import xarray as xr
-
 import matplotlib.pyplot as plt
 import matplotlib.colors as colors
 from pathlib import Path
@@ -178,11 +177,11 @@ for ensemb, ds in ensembles.items():
 
 
 # %%
-def plot_qcond(axs, ds, times4xsection, showlegend=True, xsection_ylims=(0, 1750)):
+def plot_qcond(axs, ds, times4xsection, xsection_ylims, showlegend=True):
     var = "qcond"
     label = "q$_l$ / g kg$^{-1}$"
     cmap = "Greys"
-    norm = colors.LogNorm(vmin=1e-2, vmax=20)
+    norm = colors.Normalize(vmin=0, vmax=6)
 
     mean, lq, uq = mean_iqr_ensemble(ds[var])
     timemin = ds.time.values / 60
@@ -193,8 +192,8 @@ def plot_qcond(axs, ds, times4xsection, showlegend=True, xsection_ylims=(0, 1750
         cmap=cmap,
         norm=norm,
     )
-    plt.colorbar(contf, ax=axs[0], label=label)
-    axs[0].set_xlim(0, 60)
+    plt.colorbar(contf, ax=axs[0], label=label, extend="max")
+    axs[0].set_xlim(0, 61)
     axs[0].set_ylim(0, 3000)
     axs[0].set_ylabel("height / m")
     axs[0].set_xlabel("time / min")
@@ -231,7 +230,7 @@ def plot_qcond(axs, ds, times4xsection, showlegend=True, xsection_ylims=(0, 1750
     axs[1].set_xlabel(label)
     axs[1].set_ylabel("height / m")
     axs[1].set_ylim(xsection_ylims)
-    axs[1].set_xlim(0, 10)
+    axs[1].set_xlim(0, 7)
     axs[1].set_title("")
     if showlegend:
         axs[1].legend(loc=(0.6, 0.475))
@@ -240,32 +239,33 @@ def plot_qcond(axs, ds, times4xsection, showlegend=True, xsection_ylims=(0, 1750
 # %%
 fig, axs = plt.subplots(nrows=len(ensembles), ncols=2, figsize=(9, 5.2))
 times4xsection = {  # time[s]: color
-    120: "black",
-    300: "darkblue",
-    420: "purple",
-    540: "crimson",
+    240: "black",
+    480: "darkblue",
+    600: "purple",
+    720: "crimson",
     3600: "darkred",
 }
+xsection_ylims = [0, 3000]
 e = 0
 showlegend = True
 for ensemb, ds in ensembles.items():
     print(f"{ensemb} ensemble size: {ds.ensemble.size}")
-    plot_qcond(axs[e, :], ds, times4xsection, showlegend=showlegend)
+    plot_qcond(axs[e, :], ds, times4xsection, xsection_ylims, showlegend=showlegend)
     e += 1
     showlegend = False  # only show legend on first ensemble plot
 for ax in axs.flatten():
     ax.spines[["right", "top"]].set_visible(False)
 for ax in axs[:, 0]:
-    ax.set_xticks([0, 10, 20, 30, 40, 50, 60])
-    ax.set_yticks([0, 1000, 2000, 3000])
+    ax.set_xticks(np.arange(0, 70, 10))
+    ax.set_yticks(np.arange(0, 4000, 1000))
 for ax in axs[:, 1]:
-    ax.set_xticks([0, 2, 4, 6, 8, 10])
-    ax.set_yticks([0, 500, 1000, 1500])
+    ax.set_xticks(np.arange(0, 8, 2))
+    ax.set_yticks(np.arange(0, 4000, 1000))
 fig.tight_layout()
 
 
 if args.figpath.is_dir():
-    savename = args.figpath / "liquid_water_mass_mixing_ratios.png"
+    savename = args.figpath / "qcond_ensembles_comparison.png"
     fig.savefig(savename, dpi=800, bbox_inches="tight", facecolor="w")
 else:
     print("not saving figure, no existing directory provided")
