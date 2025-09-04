@@ -299,6 +299,17 @@ arr = xr.DataArray(
 )
 ds = ds.assign(**{arr.name: arr})
 
+arr = xr.DataArray(
+    ds.precip.sel(height=ds.height.min()) * 1000 / (config["OBSTSTEP"] / 3600),
+    name="surfprecip_rate",
+    dims=["ensemble", "time"],
+    attrs={
+        "units": "mm hr^-1",
+        "long_name": "surface precipitation rate",
+    },
+)
+ds = ds.assign(**{arr.name: arr})
+
 ds
 # %% (slow) superdroplet variables across ensemble
 xi = superdrops_variable_ensemble(ds, "xi")
@@ -611,14 +622,74 @@ def plot_hill_figure4(ds):
         mean,
         err1,
         err2,
-        shading_kwargs={"alpha": 0.3, "color": "pink"},
-        mean_kwargs={"color": "pink"},
+        shading_kwargs={"alpha": 0.3, "color": "green"},
+        mean_kwargs={"color": "green"},
         plot_mean=True,
     )
     axs[0].set_ylabel("LWP / kg m$^{-2}$")
     axs[0].set_ylim(bottom=0)
 
     # height_maxlwc = ds.lwc.idxmax(dim="height")
+    mean, err1, err2 = mean_stddev(ds.surfprecip_rate, dim="ensemble")
+    plot_horizontal_error_shading(
+        axs[1],
+        ds.time,
+        mean,
+        err1,
+        err2,
+        shading_kwargs={"alpha": 0.3, "color": "green"},
+        mean_kwargs={"color": "green"},
+        plot_mean=True,
+    )
+    axs[1].set_ylabel(f"surface precip / mm hr$^{-1}$")
+    axs[1].set_ylim(bottom=0)
+
+    mean_numconc_d = ds.numconc_d.mean(dim="height")
+    mean, err1, err2 = mean_stddev(mean_numconc_d, dim="ensemble")
+    plot_horizontal_error_shading(
+        axs[2],
+        ds.time,
+        mean,
+        err1,
+        err2,
+        shading_kwargs={"alpha": 0.3, "color": "green"},
+        mean_kwargs={"color": "green"},
+        plot_mean=True,
+    )
+    axs[2].set_ylabel("mean N$_d$ / cm$^{-3}$")
+    axs[2].set_ylim(bottom=0)
+
+    dvol_atmaxlwc = variable_at_lwcmax(ds, ds.dvol)
+    mean, err1, err2 = mean_stddev(dvol_atmaxlwc, dim="ensemble")
+    plot_horizontal_error_shading(
+        axs[3],
+        ds.time,
+        mean,
+        err1,
+        err2,
+        shading_kwargs={"alpha": 0.3, "color": "green"},
+        mean_kwargs={"color": "green"},
+        plot_mean=True,
+    )
+    axs[3].set_ylabel("D$_{vol}$ / \u03BCm")
+    axs[3].set_yscale("log")
+    axs[3].set_ylim(bottom=10)  # [10, 1175]
+
+    sigma_atmaxlwc = variable_at_lwcmax(ds, ds.dvol_sigma)
+    mean, err1, err2 = mean_stddev(sigma_atmaxlwc, dim="ensemble")
+    plot_horizontal_error_shading(
+        axs[4],
+        ds.time,
+        mean,
+        err1,
+        err2,
+        shading_kwargs={"alpha": 0.3, "color": "green"},
+        mean_kwargs={"color": "green"},
+        plot_mean=True,
+    )
+    axs[4].set_ylabel("\u03C3 / \u03BCm")
+    axs[4].set_yscale("log")
+    axs[4].set_ylim(bottom=1)  # [1, 1100]
 
     axs[0].set_xlim([60, 3600])
     axs[-1].set_xlabel("time / s")
