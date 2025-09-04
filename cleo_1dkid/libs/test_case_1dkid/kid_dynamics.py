@@ -50,16 +50,18 @@ class KiDDynamics:
 
         WMAX = 3  # maximum vertical velocity [m/s], 'w1' of equation (6) in Shipway and Hill (2012)
         TSCALE = 600  # timescale of sinusoid [s], 't1' of equation (6) in Shipway and Hill (2012)
-        P0 = 965 * si.hPa
+        is_uniform_density = False
+        P0 = 965 * si.hPa  # only used if is_uniform_density==False
         self.settings = Settings(
             dt=timestep,
             dz=z_delta,
             wmax_const=WMAX,
             tscale_const=TSCALE,
             t_max=t_end,
+            z_max=z_max,
+            is_uniform_density=is_uniform_density,
             apprx_drhod_dz=False,
             p0=P0,
-            z_max=z_max,
         )
 
         self.mpdata = MPDATA(
