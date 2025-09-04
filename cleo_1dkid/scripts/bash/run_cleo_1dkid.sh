@@ -29,6 +29,8 @@ python=/work/bm1183/m300950/bin/envs/superdrops-in-action/bin/python
 configs_directory=("${path2build}/tmp/condevap_only"
                  "${path2build}/tmp/fullscheme")
 run_labels=("condevap_only" "fullscheme")
+bin_directory=("${path2build}/bin/condevap_only"
+                "${path2build}/bin/fullscheme") # Note! must match paths in config's 'outputdata'
 fig_directory=("${path2build}/bin/condevap_only"
                 "${path2build}/bin/fullscheme")
 
@@ -69,6 +71,7 @@ do
   do
     config_filename="${configs_directory[i]}/config_${j}.yaml"
     run_name="${run_labels[i]}_${j}"
+    binpath="${bin_directory[i]}"
     figpath="${fig_directory[i]}"
     echo "---- src ${i}, run number: ${j} ----"
     echo "--run_name=${run_name}"
@@ -80,6 +83,7 @@ do
     ${python} ${path2cleo1dkid}/scripts/run_cleo_1dkid.py \
       --run_name="${run_name}" \
       --config_filename="${config_filename}" \
+      --binpath="${binpath}" \
       --figpath="${figpath}" \
       --path2pycleo="${path2pycleo}"
     done
