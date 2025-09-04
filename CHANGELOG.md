@@ -2,6 +2,20 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## [v0.9.0](https://github.com/yoctoyotta1024/superdrops-in-action/compare/91f4055250166be410ceb10d89dca44f7ede2d70..v0.9.0) - 2025-09-04
+#### Features
+- plot figure 2 of hill paper - ([e344741](https://github.com/yoctoyotta1024/superdrops-in-action/commit/e3447415ff9dcbd39ae2243ddfa86512277c330f)) - clara.bayley
+#### Refactoring
+- plot figure 4 of hill paper - ([bfd378f](https://github.com/yoctoyotta1024/superdrops-in-action/commit/bfd378f90f3e1c3e9b0aaef9593b2a15aaf11066)) - clara.bayley
+- plot figure 1 of hill paper - ([191861f](https://github.com/yoctoyotta1024/superdrops-in-action/commit/191861f6b189ce90ff1a14d4822dc3ea399e0663)) - clara.bayley
+- add note that LWP calculation in quickplots is wrong - ([989f483](https://github.com/yoctoyotta1024/superdrops-in-action/commit/989f483adb05106f88e91e61200c2e8ad7f661ae)) - clara.bayley
+- correct function name - ([3497bdf](https://github.com/yoctoyotta1024/superdrops-in-action/commit/3497bdfbd48764375f8324be3a2a9b9033fa0ae2)) - clara.bayley
+- give xsections xlims - ([16c7b68](https://github.com/yoctoyotta1024/superdrops-in-action/commit/16c7b687647f2a6c98ea82b7c11ef7f800931c89)) - clara.bayley
+- reorganise requirements and add dask - ([ea4a460](https://github.com/yoctoyotta1024/superdrops-in-action/commit/ea4a4609813093d0ec369e582becf226a553759a)) - clara.bayley
+- add option to run with uniform density profile - ([91f4055](https://github.com/yoctoyotta1024/superdrops-in-action/commit/91f4055250166be410ceb10d89dca44f7ede2d70)) - clara.bayley
+
+- - -
+
 ## [v0.8.1](https://github.com/yoctoyotta1024/superdrops-in-action/compare/1297e05337525a50ce0fc70c40a800899d0bcdc1..v0.8.1) - 2025-09-04
 #### Bug Fixes
 - missing binpath in run script args to python script - ([a984fc3](https://github.com/yoctoyotta1024/superdrops-in-action/commit/a984fc3f4ebe265168e6b25663bcef5098422432)) - clara.bayley
