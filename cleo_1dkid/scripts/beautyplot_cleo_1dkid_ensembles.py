@@ -181,7 +181,7 @@ def plot_qcond(axs, ds, times4xsection, xsection_ylims, showlegend=True):
     var = "qcond"
     label = "q$_l$ / g kg$^{-1}$"
     cmap = "Greys"
-    norm = colors.Normalize(vmin=0, vmax=6)
+    norm = colors.Normalize(vmin=0, vmax=2)
 
     mean, lq, uq = mean_iqr_ensemble(ds[var])
     timemin = ds.time.values / 60
@@ -230,7 +230,7 @@ def plot_qcond(axs, ds, times4xsection, xsection_ylims, showlegend=True):
     axs[1].set_xlabel(label)
     axs[1].set_ylabel("height / m")
     axs[1].set_ylim(xsection_ylims)
-    axs[1].set_xlim(0, 7)
+    axs[1].set_xlim(0, 1.6)
     axs[1].set_title("")
     if showlegend:
         axs[1].legend(loc=(0.6, 0.475))
@@ -238,28 +238,36 @@ def plot_qcond(axs, ds, times4xsection, xsection_ylims, showlegend=True):
 
 # %%
 fig, axs = plt.subplots(nrows=len(ensembles), ncols=2, figsize=(9, 5.2))
-times4xsection = {  # time[s]: color
-    240: "black",
-    480: "darkblue",
-    600: "purple",
-    720: "crimson",
+times4xsection_ceo = {  # time[s]: color
+    300: "grey",
+    420: "black",
+    540: "darkblue",
+    660: "violet",
     3600: "darkred",
 }
+times4xsection_fs = {  # time[s]: color
+    420: "black",
+    540: "darkblue",
+    1200: "mediumorchid",
+    1800: "crimson",
+    3600: "darkred",
+}
+times4xsections = [times4xsection_ceo, times4xsection_fs]
 xsection_ylims = [0, 3000]
 e = 0
 showlegend = True
 for ensemb, ds in ensembles.items():
+    times4xsection = times4xsections[e]
     print(f"{ensemb} ensemble size: {ds.ensemble.size}")
     plot_qcond(axs[e, :], ds, times4xsection, xsection_ylims, showlegend=showlegend)
     e += 1
-    showlegend = False  # only show legend on first ensemble plot
 for ax in axs.flatten():
     ax.spines[["right", "top"]].set_visible(False)
 for ax in axs[:, 0]:
     ax.set_xticks(np.arange(0, 70, 10))
     ax.set_yticks(np.arange(0, 4000, 1000))
 for ax in axs[:, 1]:
-    ax.set_xticks(np.arange(0, 8, 2))
+    ax.set_xticks(np.arange(0, 2, 0.5))
     ax.set_yticks(np.arange(0, 4000, 1000))
 fig.tight_layout()
 
