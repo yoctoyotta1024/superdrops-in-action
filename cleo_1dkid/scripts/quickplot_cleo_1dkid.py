@@ -270,21 +270,21 @@ plt.show()
 # %%
 fig, axs = plt.subplots(nrows=1, ncols=3, figsize=(15, 5))
 
-axs[0].set_title("LWP")
+axs[0].set_title("LWP (error)")
 contf = axs[0].contourf(ds.time, ds.height, lwpath[:, 0, 0, :].T)
 plt.colorbar(contf, ax=axs[0])
 
 lwpmax1 = np.amax(lwpath, axis=-1)[:, 0, 0]
 lwpmax2 = np.take_along_axis(lwpath, lwpmax_idxs, axis=-1)[:, 0, 0, 0]
-axs[1].set_title("max LWP")
+axs[1].set_title("max LWP (error)")
 axs[1].plot(time.secs, lwpath[:, 0, 0, :], linewidth=0.8)
 axs[1].plot(time.secs, lwpmax1, color="k")
 axs[1].plot(time.secs, lwpmax2, color="lightgray", linestyle=":")
-axs[1].set_ylabel("LWP / kg m$^{-2}$")
+axs[1].set_ylabel("LWP (error) / kg m$^{-2}$")
 axs[1].set_xlabel("time / s")
 
 lwpmax_height = ds.height.values[lwpmax_idxs[:, 0, 0, 0]]
-axs[2].set_title("height of maximum LWP")
+axs[2].set_title("height of maximum LWP (error)")
 axs[2].plot(time.secs, lwpmax_height, linewidth=0.8)
 axs[2].set_ylabel("height / m")
 axs[2].set_xlabel("time / s")
@@ -485,7 +485,7 @@ fig.suptitle(figtitle)
 lwpmax = np.take_along_axis(lwpath, lwpmax_idxs, axis=-1)[:, 0, 0, 0]
 axs[0].set_title("(a)", loc="left")
 axs[0].plot(time.secs, lwpmax, color="b")
-axs[0].set_ylabel("LWP / kg m$^{-2}$")
+axs[0].set_ylabel("LWP (error) / kg m$^{-2}$")
 axs[0].set_ylim(bottom=0)
 
 mean_numconc_d = np.nan_to_num(np.nanmean(numconc_d, axis=1))
