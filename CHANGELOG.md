@@ -2,6 +2,15 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## [v0.9.1](https://github.com/yoctoyotta1024/superdrops-in-action/compare/57d7cc7dd29d681f20e1d5e67e7171e6d1c854da..v0.9.1) - 2025-09-04
+#### Bug Fixes
+- error in hill figure 4 plot - ([3d2dc69](https://github.com/yoctoyotta1024/superdrops-in-action/commit/3d2dc696defe7060ad01fb378fbacf7bca9b2f35)) - clara.bayley
+#### Refactoring
+- improve plot axes - ([1a4ccdd](https://github.com/yoctoyotta1024/superdrops-in-action/commit/1a4ccddea37366dd9debe189a8b719e4d205613c)) - clara.bayley
+- plot IQR instead of std dev - ([57d7cc7](https://github.com/yoctoyotta1024/superdrops-in-action/commit/57d7cc7dd29d681f20e1d5e67e7171e6d1c854da)) - clara.bayley
+
+- - -
+
 ## [v0.9.0](https://github.com/yoctoyotta1024/superdrops-in-action/compare/91f4055250166be410ceb10d89dca44f7ede2d70..v0.9.0) - 2025-09-04
 #### Features
 - plot figure 2 of hill paper - ([e344741](https://github.com/yoctoyotta1024/superdrops-in-action/commit/e3447415ff9dcbd39ae2243ddfa86512277c330f)) - clara.bayley
