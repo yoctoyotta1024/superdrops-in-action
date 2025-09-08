@@ -2,6 +2,14 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## [v0.10.0](https://github.com/yoctoyotta1024/superdrops-in-action/compare/c932e2ced08edd9ad5188bb9b214a5c28b6e76c8..v0.10.0) - 2025-09-08
+#### Features
+- major version bump - ([accb67a](https://github.com/yoctoyotta1024/superdrops-in-action/commit/accb67a750d0b98f695aa0caf5f444777e875983)) - clara.bayley
+#### Refactoring
+- alternative beauty plot more suitable for P0=1000hpa - ([c932e2c](https://github.com/yoctoyotta1024/superdrops-in-action/commit/c932e2ced08edd9ad5188bb9b214a5c28b6e76c8)) - clara.bayley
+
+- - -
+
 ## [v0.9.1](https://github.com/yoctoyotta1024/superdrops-in-action/compare/57d7cc7dd29d681f20e1d5e67e7171e6d1c854da..v0.9.1) - 2025-09-04
 #### Bug Fixes
 - error in hill figure 4 plot - ([3d2dc69](https://github.com/yoctoyotta1024/superdrops-in-action/commit/3d2dc696defe7060ad01fb378fbacf7bca9b2f35)) - clara.bayley
