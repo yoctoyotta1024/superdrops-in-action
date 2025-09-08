@@ -41,7 +41,7 @@ project = "superdrops-in-action"
 license = "BSD 3-Clause"
 copyright = "(2024) MPI-M, Clara Bayley"
 author = "Clara Bayley & Other Developers"
-release = "0.0.0"
+release = "0.10.0"
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration

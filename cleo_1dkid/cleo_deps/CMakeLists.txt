@@ -4,7 +4,7 @@ cmake_minimum_required(VERSION 3.18.0)
 project(CLEO_1dkid
   LANGUAGES CXX C
   DESCRIPTION "CLEO_1dkid by Clara Bayley and other developers"
-  VERSION 0.49.0
+  VERSION 0.52.0
 )
 
 find_package(MPI REQUIRED COMPONENTS C)
