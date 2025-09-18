@@ -2,6 +2,15 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## [v0.11.0](https://github.com/yoctoyotta1024/superdrops-in-action/compare/ceb6d2fa96c759e7b171071a53bbb2afeb40f710..v0.11.0) - 2025-09-18
+#### Features
+- option to use exner function to set density profile as in KiD-A repo - ([c775632](https://github.com/yoctoyotta1024/superdrops-in-action/commit/c775632357f630bfff29ac4d4c71eb32807f7ab3)) - clara.bayley
+#### Refactoring
+- change surface pressure to 1000hPa - ([ebe2151](https://github.com/yoctoyotta1024/superdrops-in-action/commit/ebe215111ca4c662b79d2a615569abae084d85e7)) - clara.bayley
+- add plots folder to gitignore - ([ceb6d2f](https://github.com/yoctoyotta1024/superdrops-in-action/commit/ceb6d2fa96c759e7b171071a53bbb2afeb40f710)) - clara.bayley
+
+- - -
+
 ## [v0.10.0](https://github.com/yoctoyotta1024/superdrops-in-action/compare/c932e2ced08edd9ad5188bb9b214a5c28b6e76c8..v0.10.0) - 2025-09-08
 #### Features
 - major version bump - ([accb67a](https://github.com/yoctoyotta1024/superdrops-in-action/commit/accb67a750d0b98f695aa0caf5f444777e875983)) - clara.bayley
