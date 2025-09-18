@@ -57,7 +57,7 @@ def test_initialize(path2pycleo, config_filename):
 
     t_start = 0
     timestep = python_config["timesteps"]["COUPLTSTEP"]  # [s]
-    is_motion = python_config["pycleo_setup"]["is_motion"]
+    is_motion = python_config["python_bindings_setup"]["is_motion"]
     arr = np.array([], dtype=np.float64)
     press = temp = qvap = qcond = wvel = uvel = vvel = arr
     config = pycleo.Config(str(config_filename))
@@ -92,7 +92,7 @@ def test_initialize_wrapper(path2pycleo, config_filename):
 
     t_start = 0
     timestep = python_config["timesteps"]["COUPLTSTEP"]  # [s]
-    is_motion = python_config["pycleo_setup"]["is_motion"]
+    is_motion = python_config["python_bindings_setup"]["is_motion"]
     arr = np.array([], dtype=np.float64)
     press = temp = qvap = qcond = wvel = uvel = vvel = arr
     microphys_wrapped = MicrophysicsSchemeWrapper(
@@ -125,7 +125,7 @@ def test_finalize_wrapper(path2pycleo, config_filename):
 
     t_start = 0
     timestep = python_config["timesteps"]["COUPLTSTEP"]  # [s]
-    is_motion = python_config["pycleo_setup"]["is_motion"]
+    is_motion = python_config["python_bindings_setup"]["is_motion"]
     arr = np.array([], dtype=np.float64)
     press = temp = qvap = qcond = wvel = uvel = vvel = arr
     microphys_wrapped = MicrophysicsSchemeWrapper(
@@ -161,7 +161,7 @@ def test_microphys_with_wrapper(path2pycleo, config_filename):
 
     t_start = 0
     timestep = python_config["timesteps"]["COUPLTSTEP"]  # [s]
-    is_motion = python_config["pycleo_setup"]["is_motion"]
+    is_motion = python_config["python_bindings_setup"]["is_motion"]
     ngbxs = python_config["domain"]["ngbxs"]
     temp1 = np.tile(np.array([288.15], dtype=np.float64), ngbxs)
     temp2 = np.tile(np.array([288.15], dtype=np.float64), ngbxs)

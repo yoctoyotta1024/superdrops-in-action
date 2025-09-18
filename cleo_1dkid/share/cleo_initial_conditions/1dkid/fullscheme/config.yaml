@@ -64,8 +64,24 @@ microphysics:
     rtol : 0.0                                         # relative tolerance for implicit Euler integration
     atol : 0.001                                       # absolute tolerance for implicit Euler integration
 
-### Pycleo (Python Bindings) Parameters ###
-pycleo:
+### Bounday Conditions Parameters ###
+boundary_conditions:
+  type: addsuperstodomain
+  LOWER_COORD3LIM: 0                                   # SDs added to domain with coord3 < LOWER_COORD3LIM [m]
+  UPPER_COORD3LIM: 3200                                # SDs added to domain with coord3 >= UPPER_COORD3LIM [m]
+  newnsupers: 256                                      # number SDs to add to each gridbox below/above LOWER/UPPER_COORD3LIM
+  DRYRADIUS: 1.0                                       # max dry radius of new super-droplets (for solute mass) [m]
+  MINRADIUS: 0.5e-8                                    # minimum radius of new super-droplets [m]
+  MAXRADIUS: 2.5e-7                                    # maximum radius of new super-droplets [m]
+  NUMCONC_a: 50e6                                      # number conc. of 1st droplet lognormal dist [m^-3]
+  GEOMEAN_a: 0.04e-6                                   # geometric mean radius of 1st lognormal dist [m]
+  geosigma_a: 1.4                                      # geometric standard deviation of 1st lognormal dist
+  NUMCONC_b: 0.0                                       # number conc. of 2nd droplet lognormal dist [m^-3]
+  GEOMEAN_b: 1e-6                                      # geometric mean radius of 2nd lognormal dist [m]
+  geosigma_b: 1.0                                      # geometric standard deviation of 2nd lognormal dist
+
+### CLEO Python Bindings Parameters ###
+python_bindings:
   enable_terminal_velocity : true                                 # true enables terminal velocity in superdroplet motion
   enable_condensation : true                                       # true enables condensation in microphysics
   enable_collisions : true                                        # true enables collisions in microphysics
