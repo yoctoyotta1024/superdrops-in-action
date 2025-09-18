@@ -31,8 +31,8 @@ def figpath(pytestconfig):
 
 
 @pytest.fixture(scope="module")
-def path2pycleo(pytestconfig):
-    return pytestconfig.getoption("cleo_path2pycleo")
+def path2cleopythonbindings(pytestconfig):
+    return pytestconfig.getoption("path2cleopythonbindings")
 
 
 @pytest.fixture(scope="module")
@@ -40,7 +40,7 @@ def config_filename(pytestconfig):
     return pytestconfig.getoption("cleo_test_1dkid_fullscheme_config_filename")
 
 
-def test_cleo_sdm_1dkid_fullscheme(figpath, path2pycleo, config_filename):
+def test_cleo_sdm_1dkid_fullscheme(figpath, path2cleopythonbindings, config_filename):
     """runs test of 1-D KiD rainshaft model using CLEO SDM for the
     microphysics scheme with full warm-rain microphysics enabled: condensation/evaporation,
     collision-coalescence and precipitation (i.e. condensates have terminal velocity).
@@ -55,7 +55,7 @@ def test_cleo_sdm_1dkid_fullscheme(figpath, path2pycleo, config_filename):
     """
     import os
 
-    os.environ["PYCLEO_DIR"] = str(path2pycleo)
+    os.environ["CLEO_PYTHON_BINDINGS"] = str(path2cleopythonbindings)
 
     from libs.test_case_1dkid.perform_1dkid_test_case import perform_1dkid_test_case
     from libs.thermo.thermodynamics import Thermodynamics
