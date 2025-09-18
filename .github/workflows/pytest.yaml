@@ -55,7 +55,7 @@ jobs:
           cd build && pwd && make && cd ..
 
       - name: Compile CLEO python bindings
-        run: cd build && make -j 64 pycleo && cd ..
+        run: cd build && make -j 64 cleo_python_bindings && cd ..
 
       - name: Download CLEO Initial Condition Files for Generic Test
         run: |

@@ -22,7 +22,7 @@ path2cleo1dkid=$1
 path2build=$2
 start_id=$3 # inclusive start of run_ids
 end_id=$4 # inclusive end of run_ids
-path2pycleo="${path2build}/pycleo"
+path2cleobindings="${path2build}/cleo_python_bindings"
 python=/work/bm1183/m300950/bin/envs/superdrops-in-action/bin/python
 
 ### loop over configs_directory for all different for run_ids
@@ -77,7 +77,7 @@ do
     echo "--run_name=${run_name}"
     echo "--config_filename=${config_filename}"
     echo "--figpath=${figpath}"
-    echo "--path2pycleo=${path2pycleo}"
+    echo "--path2cleobindings=${path2cleobindings}"
 
     echo "${python} ${path2cleo1dkid}/scripts/run_cleo_1dkid.py --config_filename=${config_filename} [...]"
     ${python} ${path2cleo1dkid}/scripts/run_cleo_1dkid.py \
@@ -85,7 +85,7 @@ do
       --config_filename="${config_filename}" \
       --binpath="${binpath}" \
       --figpath="${figpath}" \
-      --path2pycleo="${path2pycleo}"
+      --path2cleobindings="${path2cleobindings}"
     done
   echo "---------------------------------------------------"
 done

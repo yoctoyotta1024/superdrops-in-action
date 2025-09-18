@@ -19,7 +19,7 @@ wrapper function for an instance of CleoSDM microphysics ccheme so it can be use
 generic test cases and run scripts.
 NOTE: To use the wrapper, you must first export "PYCLEO_DIR". E.g. if python bindings are
 built in $HOME/superdrops-in-action/build/, do:
-export PYCLEO_DIR=$HOME/superdrops-in-action/build/pycleo/
+export PYCLEO_DIR=$HOME/superdrops-in-action/build/cleo_python_bindings/
 """
 
 import os
