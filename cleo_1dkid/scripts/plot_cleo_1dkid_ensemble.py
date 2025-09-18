@@ -22,12 +22,13 @@ NOTE: script assumes setup .txt files and .zarr datasets for ensemble are
 import argparse
 import glob
 import os
-import sys
 import awkward as ak
 import numpy as np
 import xarray as xr
 import matplotlib.pyplot as plt
 from pathlib import Path
+
+from cleopy.sdmout_src import pyzarr, pysetuptxt, pygbxsdat
 
 parser = argparse.ArgumentParser()
 parser.add_argument(
@@ -48,19 +49,7 @@ parser.add_argument(
     default="/home/m/m300950/superdrops-in-action/plots/fullscheme",
     help="path to save figures in",
 )
-parser.add_argument(
-    "--path2cleo",
-    type=Path,
-    default="/home/m/m300950/CLEO/",
-    help="path to pySD python module",
-)
 args = parser.parse_args()
-# %%
-sys.path.append(str(args.path2cleo))  # imports from pySD
-sys.path.append(
-    str(args.path2cleo / "examples" / "exampleplotting")
-)  # imports from example plots package
-from pySD.sdmout_src import pyzarr, pysetuptxt, pygbxsdat  # from plotssrc import pltsds
 
 
 # %%

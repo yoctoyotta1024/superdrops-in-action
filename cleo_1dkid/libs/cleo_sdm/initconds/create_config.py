@@ -16,12 +16,10 @@ File Description:
 
 
 import argparse
-import sys
 import shutil
 from pathlib import Path
 
 parser = argparse.ArgumentParser()
-parser.add_argument("path2CLEO", type=Path, help="Absolute path to CLEO (for pySD)")
 parser.add_argument(
     "src_config_filename", type=Path, help="Absolute path to original config"
 )
@@ -55,8 +53,7 @@ parser.add_argument(
 )
 args = parser.parse_args()
 
-sys.path.append(str(args.path2CLEO))  # for pySD import for editing a config file
-from pySD import editconfigfile
+from cleopy import editconfigfile
 
 ### ----- create temporary config file for simulation(s) ----- ###
 cleoconstants_filepath = args.cleoconstants_filepath

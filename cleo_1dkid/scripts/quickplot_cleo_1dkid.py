@@ -19,11 +19,12 @@ Quickplots of 1-D kid test case dataset from CLEO SDM.
 import argparse
 import awkward as ak
 import random
-import sys
 import numpy as np
 import matplotlib.pyplot as plt
 import xarray as xr
 from pathlib import Path
+
+from cleopy.sdmout_src import pyzarr, pysetuptxt, pygbxsdat
 
 parser = argparse.ArgumentParser()
 parser.add_argument(
@@ -50,12 +51,6 @@ parser.add_argument(
     default="/home/m/m300950/superdrops-in-action/plots/quickplots",
     help="path to save figures in",
 )
-parser.add_argument(
-    "--path2cleo",
-    type=Path,
-    default="/home/m/m300950/CLEO/",
-    help="path to pySD python module",
-)
 args = parser.parse_args()
 
 dataset = args.dataset
@@ -64,13 +59,6 @@ assert dataset.is_dir()
 assert setupfile.exists()
 assert setupfile.suffix == ".txt"
 assert dataset.suffix == ".zarr"
-
-# %%
-sys.path.append(str(args.path2cleo))  # imports from pySD
-sys.path.append(
-    str(args.path2cleo) + "/examples" "/exampleplotting"
-)  # imports from example plots package
-from pySD.sdmout_src import pyzarr, pysetuptxt, pygbxsdat  # from plotssrc import pltsds
 
 # %%
 config = pysetuptxt.get_config(setupfile, nattrs=3, isprint=True)

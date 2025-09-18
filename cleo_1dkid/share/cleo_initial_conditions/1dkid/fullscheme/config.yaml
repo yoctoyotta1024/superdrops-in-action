@@ -17,8 +17,8 @@
 # File Description:
 # Configuration file for CLEO SDM coupled to a dynamics solver.
 # Note: The initial superdroplets data read from file "initsupers_filename" can be made with
-# CLEO's pySD module (see Python script "create_initsuperdropsbinary_script.py" for usage).
-# Likewise the "grid_filename" can be made using pySD (see "create_gbxboundariesbinary_script.py"),
+# CLEO's cleopy module (see Python script "create_initsuperdropsbinary_script.py" for usage).
+# Likewise the "grid_filename" can be made using cleopy (see "create_gbxboundariesbinary_script.py"),
 # and so can the thermodynamics files when using coupled thermodynamics "fromfile".
 #
 
@@ -42,7 +42,7 @@ timesteps:
 
 ### Initialisation Parameters ###
 inputfiles:
-  constants_filename : ./cleo_1dkid/cleo_deps/libs/cleoconstants.hpp  # (relative path working for pytests in CI) name of file for values of physical constants
+  constants_filename : ./build/_deps/cleo-src/libs/cleoconstants.hpp  # (relative path working for pytests in CI) name of file for values of physical constants
   grid_filename : ./build/share/dimlessGBxboundaries.dat  # (relative path working for pytests in CI) binary filename for initialisation of GBxs / GbxMaps
 
 initsupers:
