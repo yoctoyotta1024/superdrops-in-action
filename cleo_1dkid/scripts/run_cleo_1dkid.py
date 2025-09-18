@@ -54,7 +54,7 @@ parser.add_argument(
 parser.add_argument(
     "--path2cleopythonbindings",
     type=Path,
-    default="/work/bm1183/m300950/superdrops-in-action/cleo_1dkid/build/cleo_python_bindings",
+    default="/work/bm1183/m300950/superdrops-in-action/cleo_1dkid/build/_deps/cleo-build/cleo_python_bindings",
     help="path to cleo_python_bindings python module",
 )
 args = parser.parse_args()

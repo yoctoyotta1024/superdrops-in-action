@@ -22,7 +22,7 @@ path2cleo1dkid=$1
 path2build=$2
 start_id=$3 # inclusive start of run_ids
 end_id=$4 # inclusive end of run_ids
-path2cleopythonbindings="${path2build}/cleo_python_bindings"
+path2cleopythonbindings="${path2build}/_deps/cleo-build/cleo_python_bindings"
 python=/work/bm1183/m300950/bin/envs/superdrops-in-action/bin/python
 
 ### loop over configs_directory for all different for run_ids
