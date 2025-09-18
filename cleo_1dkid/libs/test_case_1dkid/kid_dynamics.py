@@ -21,7 +21,6 @@ class for driving KiD rainshaft test case
 import numpy as np
 from PyMPDATA import Options
 from PyMPDATA_examples.Shipway_and_Hill_2012 import si
-from PyMPDATA_examples.Shipway_and_Hill_2012 import formulae as SH2012formulae
 
 from .mpdata import MPDATA
 from .settings import Settings
@@ -50,8 +49,9 @@ class KiDDynamics:
 
         WMAX = 3  # maximum vertical velocity [m/s], 'w1' of equation (6) in Shipway and Hill (2012)
         TSCALE = 600  # timescale of sinusoid [s], 't1' of equation (6) in Shipway and Hill (2012)
-        is_uniform_density = False
-        P0 = 965 * si.hPa  # only used if is_uniform_density==False
+        PSURF = 1000 * si.hPa  # only used if is_uniform_density==False
+        is_exner_novapour = False
+        is_exner_novapour_uniformrho = False
         self.settings = Settings(
             dt=timestep,
             dz=z_delta,
@@ -59,9 +59,10 @@ class KiDDynamics:
             tscale_const=TSCALE,
             t_max=t_end,
             z_max=z_max,
-            is_uniform_density=is_uniform_density,
-            apprx_drhod_dz=False,
-            p0=P0,
+            p_surf=PSURF,
+            is_exner_novapour=is_exner_novapour,
+            is_exner_novapour_uniformrho=is_exner_novapour_uniformrho,
+            is_approx_drhod_dz=False,
         )
 
         self.mpdata = MPDATA(
@@ -81,11 +82,8 @@ class KiDDynamics:
         self.zhalf = np.linspace(0, nz * z_delta, nz + 1, endpoint=True)
 
         self.rhod_prof = self.settings.rhod(zfull)
-        self.temp_prof = SH2012formulae.temperature(
-            self.rhod_prof, self.settings.thd(zfull)
-        )
-        qvap0 = self.mpdata["qvap"].advectee.get()
-        self.press_prof = SH2012formulae.pressure(self.rhod_prof, self.temp_prof, qvap0)
+        self.temp_prof = self.settings.temp(zfull)
+        self.press_prof = self.settings.press(zfull)
 
         key = f"nr={self.mpdata.nr}, dz={self.settings.dz}, dt={self.settings.dt}, options={options}"
         print(f"Simulating {self.settings.nt} timesteps using {key}")

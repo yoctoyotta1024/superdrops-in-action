@@ -6,6 +6,7 @@
 *.gif
 *.tar.gz
 *.patch
+plots/*
 
 .vscode
 .ipynb_checkpoints
