@@ -15,13 +15,10 @@ https://opensource.org/licenses/BSD-3-Clause
 Copyright (c) 2023 MPI-M, Clara Bayley
 -----
 File Description:
-uses pySD module to create binary file
-for  initial superdroplet conditions
-to read into CLEO SDM
+uses cleopy module to create binary file for initial superdroplet conditions to read into CLEO SDM
 """
 
 import argparse
-import sys
 from pathlib import Path
 import yaml
 
@@ -30,11 +27,6 @@ from PySDM.initialisation import spectra
 
 ### ----------------------- INPUT PARAMETERS ----------------------- ###
 parser = argparse.ArgumentParser()
-parser.add_argument(
-    "--path2CLEO",
-    type=Path,
-    help="path to CLEO pySD python module",
-)
 parser.add_argument(
     "--config_filename",
     type=Path,
@@ -67,10 +59,8 @@ else:
     isfigures = [False, False]
     gbxs2plt = None
 
-assert args.path2CLEO.is_dir()
-sys.path.append(str(args.path2CLEO))  # path to pySD (same as to CLEO)
-from pySD import geninitconds
-from pySD.initsuperdropsbinary_src import dryrgens, attrsgen, crdgens
+from cleopy import geninitconds
+from cleopy.initsuperdropsbinary_src import dryrgens, attrsgen, crdgens
 
 ### essential paths and filenames
 config_filename = args.config_filename

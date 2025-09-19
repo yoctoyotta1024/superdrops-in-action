@@ -2,10 +2,24 @@ name: superdrops-in-action
 channels:
     - conda-forge
 dependencies:
-    - python<3.13
+    - python>=3.13
     - pytest
     - sphinx
     - conda-forge::doxygen>=1.10.0
     - pip
     - pip:
       - -r requirements.txt
+
+# rm  /work/bm1183/m300950/bin/envs/superdrops-in-action/lib/libmpi.so
+# rm  /work/bm1183/m300950/bin/envs/superdrops-in-action/lib/libmpi.so.40
+# python -c 'import ctypes.util; print(ctypes.util.find_library("mpi"))'
+
+# module load gcc/11.2.0-gcc-11.2.0 openmpi/4.1.2-gcc-11.2.0
+# export MPI4PY_BUILD_MPICC=/sw/spack-levante/openmpi-4.1.2-mnmady/bin/mpicc
+# export MPI4PY_BUILD_MPILD=/sw/spack-levante/openmpi-4.1.2-mnmady/lib
+
+# mamba install mpi=*=*
+# python -m pip uninstall mpi4py
+# python -m pip install --no-cache-dir --no-binary=mpi4py mpi4py
+
+# python -c 'import ctypes.util; print(ctypes.util.find_library("mpi"))'

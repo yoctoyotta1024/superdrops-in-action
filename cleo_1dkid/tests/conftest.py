@@ -25,9 +25,13 @@ def pytest_addoption(parser):
     default_figpath = Path.cwd() / "build" / "bin"
     parser.addoption("--figpath", action="store", default=str(default_figpath))
 
-    default_cleo_path2pycleo = Path.cwd() / "build" / "pycleo"
+    default_cleo_path2cleopythonbindings = (
+        Path.cwd() / "build" / "_deps" / "cleo-build" / "cleo_python_bindings"
+    )
     parser.addoption(
-        "--cleo_path2pycleo", action="store", default=str(default_cleo_path2pycleo)
+        "--cleo_path2cleopythonbindings",
+        action="store",
+        default=str(default_cleo_path2cleopythonbindings),
     )
 
     default_cleo_test_generic_config_filename = (
