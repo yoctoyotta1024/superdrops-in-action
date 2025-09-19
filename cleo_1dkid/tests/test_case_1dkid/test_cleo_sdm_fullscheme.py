@@ -69,8 +69,9 @@ def test_cleo_sdm_1dkid_fullscheme(figpath, path2cleopythonbindings, config_file
 
     ### time and grid parameters
     # NOTE: these must be consistent with CLEO initial condition binary files(!)
-    z_delta = 25 * si.m  # (!) must be consistent with CLEO
+    z_min = -25 * si.m  # (!) must be consistent with CLEO
     z_max = 3200 * si.m  # (!) must be consistent with CLEO
+    z_delta = 25 * si.m  # (!) must be consistent with CLEO
     timestep = 1.25 * si.s
     time_end = 15 * si.minutes
 
@@ -113,6 +114,7 @@ def test_cleo_sdm_1dkid_fullscheme(figpath, path2cleopythonbindings, config_file
     ### Perform test of 1-D KiD rainshaft model using chosen setup
     advect_hydrometeors = False
     perform_1dkid_test_case(
+        z_min,
         z_delta,
         z_max,
         time_end,

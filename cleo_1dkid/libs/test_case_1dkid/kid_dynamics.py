@@ -36,12 +36,15 @@ class KiDDynamics:
     for the original source code.
     """
 
-    def __init__(self, z_delta, z_max, timestep, t_end, advect_hydrometeors=True):
+    def __init__(
+        self, z_min, z_max, z_delta, timestep, t_end, advect_hydrometeors=True
+    ):
         """Initialize the KiDDynamics object.
 
         Args:
-            z_delta (float): Vertical grid spacing [m].
+            z_min (float): Minimum height of the domain (bottom of half-cell) [m].
             z_max (float): Maximum height of the domain (top of half-cell) [m].
+            z_delta (float): Vertical grid spacing [m].
             timestep (float): Size of time steps of simulation [s].
             t_end (float): End time of the simulation [s].
         """

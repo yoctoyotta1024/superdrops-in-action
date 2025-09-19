@@ -71,7 +71,7 @@ if isfigures[1]:
 
 ### input parameters for zcoords of gridbox boundaries
 zmax = 3200  # maximum z coord [m]
-zmin = 0  # minimum z coord [m]
+zmin = -25  # minimum z coord [m]
 zdelta = 25  # even spacing
 zgrid = [zmin, zmax, zdelta]
 # zgrid = np.arange(zmin, zmax+zdelta, zdelta)

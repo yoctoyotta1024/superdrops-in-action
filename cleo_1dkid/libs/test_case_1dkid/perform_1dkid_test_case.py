@@ -29,8 +29,9 @@ from libs.thermo import formulae
 
 
 def perform_1dkid_test_case(
-    z_delta,
+    z_min,
     z_max,
+    z_delta,
     time_end,
     timestep,
     thermo_init,
@@ -47,8 +48,9 @@ def perform_1dkid_test_case(
     figpath directory using the run_name as a label.
 
     Args:
-        z_delta (float): Grid spacing of 1-D column (m).
+        z_min (float): Lower limit of 1-D column (max half-cell) (m).
         z_max (float): Upper limit of 1-D column (max half-cell) (m).
+        z_delta (float): Grid spacing of 1-D column (m).
         time_end (float): End time for the simulation (s).
         timestep (float): Timestep for the simulation (s).
         thermo_init (Thermodynamics): Initial thermodynamics.
@@ -66,8 +68,9 @@ def perform_1dkid_test_case(
 
     print("\n--- Running 1-D KiD Rainshaft Model ---")
     out = run_1dkid(
-        z_delta,
+        z_min,
         z_max,
+        z_delta,
         time_end,
         timestep,
         thermo_init,
