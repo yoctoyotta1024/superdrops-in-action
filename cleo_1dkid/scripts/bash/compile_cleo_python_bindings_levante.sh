@@ -27,12 +27,13 @@ path2source="$1/cleo_deps"                 # source directory, $1 is path to cle
 path2build=$2                              # build directory
 make_clean=${3:-false}                     # == "true" or otherwise false
 executables=${4:-"cleo_python_bindings"}   # list of executables to compile
+python="/work/bm1183/m300950/bin/envs/superdrops-in-action/bin/python"
 
 # CLEO (openmp with gcc compiler) extra build parameters
 cleo_build_flags=${5:-"-DCLEO_COUPLED_DYNAMICS=numpy \
   -DCLEO_DOMAIN=cartesian \
   -DCLEO_NO_ROUGHPAPER=true \
-  -DCLEO_PYTHON=/work/bm1183/m300950/bin/envs/superdrops-in-action/bin/python"} # CLEO_BUILD_FLAGS
+  -DCLEO_PYTHON=${python}"} # CLEO_BUILD_FLAGS
 
 # path to [...]/yac and [...]/yaxt directories for CLEO
 yacyaxtroot=/work/bm1183/m300950/yacyaxt/gcc
@@ -41,6 +42,7 @@ cleo_yac_module_path="${path2build}/_deps/cleo-src/libs/coupldyn_yac/cmake"
 # Necessary Levante packages
 levante_gcc="gcc/11.2.0-gcc-11.2.0" # bcn7mbu # module load
 levante_gcc_openmpi="openmpi/4.1.2-gcc-11.2.0" # module load
+levante_gcc_cmake="cmake@3.26.3%gcc@=11.2.0/fuvwuhz" # spack load
 levante_gcc_netcdf_yac="netcdf-c/4.8.1-openmpi-4.1.2-gcc-11.2.0" # module load
 levante_gcc_openblas_yac="openblas@0.3.18%gcc@=11.2.0" # spack load
 ### ---------------------------------------------------- ###
@@ -60,9 +62,8 @@ fi
 ### ---------------------------------------------------- ###
 
 ### ---- set relevant packages and compiler settings --- ###
-module load ${levante_gcc} ${levante_gcc_openmpi} # for CLEO
-module load ${levante_gcc_netcdf_yac} # for YAC (CLEO)
-spack load ${levante_gcc_openblas_yac} # for YAC (CLEO)
+module load ${levante_gcc} ${levante_gcc_openmpi} ${levante_gcc_netcdf_yac} # for CLEO and YAC
+spack load ${levante_gcc_cmake} ${levante_gcc_openblas_yac} # for CLEO and YAC
 
 levante_gxx_compiler="$(command -v mpic++)"
 levante_gcc_compiler="$(command -v mpicc)"

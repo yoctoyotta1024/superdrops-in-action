@@ -23,7 +23,8 @@ path2build=$2
 start_id=$3 # inclusive start of run_ids
 end_id=$4 # inclusive end of run_ids
 path2cleopythonbindings="${path2build}/_deps/cleo-build/cleo_python_bindings"
-python=/work/bm1183/m300950/bin/envs/superdrops-in-action/bin/python
+python="/work/bm1183/m300950/bin/envs/superdrops-in-action/bin/python"
+pythonlibs="/work/bm1183/m300950/bin/envs/superdrops-in-action/lib/python3.13/site-packages"
 
 ### loop over configs_directory for all different for run_ids
 configs_directory=("${path2build}/tmp/condevap_only"
@@ -41,6 +42,9 @@ then
   exit 1
 fi
 run_ids=($(seq $start_id 1 $end_id))
+
+# Necessary Levante packages
+levante_gcc_fyamllib="/sw/spack-levante/libfyaml-0.7.12-fvbhgo/lib"
 ### ---------------------------------------------------- ###
 ### ---------------------------------------------------- ###
 ### ---------------------------------------------------- ###
@@ -62,6 +66,13 @@ then
   echo "(${#configs_directory[@]}, ${#run_labels[@]}, ${#fig_directory[@]})"
   exit 1
 fi
+### ---------------------------------------------------- ###
+
+### ---- set relevant packages and runtime settings ---- ###
+# add fyaml libraries path
+export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${levante_gcc_fyamllib}
+# (optional) prepend to python path to make import searches faster
+export PYTHONPATH=${pythonlibs}:${path2cleopythonbindings}:${path2cleo1dkid}:${PYTHONPATH}
 ### ---------------------------------------------------- ###
 
 for i in "${!configs_directory[@]}"
