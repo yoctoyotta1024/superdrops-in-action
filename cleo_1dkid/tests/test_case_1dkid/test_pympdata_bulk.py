@@ -49,8 +49,9 @@ def test_pympdata_bulk_scheme_1dkid(figpath):
     Path(figpath).mkdir(parents=False, exist_ok=True)
 
     ### time and grid parameters
-    z_delta = 25 * si.m
+    z_min = 0 * si.m
     z_max = 3200 * si.m
+    z_delta = 25 * si.m
     timestep = 1.25 * si.s
     time_end = 15 * si.minutes
 
@@ -79,6 +80,7 @@ def test_pympdata_bulk_scheme_1dkid(figpath):
     ### Perform test of 1-D KiD rainshaft model using chosen setup
     advect_hydrometeors = True
     perform_1dkid_test_case(
+        z_min,
         z_delta,
         z_max,
         time_end,

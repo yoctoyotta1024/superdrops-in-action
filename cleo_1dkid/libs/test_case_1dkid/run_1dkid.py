@@ -23,7 +23,14 @@ from libs.thermo.output_thermodynamics import OutputThermodynamics
 
 
 def run_1dkid(
-    z_delta, z_max, time_end, timestep, thermo, microphys_scheme, advect_hydrometeors
+    z_min,
+    z_max,
+    z_delta,
+    time_end,
+    timestep,
+    thermo,
+    microphys_scheme,
+    advect_hydrometeors,
 ):
     """Run 1-D KiD rainshaft model with a specified microphysics scheme and KiD dynamics.
 
@@ -32,10 +39,12 @@ def run_1dkid(
     a constant timestep based on the Shipway and Hill (2012) setup.
 
     Parameters:
-        z_delta (float):
-          Grid spacing od 1-D column (m).
+        z_min (float):
+          Lower limit of 1-D column (m).
         z_max (float):
           Upper limit of 1-D column (m).
+        z_delta (float):
+          Grid spacing od 1-D column (m).
         time_end (float):
           End time for the simulation (s).
         timestep (float):
@@ -51,7 +60,12 @@ def run_1dkid(
 
     ### type of dynamics rainshaft will undergo
     kid_dynamics = KiDDynamics(
-        z_delta, z_max, timestep, time_end, advect_hydrometeors=advect_hydrometeors
+        z_min,
+        z_max,
+        z_delta,
+        timestep,
+        time_end,
+        advect_hydrometeors=advect_hydrometeors,
     )
 
     ### run dynamics + microphysics from time to time_end
