@@ -25,6 +25,10 @@ end_id=$4 # inclusive end of run_ids
 path2cleopythonbindings="${path2build}/_deps/cleo-build/cleo_python_bindings"
 python="/work/bm1183/m300950/bin/envs/superdrops-in-action/bin/python"
 pythonlibs="/work/bm1183/m300950/bin/envs/superdrops-in-action/lib/python3.13/site-packages"
+# python="/work/bm1183/m300950/bin/envs/clouds/bin/python"
+# pythonlibs="/work/bm1183/m300950/bin/envs/clouds/lib/python3.13/site-packages/"
+python="/work/mh1126/m300950/superdrops-in-action/bin/python"
+pythonlibs="/work/mh1126/m300950/superdrops-in-action/lib/python3.13/site-packages/"
 
 ### loop over configs_directory for all different for run_ids
 configs_directory=("${path2build}/tmp/condevap_only"
