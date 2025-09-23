@@ -76,8 +76,10 @@ def test_cleo_sdm_1dkid_condevap_only(
     time_end = 15 * si.minutes
 
     ### initial thermodynamic conditions
-    assert z_max % z_delta == 0, "z limit is not a multiple of the grid spacing."
-    ngbxs = int(z_max / z_delta)
+    assert (
+        z_max - z_min
+    ) % z_delta == 0, "z limit is not a multiple of the grid spacing."
+    ngbxs = int((z_max - z_min) / z_delta)
     zeros = np.zeros(ngbxs)
     zeros2 = np.tile(zeros, 2)
     thermo_init = Thermodynamics(

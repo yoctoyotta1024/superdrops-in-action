@@ -56,8 +56,10 @@ def test_pympdata_bulk_scheme_1dkid(figpath):
     time_end = 15 * si.minutes
 
     ### initial thermodynamic conditions
-    assert z_max % z_delta == 0, "z limit is not a multiple of the grid spacing."
-    zeros = np.zeros(int(z_max / z_delta))
+    assert (
+        z_max - z_min
+    ) % z_delta == 0, "z limit is not a multiple of the grid spacing."
+    zeros = np.zeros(int((z_max - z_min) / z_delta))
     null = np.array([])  # this microphysics test doesn't need winds
     thermo_init = Thermodynamics(
         zeros,
