@@ -47,3 +47,23 @@ to help you view your results.
 
 You can find out more about pybind11 by visiting
 `their repository <https://github.com/pybind/pybind11/>`_
+
+Python Tests
+------------
+
+After creating the python bindings, you can test the 1-D KiD works with pytest. Note you cannot
+run more than one test which uses CLEO's python bindings in a single pytest session
+(because of the MPI Finalize call inside CLEO's python bindings), so please instead call each of
+CLEO's tests seperately. Also note on Levante you first need to export the fyaml library path
+before running CLEO, e.g.
+
+.. code-block:: console
+
+  $ mamba activate superdrops-in-action
+  $ export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:/sw/spack-levante/libfyaml-0.7.12-fvbhgo/lib
+
+  $ pytest cleo_1dkid/tests/test_pympdata_bulk_microphysics_scheme.py  # (optional)
+  $ pytest cleo_1dkid/tests/test_cleo_sdm_microphysics_scheme.py  # (optional)
+  $ pytest cleo_1dkid/tests/test_case_1dkid/test_pympdata_bulk.py  # (optional)
+  $ pytest cleo_1dkid/tests/test_case_1dkid/test_cleo_sdm_condevap_only.py
+  $ pytest cleo_1dkid/tests/test_case_1dkid/test_cleo_sdm_fullscheme.py
