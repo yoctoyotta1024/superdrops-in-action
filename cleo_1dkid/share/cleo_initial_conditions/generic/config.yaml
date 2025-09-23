@@ -64,7 +64,7 @@ outputdata:
 boundary_conditions:
   type: addsuperstodomain
   LOWER_COORD3LIM: 0                                   # SDs added to domain with coord3 < LOWER_COORD3LIM [m]
-  UPPER_COORD3LIM: 1000                                # SDs added to domain with coord3 >= UPPER_COORD3LIM [m]
+  UPPER_COORD3LIM: 10000                               # SDs added to domain with coord3 >= UPPER_COORD3LIM [m]
   newnsupers: 256                                      # number SDs to add to each gridbox below/above LOWER/UPPER_COORD3LIM
   DRYRADIUS: 1.0                                       # max dry radius of new super-droplets (for solute mass) [m]
   MINRADIUS: 0.5e-8                                    # minimum radius of new super-droplets [m]
