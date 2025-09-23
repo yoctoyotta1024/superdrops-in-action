@@ -54,6 +54,7 @@ class MicrophysicsSchemeWrapper:
         wvel,
         uvel,
         vvel,
+        do_init=True,
     ):
         """Initialize the MicrophysicsSchemeWrapper object.
 
@@ -63,7 +64,8 @@ class MicrophysicsSchemeWrapper:
         data into the arrays given during wrapper initialisation.
         """
         config = cleo.Config(str(config_filename))
-        cleo.cleo_initialize(config)
+        if do_init:
+            cleo.cleo_initialize(config)
 
         self.microphys = CleoSDM(
             config,

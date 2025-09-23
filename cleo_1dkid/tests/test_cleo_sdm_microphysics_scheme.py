@@ -39,11 +39,13 @@ def config_filename(pytestconfig):
     return pytestconfig.getoption("cleo_test_generic_config_filename")
 
 
-def test_mpi_is_initialised():
+def _test_mpi_is_initialised():
     print(f"MPI version: {MPI.Get_version()}")
 
+    return 0
 
-def test_initialize(path2cleopythonbindings, config_filename):
+
+def _test_initialize(path2cleopythonbindings, config_filename):
     os.environ["CLEO_PYTHON_BINDINGS"] = str(path2cleopythonbindings)
 
     from libs.cleo_sdm.cleo_sdm import CleoSDM as MicrophysicsScheme
@@ -61,7 +63,6 @@ def test_initialize(path2cleopythonbindings, config_filename):
     arr = np.array([], dtype=np.float64)
     press = temp = qvap = qcond = wvel = uvel = vvel = arr
     config = cleo.Config(str(config_filename))
-    cleo.cleo_initialize(config)
     microphys = MicrophysicsScheme(
         config,
         is_motion,
@@ -78,8 +79,10 @@ def test_initialize(path2cleopythonbindings, config_filename):
 
     assert microphys.name == "CLEO SDM microphysics"
 
+    return 0
 
-def test_initialize_wrapper(path2cleopythonbindings, config_filename):
+
+def _test_initialize_wrapper(path2cleopythonbindings, config_filename):
     os.environ["CLEO_PYTHON_BINDINGS"] = str(path2cleopythonbindings)
 
     from libs.cleo_sdm.microphysics_scheme_wrapper import MicrophysicsSchemeWrapper
@@ -107,12 +110,15 @@ def test_initialize_wrapper(path2cleopythonbindings, config_filename):
         wvel,
         uvel,
         vvel,
+        do_init=False,
     )
 
     assert microphys_wrapped.initialize() == 0
 
+    return 0
 
-def test_finalize_wrapper(path2cleopythonbindings, config_filename):
+
+def _test_finalize_wrapper(path2cleopythonbindings, config_filename):
     os.environ["CLEO_PYTHON_BINDINGS"] = str(path2cleopythonbindings)
 
     from libs.cleo_sdm.microphysics_scheme_wrapper import MicrophysicsSchemeWrapper
@@ -140,12 +146,15 @@ def test_finalize_wrapper(path2cleopythonbindings, config_filename):
         wvel,
         uvel,
         vvel,
+        do_init=False,
     )
 
     assert microphys_wrapped.finalize() == 0
 
+    return 0
 
-def test_microphys_with_wrapper(path2cleopythonbindings, config_filename):
+
+def _test_microphys_with_wrapper(path2cleopythonbindings, config_filename):
     os.environ["CLEO_PYTHON_BINDINGS"] = str(path2cleopythonbindings)
 
     from libs.cleo_sdm.cleo_sdm import CleoSDM as MicrophysicsScheme
@@ -236,6 +245,7 @@ def test_microphys_with_wrapper(path2cleopythonbindings, config_filename):
         thermo2.wvel,
         thermo2.uvel,
         thermo2.vvel,
+        do_init=False,
     )
 
     microphys.run(timestep)  # implict change of thermo1
@@ -245,3 +255,26 @@ def test_microphys_with_wrapper(path2cleopythonbindings, config_filename):
     assert np.all(thermo1.temp == thermo2.temp)
     for q1, q2 in zip(thermo1.unpack_massmix_ratios(), thermo2.unpack_massmix_ratios()):
         assert np.all(q1 == q2)
+
+    return 0
+
+
+def test_cleo_sdm(path2cleopythonbindings, config_filename):
+    os.environ["CLEO_PYTHON_BINDINGS"] = str(path2cleopythonbindings)
+
+    sys.path.append(os.environ["CLEO_PYTHON_BINDINGS"])
+    import cleo_python_bindings as cleo
+
+    # only initialise CLEO once for all the following tests (also see do_init=False flag on wrapper)
+    config = cleo.Config(str(config_filename))
+    cleo.cleo_initialize(config)
+
+    returns = [1] * 5
+    returns[0] = _test_mpi_is_initialised()
+    returns[1] = _test_initialize(path2cleopythonbindings, config_filename)
+    returns[2] = _test_initialize_wrapper(path2cleopythonbindings, config_filename)
+    returns[3] = _test_finalize_wrapper(path2cleopythonbindings, config_filename)
+    returns[4] = _test_microphys_with_wrapper(path2cleopythonbindings, config_filename)
+
+    for r in range(len(returns)):
+        assert returns[r] == 0, f"test {r} failed"
