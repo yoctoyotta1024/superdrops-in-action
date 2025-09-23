@@ -82,23 +82,25 @@ def perform_1dkid_test_case(
     print("--- Plotting Results ---")
     assert Path(figpath).exists(), "The specified figpath does not exist."
     assert run_name, "The run_name cannot be empty."
-    plot_1dkid_moisture(out, z_delta, z_max, figpath, run_name)
+    plot_1dkid_moisture(out, z_min, z_max, z_delta, figpath, run_name)
     print("------------------------")
 
     return out
 
 
-def plot_1dkid_moisture(out, z_delta, z_max, figpath, run_name):
+def plot_1dkid_moisture(out, z_min, z_max, z_delta, figpath, run_name):
     """
     Plots the 1D Kinematic Driver (KID) results and saves the plots.
 
     Parameters:
         out: OutputThermodynamics
             The dataset containing the output variables to plot (qvap, qcond, temp, press).
-        z_delta: float
-            The vertical resolution of the model.
+        z_min: float
+            The minimum height of the model domain.
         z_max: float
             The maximum height of the model domain.
+        z_delta: float
+            The vertical resolution of the model.
         figpath: str
             The path where the plot images will be saved.
         run_name: str
@@ -130,8 +132,9 @@ def plot_1dkid_moisture(out, z_delta, z_max, figpath, run_name):
         axs[0, 1],
         out.qvap.values,
         out.time.values,
-        z_delta,
+        z_min,
         z_max,
+        z_delta,
         label,
         mult=1e3,
         threshold=1e-3,
@@ -146,8 +149,9 @@ def plot_1dkid_moisture(out, z_delta, z_max, figpath, run_name):
         axs[2, 1],
         out.qcond.values + out.qrain.values,
         out.time.values,
-        z_delta,
+        z_min,
         z_max,
+        z_delta,
         label,
         mult=1e3,
         threshold=1e-3,
@@ -165,8 +169,9 @@ def plot_1dkid_moisture(out, z_delta, z_max, figpath, run_name):
         axs[4, 1],
         supersat,
         out.time.values,
-        z_delta,
+        z_min,
         z_max,
+        z_delta,
         label,
         mult=100,
         rng=(-0.25, 0.75),
@@ -192,8 +197,9 @@ def plot_kid_result(
     ax1,
     var,
     time,
-    z_delta,
+    z_min,
     z_max,
+    z_delta,
     label,
     mult=1.0,
     threshold=None,
@@ -217,10 +223,12 @@ def plot_kid_result(
         The variable to be plotted, dimensions [time, height]
     time : float
         The time data to plot (will be coarsened by 'fctr', see code)
-    z_delta : float
-        The vertical resolution of the data.
+    z_min : float
+        The minimum vertical extent of the data (min half-cell).
     z_max : float
         The maximum vertical extent of the data (max half-cell).
+    z_delta : float
+        The vertical resolution of the data.
     label : str
         The label for variable on the plot, e.g. for colourbar.
     mult : float, optional
@@ -247,9 +255,11 @@ def plot_kid_result(
     tgrid = np.concatenate(((time[0] - coarse_dt / 2,), time[0::fctr] + coarse_dt / 2))
     tgrid = tgrid / 60  # [minutes]
 
-    assert z_max % z_delta == 0, "z limit is not a multiple of the grid spacing."
-    nz = int(z_max / z_delta)
-    zgrid = np.linspace(0, z_max, nz + 1, endpoint=True)
+    assert (
+        z_max - z_min
+    ) % z_delta == 0, "z limit is not a multiple of the grid spacing."
+    nz = int((z_max - z_min) / z_delta)
+    zgrid = np.linspace(z_min, z_max, nz + 1, endpoint=True)
     zgrid = zgrid / 1000  # [km]
 
     var = var * mult
