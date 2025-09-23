@@ -151,4 +151,8 @@ jobs:
       - name: Test with pytest
         run: |
           mkdir -p ./build/bin/generic/ && mkdir -p ./build/bin/condevap_only/ && mkdir -p ./build/bin/fullscheme/
-          pytest ./cleo_1dkid/tests
+          pytest ./cleo_1dkid/tests/test_pympdata_bulk_microphysics_scheme.py -s
+          pytest ./cleo_1dkid/tests/test_cleo_sdm_microphysics_scheme.py -s
+          pytest ./cleo_1dkid/tests/test_case_1dkid/test_pympdata_bulk.py -s
+          pytest ./cleo_1dkid/tests/test_case_1dkid/test_cleo_sdm_condevap_only.py -s
+          pytest ./cleo_1dkid/tests/test_case_1dkid/test_cleo_sdm_fullscheme.py -s
