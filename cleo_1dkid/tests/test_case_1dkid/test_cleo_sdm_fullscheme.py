@@ -32,7 +32,7 @@ def figpath(pytestconfig):
 
 @pytest.fixture(scope="module")
 def path2cleopythonbindings(pytestconfig):
-    return pytestconfig.getoption("path2cleopythonbindings")
+    return pytestconfig.getoption("cleo_path2cleopythonbindings")
 
 
 @pytest.fixture(scope="module")
