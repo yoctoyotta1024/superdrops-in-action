@@ -49,14 +49,17 @@ def test_pympdata_bulk_scheme_1dkid(figpath):
     Path(figpath).mkdir(parents=False, exist_ok=True)
 
     ### time and grid parameters
-    z_delta = 25 * si.m
+    z_min = 0 * si.m
     z_max = 3200 * si.m
+    z_delta = 25 * si.m
     timestep = 1.25 * si.s
     time_end = 15 * si.minutes
 
     ### initial thermodynamic conditions
-    assert z_max % z_delta == 0, "z limit is not a multiple of the grid spacing."
-    zeros = np.zeros(int(z_max / z_delta))
+    assert (
+        z_max - z_min
+    ) % z_delta == 0, "z limit is not a multiple of the grid spacing."
+    zeros = np.zeros(int((z_max - z_min) / z_delta))
     null = np.array([])  # this microphysics test doesn't need winds
     thermo_init = Thermodynamics(
         zeros,
@@ -79,8 +82,9 @@ def test_pympdata_bulk_scheme_1dkid(figpath):
     ### Perform test of 1-D KiD rainshaft model using chosen setup
     advect_hydrometeors = True
     perform_1dkid_test_case(
-        z_delta,
+        z_min,
         z_max,
+        z_delta,
         time_end,
         timestep,
         thermo_init,

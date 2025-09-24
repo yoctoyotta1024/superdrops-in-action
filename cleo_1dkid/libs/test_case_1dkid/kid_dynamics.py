@@ -36,12 +36,15 @@ class KiDDynamics:
     for the original source code.
     """
 
-    def __init__(self, z_delta, z_max, timestep, t_end, advect_hydrometeors=True):
+    def __init__(
+        self, z_min, z_max, z_delta, timestep, t_end, advect_hydrometeors=True
+    ):
         """Initialize the KiDDynamics object.
 
         Args:
-            z_delta (float): Vertical grid spacing [m].
+            z_min (float): Minimum height of the domain (bottom of half-cell) [m].
             z_max (float): Maximum height of the domain (top of half-cell) [m].
+            z_delta (float): Vertical grid spacing [m].
             timestep (float): Size of time steps of simulation [s].
             t_end (float): End time of the simulation [s].
         """
@@ -58,6 +61,7 @@ class KiDDynamics:
             wmax_const=WMAX,
             tscale_const=TSCALE,
             t_max=t_end,
+            z_min=z_min,
             z_max=z_max,
             p_surf=PSURF,
             is_exner_novapour=is_exner_novapour,
@@ -68,18 +72,24 @@ class KiDDynamics:
         self.mpdata = MPDATA(
             nz=self.settings.nz,
             dt=self.settings.dt,
-            qv_of_zZ_at_t0=lambda zZ: self.settings.qv(zZ * self.settings.dz),
-            g_factor_of_zZ=lambda zZ: self.settings.rhod(zZ * self.settings.dz),
+            qv_of_zZ_at_t0=lambda zZ: self.settings.qv(
+                zZ * self.settings.dz + self.settings.z_min
+            ),
+            g_factor_of_zZ=lambda zZ: self.settings.rhod(
+                zZ * self.settings.dz + self.settings.z_min
+            ),
             options=options,
         )
 
         self.advect_hydrometeors = advect_hydrometeors
 
-        assert self.settings.nz == int(z_max / z_delta)
+        assert self.settings.nz == int((z_max - z_min) / z_delta)
+        assert self.settings.z_min == z_min
+        assert self.settings.z_max == z_max
         assert self.settings.dz == z_delta
-        nz = self.settings.nz
-        zfull = np.linspace(z_delta / 2, (nz - 1 / 2) * z_delta, nz, endpoint=True)
-        self.zhalf = np.linspace(0, nz * z_delta, nz + 1, endpoint=True)
+        zfull = np.arange(z_min + z_delta / 2, z_max + z_delta / 2, z_delta)
+        self.zhalf = np.arange(z_min, z_max + z_delta, z_delta)
+        assert np.all((self.zhalf[1:] + self.zhalf[:-1]) / 2 == zfull)
 
         self.rhod_prof = self.settings.rhod(zfull)
         self.temp_prof = self.settings.temp(zfull)
@@ -109,7 +119,11 @@ class KiDDynamics:
 
         if thermo.wvel.size != 0:
             z_half_reps = np.repeat(
-                np.arange(0, self.settings.z_max + self.settings.dz, self.settings.dz),
+                np.arange(
+                    self.settings.z_min,
+                    self.settings.z_max + self.settings.dz,
+                    self.settings.dz,
+                ),
                 2,
             )[1:-1]
             wmagnitude = self.settings.rhod_w(
@@ -143,7 +157,7 @@ class KiDDynamics:
             * self.settings.dt
             / self.settings.dz
         )  # courant_number * velocity * density (i.e. momentum * dt/dz)
-        advector_0 = np.ones_like(self.settings.z_vec) * GC
+        advector_0 = np.ones_like(self.settings.nz_vec) * GC
 
         if self.advect_hydrometeors:
             for field in self.mpdata.fields:

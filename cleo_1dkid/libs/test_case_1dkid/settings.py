@@ -42,6 +42,7 @@ class Settings:
         wmax_const: float,
         tscale_const: float,
         t_max: float = 15 * si.minutes,
+        z_min: float = 0 * si.metres,
         z_max: float = 3000 * si.metres,
         p_surf: float = 1000 * si.hPa,
         is_exner_novapour: Optional[bool] = False,
@@ -51,6 +52,7 @@ class Settings:
         self.dt = dt
         self.dz = dz
 
+        self.z_min = z_min
         self.z_max = z_max
         self.t_max = t_max
 
@@ -62,7 +64,11 @@ class Settings:
         )
 
         self.thd = lambda z: formulae.th_dry(self._th(z), self.qv(z))
+
         z_points = np.arange(0, self.z_max + self.dz / 2, self.dz / 2)
+
+        def zpos(z):
+            return np.where(z < 0, 0, z)  # deal with z < 0 like it is z == 0
 
         if is_exner_novapour or is_exner_novapour_uniformrho:
             # note: not in the paper,
@@ -97,12 +103,12 @@ class Settings:
                 else:
                     return exner
 
-            self.temp = lambda z: z2exner(z, return_temp=True)
-            self.press = lambda z: z2exner(z, return_press=True)
-            self.rhod = lambda z: z2exner(z, return_rho=True)
+            self.temp = lambda z: z2exner(zpos(z), return_temp=True)
+            self.press = lambda z: z2exner(zpos(z), return_press=True)
+            self.rhod = lambda z: z2exner(zpos(z), return_rho=True)
             if is_exner_novapour_uniformrho:
                 rhod0 = 1.0 * np.ones_like(z_points)  # [kg / m^3]
-                self.rhod = interp1d(z_points, rhod0)
+                self.rhod = lambda z: interp1d(z_points, rhod0)(zpos(z))
 
         else:
             # note: not in the paper,
@@ -126,10 +132,12 @@ class Settings:
             )
             assert rhod_solution.success
 
-            self.rhod = interp1d(z_points, rhod_solution.y[0])
-            self.temp = lambda z: formulae.temperature(self.rhod(z), self.thd(z))
+            self.rhod = lambda z: interp1d(z_points, rhod_solution.y[0])(zpos(z))
+            self.temp = lambda z: formulae.temperature(
+                self.rhod(zpos(z)), self.thd(zpos(z))
+            )
             self.press = lambda z: formulae.pressure(
-                self.rhod(z), self.temp(z), self.qv(z)
+                self.rhod(zpos(z)), self.temp(zpos(z)), self.qv(zpos(z))
             )
 
         rhod_w_const = wmax_const * si.m / si.s * si.kg / si.m**3
@@ -138,11 +146,11 @@ class Settings:
             rhod_w_const * np.sin(np.pi * t / self.t_1) if t < self.t_1 else 0
         )
 
-        self.z_vec = self.dz * arakawa_c.z_vector_coord((self.nz,))
+        self.nz_vec = arakawa_c.z_vector_coord((self.nz,))
 
     @property
     def nz(self):
-        nz = self.z_max / self.dz
+        nz = (self.z_max - self.z_min) / self.dz
         assert nz == int(nz)
         return int(nz)
 

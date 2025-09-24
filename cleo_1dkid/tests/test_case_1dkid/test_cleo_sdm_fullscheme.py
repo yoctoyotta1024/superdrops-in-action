@@ -69,14 +69,17 @@ def test_cleo_sdm_1dkid_fullscheme(figpath, path2cleopythonbindings, config_file
 
     ### time and grid parameters
     # NOTE: these must be consistent with CLEO initial condition binary files(!)
-    z_delta = 25 * si.m  # (!) must be consistent with CLEO
+    z_min = -25 * si.m  # (!) must be consistent with CLEO
     z_max = 3200 * si.m  # (!) must be consistent with CLEO
+    z_delta = 25 * si.m  # (!) must be consistent with CLEO
     timestep = 1.25 * si.s
     time_end = 15 * si.minutes
 
     ### initial thermodynamic conditions
-    assert z_max % z_delta == 0, "z limit is not a multiple of the grid spacing."
-    ngbxs = int(z_max / z_delta)
+    assert (
+        z_max - z_min
+    ) % z_delta == 0, "z limit is not a multiple of the grid spacing."
+    ngbxs = int((z_max - z_min) / z_delta)
     zeros = np.zeros(ngbxs)
     zeros2 = np.tile(zeros, 2)
     thermo_init = Thermodynamics(
@@ -113,8 +116,9 @@ def test_cleo_sdm_1dkid_fullscheme(figpath, path2cleopythonbindings, config_file
     ### Perform test of 1-D KiD rainshaft model using chosen setup
     advect_hydrometeors = False
     perform_1dkid_test_case(
-        z_delta,
+        z_min,
         z_max,
+        z_delta,
         time_end,
         timestep,
         thermo_init,
