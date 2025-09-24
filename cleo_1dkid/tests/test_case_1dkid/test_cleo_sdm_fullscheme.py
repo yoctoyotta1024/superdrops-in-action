@@ -117,8 +117,8 @@ def test_cleo_sdm_1dkid_fullscheme(figpath, path2cleopythonbindings, config_file
     advect_hydrometeors = False
     perform_1dkid_test_case(
         z_min,
-        z_delta,
         z_max,
+        z_delta,
         time_end,
         timestep,
         thermo_init,

@@ -83,8 +83,8 @@ def test_pympdata_bulk_scheme_1dkid(figpath):
     advect_hydrometeors = True
     perform_1dkid_test_case(
         z_min,
-        z_delta,
         z_max,
+        z_delta,
         time_end,
         timestep,
         thermo_init,
