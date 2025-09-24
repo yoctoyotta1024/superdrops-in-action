@@ -250,31 +250,30 @@
           <section id="cleo-1-d-kid-test-case">
 <h1>CLEO 1-D KiD Test Case<a class="headerlink" href="#cleo-1-d-kid-test-case" title="Link to this heading">¶</a></h1>
 <p>The 1-D KiD test case uses the PYMPDATA libray alongside CLEO SDM. To run CLEO’s C++ code alongside
-PYMPDATA, we first make the pycleo Python module using pybind11.</p>
-<p>CLEO’s libraries (<code class="docutils literal notranslate"><span class="pre">libs</span></code>) and external depenencies (<code class="docutils literal notranslate"><span class="pre">extern</span></code>) from v0.52.0 have been copied
-into the directory <code class="docutils literal notranslate"><span class="pre">cleo_1dkid/cleo_deps</span></code>. Some files in the cartesiandomain and gridboxes
-libraries, e.g. to set the KiD boundary conditions have since been modified. The CMakeLists.txt
-files in the libs has also been modified because the coupldyn_yac library has been deleted. Also
-the header guards have been updated across all the libraries. Accordingly, the CMake project is
-called <code class="docutils literal notranslate"><span class="pre">CLEO_1dkid</span></code> instead of <code class="docutils literal notranslate"><span class="pre">CLEO</span></code>.</p>
+PYMPDATA, we first make the CLEO’s python bindings (Python module called <code class="docutils literal notranslate"><span class="pre">cleo_python_bindings</span></code>)
+using pybind11.</p>
 <section id="creating-the-python-bindings">
 <h2>Creating The Python Bindings<a class="headerlink" href="#creating-the-python-bindings" title="Link to this heading">¶</a></h2>
+<p>CLEO’s libraries are fetched and build via the <code class="docutils literal notranslate"><span class="pre">CMakeLists.txt</span></code> in the
+directory <code class="docutils literal notranslate"><span class="pre">cleo_1dkid/cleo_deps</span></code>.</p>
 <p>To build the python bindings for CLEO you can simply do
-`` cmake -S ./cleo_1dkid/ -B ./build &amp;&amp; cd build &amp;&amp; make pycleo``. However,
+`` cmake -S ./cleo_1dkid/ -B ./build &amp;&amp; cd build &amp;&amp; make cleo_python_bindings``. However,
 you need to have certain <a class="reference internal" href="../usage/requirements.html#requirements"><span class="std std-ref">requirements</span></a> fulfilled first
 (compiler versions etc.). On Levante, we therefore reccomend you use the bash helper script
-<code class="docutils literal notranslate"><span class="pre">cleo_1dkid/scripts/bash/compile_pycleo_levante.sh</span></code> instead of directly calling cmake.</p>
+<code class="docutils literal notranslate"><span class="pre">cleo_1dkid/scripts/bash/compile_cleo_python_bindings_levante.sh</span></code> instead of directly calling cmake.</p>
 <p>First activate the python environment you want to use, e.g.
 <code class="docutils literal notranslate"><span class="pre">micromamba</span> <span class="pre">activate</span> <span class="pre">superdrops-in-action</span></code>.
 Then call the helper script with the source and build directories you want to use, e.g.</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>./cleo_1dkid/scripts/bash/compile_pycleo_levante.sh<span class="w"> </span><span class="se">\</span>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>./cleo_1dkid/scripts/bash/compile_cleo_python_bindings_levante.sh<span class="w"> </span><span class="se">\</span>
 <span class="gp">    $</span>HOME/superdrops-in-action/cleo_1dkid<span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>/work/bm1183/m300950/superdrops-in-action/cleo_1dkid/build
 </pre></div>
 </div>
-<p>After making the bindings, the <code class="docutils literal notranslate"><span class="pre">pycleo</span></code> Python module can used just like an ordinary python module.
-To run the <code class="docutils literal notranslate"><span class="pre">condevap_only</span></code> and <code class="docutils literal notranslate"><span class="pre">fullscheme</span></code> examples you can use the helper scripts to
-first generate the initial conditions and then run the executables:</p>
+<p>After making the bindings, the <code class="docutils literal notranslate"><span class="pre">cleo_python_bindings</span></code> Python module can used just like an
+ordinary python module. The bindings are by default built in
+<code class="docutils literal notranslate"><span class="pre">[your_build_directory]/_deps/cleo-build/cleo_python_bindings/</span></code> To run the
+<code class="docutils literal notranslate"><span class="pre">condevap_only</span></code> and <code class="docutils literal notranslate"><span class="pre">fullscheme</span></code> examples you can use the
+helper scripts to first generate the initial conditions and then run the executables:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>./cleo_1dkid/scripts/bash/inputfiles_cleo_1dkid.sh<span class="w"> </span><span class="se">\</span>
 <span class="gp">    $</span><span class="o">{</span>HOME<span class="o">}</span>/superdrops-in-action/cleo_1dkid<span class="w"> </span><span class="se">\</span>
 <span class="w">    </span>/work/bm1183/m300950/superdrops-in-action/cleo_1dkid/build<span class="w"> </span><span class="m">0</span><span class="w"> </span><span class="m">99</span>
@@ -287,6 +286,24 @@ first generate the initial conditions and then run the executables:</p>
 to help you view your results.</p>
 <p>You can find out more about pybind11 by visiting
 <a class="reference external" href="https://github.com/pybind/pybind11/">their repository</a></p>
+</section>
+<section id="python-tests">
+<h2>Python Tests<a class="headerlink" href="#python-tests" title="Link to this heading">¶</a></h2>
+<p>After creating the python bindings, you can test the 1-D KiD works with pytest. Note you cannot
+run more than one test which uses CLEO’s python bindings in a single pytest session
+(because of the MPI Finalize call inside CLEO’s python bindings), so please instead call each of
+CLEO’s tests seperately. Also note on Levante you first need to export the fyaml library path
+before running CLEO, e.g.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>mamba<span class="w"> </span>activate<span class="w"> </span>superdrops-in-action
+<span class="gp">$ </span><span class="nb">export</span><span class="w"> </span><span class="nv">LD_LIBRARY_PATH</span><span class="o">=</span><span class="si">${</span><span class="nv">LD_LIBRARY_PATH</span><span class="si">}</span>:/sw/spack-levante/libfyaml-0.7.12-fvbhgo/lib
+
+<span class="gp">$ </span>pytest<span class="w"> </span>cleo_1dkid/tests/test_pympdata_bulk_microphysics_scheme.py<span class="w">  </span><span class="c1"># (optional)</span>
+<span class="gp">$ </span>pytest<span class="w"> </span>cleo_1dkid/tests/test_cleo_sdm_microphysics_scheme.py<span class="w">  </span><span class="c1"># (optional)</span>
+<span class="gp">$ </span>pytest<span class="w"> </span>cleo_1dkid/tests/test_case_1dkid/test_pympdata_bulk.py<span class="w">  </span><span class="c1"># (optional)</span>
+<span class="gp">$ </span>pytest<span class="w"> </span>cleo_1dkid/tests/test_case_1dkid/test_cleo_sdm_condevap_only.py
+<span class="gp">$ </span>pytest<span class="w"> </span>cleo_1dkid/tests/test_case_1dkid/test_cleo_sdm_fullscheme.py
+</pre></div>
+</div>
 </section>
 </section>
 
@@ -325,7 +342,7 @@ to help you view your results.</p>
             
             <a href="https://github.com/pradyunsg/furo">Furo</a>
             <div class="last-updated">
-              Last updated on 18 September 2025</div>
+              Last updated on 24 September 2025</div>
           </div>
           <div class="right-details">
             
@@ -348,6 +365,7 @@ to help you view your results.</p>
             <ul>
 <li><a class="reference internal" href="#">CLEO 1-D KiD Test Case</a><ul>
 <li><a class="reference internal" href="#creating-the-python-bindings">Creating The Python Bindings</a></li>
+<li><a class="reference internal" href="#python-tests">Python Tests</a></li>
 </ul>
 </li>
 </ul>
