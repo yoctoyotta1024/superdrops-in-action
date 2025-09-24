@@ -52,15 +52,15 @@ parser.add_argument(
     help="path to save figures in",
 )
 parser.add_argument(
-    "--path2pycleo",
+    "--path2cleopythonbindings",
     type=Path,
-    default="/work/bm1183/m300950/superdrops-in-action/cleo_1dkid/build/pycleo",
-    help="path to pycleo python module",
+    default="/work/bm1183/m300950/superdrops-in-action/cleo_1dkid/build/_deps/cleo-build/cleo_python_bindings",
+    help="path to cleo_python_bindings python module",
 )
 args = parser.parse_args()
 
-assert args.path2pycleo.is_dir()
-os.environ["PYCLEO_DIR"] = str(args.path2pycleo)
+assert args.path2cleopythonbindings.is_dir()
+os.environ["CLEO_PYTHON_BINDINGS"] = str(args.path2cleopythonbindings)
 sys.path.append(str(Path(__file__).parent.parent))  # superdrops-in-action/cleo_1dkid/
 from libs.test_case_1dkid.perform_1dkid_test_case import perform_1dkid_test_case
 from libs.thermo.thermodynamics import Thermodynamics

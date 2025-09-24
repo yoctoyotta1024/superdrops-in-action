@@ -3,8 +3,63 @@ name: pytest
 on: [push, pull_request]
 
 jobs:
+  setup:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Cache YAXT
+        id: cache_yaxt
+        uses: actions/cache@v4
+        with:
+          path: ${{ runner.temp }}/yaxt/
+          key: ${{ runner.os }}-yaxt-cache-v0.11.4
+          restore-keys: |
+            ${{ runner.os }}-yaxt-
+
+      - name: Cache YAC
+        id: cache_yac
+        uses: actions/cache@v4
+        with:
+          path: ${{ runner.temp }}/yac/
+          key: ${{ runner.os }}-yac-cache-v3.6.2
+          restore-keys: |
+            ${{ runner.os }}-yac-
+
+      - name: Setup
+        if: steps.cache_yaxt.outputs.cache-hit != 'true' || steps.cache_yac.outputs.cache-hit != 'true'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+          cmake libopenmpi-dev openmpi-bin \
+          libnetcdff-dev liblapack-dev libfyaml-dev \
+          python3-dev python3-numpy python3-mpi4py python3-pip curl
+          apt list --installed
+
+      - name: Build YAXT
+        if: steps.cache_yaxt.outputs.cache-hit != 'true'
+        run: |
+          mkdir yaxt-0.11.4 && cd yaxt-0.11.4
+          curl -s -L https://gitlab.dkrz.de/dkrz-sw/yaxt/-/archive/release-0.11.4/yaxt-0.11.4.tar.gz | tar xvz --strip-components=1
+          ./configure --without-regard-for-quality --without-example-programs \
+            --without-perf-programs --with-pic --prefix=${{ runner.temp }}/yaxt
+          make -j 4
+          make install
+
+      - name: Build YAC
+        if: steps.cache_yac.outputs.cache-hit != 'true'
+        run: |
+          mkdir yac-v3.6.2 && cd yac-v3.6.2
+          curl -s -L https://gitlab.dkrz.de/dkrz-sw/yac/-/archive/v3.6.2/yac_v3.6.2.tar.gz | tar xvz --strip-components=1
+          ./configure CFLAGS="-fPIC" CC=mpicc FC=mpif90 --disable-mpi-checks \
+            --with-yaxt-root=${{ runner.temp }}/yaxt --prefix=${{ runner.temp }}/yac
+          make -j 4
+          make install
+
   cleo_1dkid_tests:
     runs-on: ubuntu-latest
+    needs: setup
     defaults:
       run:
         shell: bash -l {0}
@@ -16,8 +71,9 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y \
-          cmake libopenmpi-dev openmpi-bin libomp-dev \
-          libnetcdff-dev liblapack-dev libfyaml-dev
+          cmake libopenmpi-dev openmpi-bin libopenblas-dev \
+          libnetcdff-dev liblapack-dev libfyaml-dev \
+          python3-dev python3-numpy python3-mpi4py python3-pip curl
           apt list --installed
 
       - name: Initialise Conda/Mamba
@@ -40,6 +96,18 @@ jobs:
           which python
           python --version
 
+      - name: Restore YAXT Cache
+        uses: actions/cache@v4
+        with:
+          path: ${{ runner.temp }}/yaxt/
+          key: ${{ runner.os }}-yaxt-cache-v0.11.4
+
+      - name: Restore YAC Cache
+        uses: actions/cache@v4
+        with:
+          path: ${{ runner.temp }}/yac/
+          key: ${{ runner.os }}-yac-cache-v3.6.2
+
       - name: Build Pybind11 module for C++ code
         run: |
           which python
@@ -51,11 +119,14 @@ jobs:
             -DKokkos_ARCH_NATIVE=ON -DKokkos_ENABLE_SERIAL=ON \
             -DCLEO_COUPLED_DYNAMICS=numpy \
             -DCLEO_DOMAIN=cartesian \
+            -DCLEO_YAXT_ROOT=${{ runner.temp }}/yaxt \
+            -DCLEO_YAC_ROOT=${{ runner.temp }}/yac \
+            -DCMAKE_MODULE_PATH=/home/runner/work/superdrops-in-action/superdrops-in-action/build/_deps/cleo-src/libs/coupldyn_yac/cmake \
             -DCLEO_PYTHON=python_path
           cd build && pwd && make && cd ..
 
       - name: Compile CLEO python bindings
-        run: cd build && make -j 64 pycleo && cd ..
+        run: cd build && make -j 64 cleo_python_bindings && cd ..
 
       - name: Download CLEO Initial Condition Files for Generic Test
         run: |
@@ -80,4 +151,8 @@ jobs:
       - name: Test with pytest
         run: |
           mkdir -p ./build/bin/generic/ && mkdir -p ./build/bin/condevap_only/ && mkdir -p ./build/bin/fullscheme/
-          pytest ./cleo_1dkid/tests
+          pytest ./cleo_1dkid/tests/test_pympdata_bulk_microphysics_scheme.py -s
+          pytest ./cleo_1dkid/tests/test_cleo_sdm_microphysics_scheme.py -s
+          pytest ./cleo_1dkid/tests/test_case_1dkid/test_pympdata_bulk.py -s
+          pytest ./cleo_1dkid/tests/test_case_1dkid/test_cleo_sdm_condevap_only.py -s
+          pytest ./cleo_1dkid/tests/test_case_1dkid/test_cleo_sdm_fullscheme.py -s

@@ -17,9 +17,9 @@ https://opensource.org/licenses/BSD-3-Clause
 File Description:
 wrapper function for an instance of CleoSDM microphysics ccheme so it can be used by
 generic test cases and run scripts.
-NOTE: To use the wrapper, you must first export "PYCLEO_DIR". E.g. if python bindings are
-built in $HOME/superdrops-in-action/build/, do:
-export PYCLEO_DIR=$HOME/superdrops-in-action/build/pycleo/
+NOTE: To use the wrapper, you must first export "CLEO_PYTHON_BINDINGS".
+E.g. if python bindings are built in $HOME/superdrops-in-action/build/, do:
+export CLEO_PYTHON_BINDINGS=$HOME/superdrops-in-action/build/_deps/cleo-build/cleo_python_bindings/
 """
 
 import os
@@ -28,8 +28,8 @@ import sys
 from .cleo_sdm import CleoSDM
 from ..thermo.thermodynamics import Thermodynamics
 
-sys.path.append(os.environ["PYCLEO_DIR"])
-import pycleo
+sys.path.append(os.environ["CLEO_PYTHON_BINDINGS"])
+import cleo_python_bindings as cleo
 
 
 class MicrophysicsSchemeWrapper:
@@ -54,6 +54,7 @@ class MicrophysicsSchemeWrapper:
         wvel,
         uvel,
         vvel,
+        do_init=True,
     ):
         """Initialize the MicrophysicsSchemeWrapper object.
 
@@ -62,8 +63,9 @@ class MicrophysicsSchemeWrapper:
         Undefined behaviour if values are changed by reassigning arrays rather than by copying
         data into the arrays given during wrapper initialisation.
         """
-        config = pycleo.Config(str(config_filename))
-        pycleo.pycleo_initialize(config)
+        config = cleo.Config(str(config_filename))
+        if do_init:
+            cleo.cleo_initialize(config)
 
         self.microphys = CleoSDM(
             config,

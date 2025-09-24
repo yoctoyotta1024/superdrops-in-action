@@ -42,3 +42,24 @@ You can install Python packages to an existing Conda (or Micromamba) environment
 
   $ micromamba env create --file=environment.yaml
   $ micromamba activate [your environment]
+
+On HPCs, running python with MPI via a conda/mamba environment can create all sorts of issues
+because you want to use the HPC's MPI installation, but conda/mamba installs it's own
+(see e.g. https://conda-forge.org/docs/user/tipsandtricks/#using-external-message-passing-interface-mpi-libraries).
+On Levante, we have found that installing conda's mpi wrapper, de- and re-installing mpi4py and then
+deleting any mpi libraries installed by mamba/conda seems to do the trick via this sequence of
+commands:
+
+.. code-block:: console
+
+  $ module load python3 gcc/11.2.0-gcc-11.2.0 openmpi/4.1.2-gcc-11.2.0
+  $ export MPI4PY_BUILD_MPICC=/sw/spack-levante/openmpi-4.1.2-mnmady/bin/mpicc
+  $ export MPI4PY_BUILD_MPILD=/sw/spack-levante/openmpi-4.1.2-mnmady/lib
+
+  $ mamba install mpi=*=*
+  $ python -m pip uninstall mpi4py
+  $ python -m pip install --no-cache-dir --no-binary=mpi4py mpi4py
+  $ rm  /work/bm1183/m300950/bin/envs/superdrops-in-action/lib/libmpi.so
+  $ rm  /work/bm1183/m300950/bin/envs/superdrops-in-action/lib/libmpi.so.40
+
+  $ python -c 'import ctypes.util; print(ctypes.util.find_library("mpi"))'

@@ -30,8 +30,8 @@ from ruamel.yaml import YAML
 
 
 @pytest.fixture(scope="module")
-def path2pycleo(pytestconfig):
-    return pytestconfig.getoption("cleo_path2pycleo")
+def path2cleopythonbindings(pytestconfig):
+    return pytestconfig.getoption("cleo_path2cleopythonbindings")
 
 
 @pytest.fixture(scope="module")
@@ -39,17 +39,19 @@ def config_filename(pytestconfig):
     return pytestconfig.getoption("cleo_test_generic_config_filename")
 
 
-def test_mpi_is_initialised():
+def _test_mpi_is_initialised():
     print(f"MPI version: {MPI.Get_version()}")
 
+    return 0
 
-def test_initialize(path2pycleo, config_filename):
-    os.environ["PYCLEO_DIR"] = str(path2pycleo)
+
+def _test_initialize(path2cleopythonbindings, config_filename):
+    os.environ["CLEO_PYTHON_BINDINGS"] = str(path2cleopythonbindings)
 
     from libs.cleo_sdm.cleo_sdm import CleoSDM as MicrophysicsScheme
 
-    sys.path.append(os.environ["PYCLEO_DIR"])
-    import pycleo
+    sys.path.append(os.environ["CLEO_PYTHON_BINDINGS"])
+    import cleo_python_bindings as cleo
 
     yaml = YAML()
     with open(config_filename, "r") as file:
@@ -57,11 +59,10 @@ def test_initialize(path2pycleo, config_filename):
 
     t_start = 0
     timestep = python_config["timesteps"]["COUPLTSTEP"]  # [s]
-    is_motion = python_config["pycleo_setup"]["is_motion"]
+    is_motion = python_config["python_bindings_setup"]["is_motion"]
     arr = np.array([], dtype=np.float64)
     press = temp = qvap = qcond = wvel = uvel = vvel = arr
-    config = pycleo.Config(str(config_filename))
-    pycleo.pycleo_initialize(config)
+    config = cleo.Config(str(config_filename))
     microphys = MicrophysicsScheme(
         config,
         is_motion,
@@ -78,13 +79,15 @@ def test_initialize(path2pycleo, config_filename):
 
     assert microphys.name == "CLEO SDM microphysics"
 
+    return 0
 
-def test_initialize_wrapper(path2pycleo, config_filename):
-    os.environ["PYCLEO_DIR"] = str(path2pycleo)
+
+def _test_initialize_wrapper(path2cleopythonbindings, config_filename):
+    os.environ["CLEO_PYTHON_BINDINGS"] = str(path2cleopythonbindings)
 
     from libs.cleo_sdm.microphysics_scheme_wrapper import MicrophysicsSchemeWrapper
 
-    sys.path.append(os.environ["PYCLEO_DIR"])
+    sys.path.append(os.environ["CLEO_PYTHON_BINDINGS"])
 
     yaml = YAML()
     with open(config_filename, "r") as file:
@@ -92,7 +95,7 @@ def test_initialize_wrapper(path2pycleo, config_filename):
 
     t_start = 0
     timestep = python_config["timesteps"]["COUPLTSTEP"]  # [s]
-    is_motion = python_config["pycleo_setup"]["is_motion"]
+    is_motion = python_config["python_bindings_setup"]["is_motion"]
     arr = np.array([], dtype=np.float64)
     press = temp = qvap = qcond = wvel = uvel = vvel = arr
     microphys_wrapped = MicrophysicsSchemeWrapper(
@@ -107,17 +110,20 @@ def test_initialize_wrapper(path2pycleo, config_filename):
         wvel,
         uvel,
         vvel,
+        do_init=False,
     )
 
     assert microphys_wrapped.initialize() == 0
 
+    return 0
 
-def test_finalize_wrapper(path2pycleo, config_filename):
-    os.environ["PYCLEO_DIR"] = str(path2pycleo)
+
+def _test_finalize_wrapper(path2cleopythonbindings, config_filename):
+    os.environ["CLEO_PYTHON_BINDINGS"] = str(path2cleopythonbindings)
 
     from libs.cleo_sdm.microphysics_scheme_wrapper import MicrophysicsSchemeWrapper
 
-    sys.path.append(os.environ["PYCLEO_DIR"])
+    sys.path.append(os.environ["CLEO_PYTHON_BINDINGS"])
 
     yaml = YAML()
     with open(config_filename, "r") as file:
@@ -125,7 +131,7 @@ def test_finalize_wrapper(path2pycleo, config_filename):
 
     t_start = 0
     timestep = python_config["timesteps"]["COUPLTSTEP"]  # [s]
-    is_motion = python_config["pycleo_setup"]["is_motion"]
+    is_motion = python_config["python_bindings_setup"]["is_motion"]
     arr = np.array([], dtype=np.float64)
     press = temp = qvap = qcond = wvel = uvel = vvel = arr
     microphys_wrapped = MicrophysicsSchemeWrapper(
@@ -140,20 +146,23 @@ def test_finalize_wrapper(path2pycleo, config_filename):
         wvel,
         uvel,
         vvel,
+        do_init=False,
     )
 
     assert microphys_wrapped.finalize() == 0
 
+    return 0
 
-def test_microphys_with_wrapper(path2pycleo, config_filename):
-    os.environ["PYCLEO_DIR"] = str(path2pycleo)
+
+def _test_microphys_with_wrapper(path2cleopythonbindings, config_filename):
+    os.environ["CLEO_PYTHON_BINDINGS"] = str(path2cleopythonbindings)
 
     from libs.cleo_sdm.cleo_sdm import CleoSDM as MicrophysicsScheme
     from libs.cleo_sdm.microphysics_scheme_wrapper import MicrophysicsSchemeWrapper
     from libs.thermo.thermodynamics import Thermodynamics
 
-    sys.path.append(os.environ["PYCLEO_DIR"])
-    import pycleo
+    sys.path.append(os.environ["CLEO_PYTHON_BINDINGS"])
+    import cleo_python_bindings as cleo
 
     yaml = YAML()
     with open(config_filename, "r") as file:
@@ -161,7 +170,7 @@ def test_microphys_with_wrapper(path2pycleo, config_filename):
 
     t_start = 0
     timestep = python_config["timesteps"]["COUPLTSTEP"]  # [s]
-    is_motion = python_config["pycleo_setup"]["is_motion"]
+    is_motion = python_config["python_bindings_setup"]["is_motion"]
     ngbxs = python_config["domain"]["ngbxs"]
     temp1 = np.tile(np.array([288.15], dtype=np.float64), ngbxs)
     temp2 = np.tile(np.array([288.15], dtype=np.float64), ngbxs)
@@ -209,7 +218,7 @@ def test_microphys_with_wrapper(path2pycleo, config_filename):
         vvel,
     )
 
-    config = pycleo.Config(str(config_filename))
+    config = cleo.Config(str(config_filename))
     microphys = MicrophysicsScheme(
         config,
         is_motion,
@@ -236,6 +245,7 @@ def test_microphys_with_wrapper(path2pycleo, config_filename):
         thermo2.wvel,
         thermo2.uvel,
         thermo2.vvel,
+        do_init=False,
     )
 
     microphys.run(timestep)  # implict change of thermo1
@@ -245,3 +255,26 @@ def test_microphys_with_wrapper(path2pycleo, config_filename):
     assert np.all(thermo1.temp == thermo2.temp)
     for q1, q2 in zip(thermo1.unpack_massmix_ratios(), thermo2.unpack_massmix_ratios()):
         assert np.all(q1 == q2)
+
+    return 0
+
+
+def test_cleo_sdm(path2cleopythonbindings, config_filename):
+    os.environ["CLEO_PYTHON_BINDINGS"] = str(path2cleopythonbindings)
+
+    sys.path.append(os.environ["CLEO_PYTHON_BINDINGS"])
+    import cleo_python_bindings as cleo
+
+    # only initialise CLEO once for all the following tests (also see do_init=False flag on wrapper)
+    config = cleo.Config(str(config_filename))
+    cleo.cleo_initialize(config)
+
+    returns = [1] * 5
+    returns[0] = _test_mpi_is_initialised()
+    returns[1] = _test_initialize(path2cleopythonbindings, config_filename)
+    returns[2] = _test_initialize_wrapper(path2cleopythonbindings, config_filename)
+    returns[3] = _test_finalize_wrapper(path2cleopythonbindings, config_filename)
+    returns[4] = _test_microphys_with_wrapper(path2cleopythonbindings, config_filename)
+
+    for r in range(len(returns)):
+        assert returns[r] == 0, f"test {r} failed"

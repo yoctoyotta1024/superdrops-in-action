@@ -21,7 +21,6 @@ path2build=$2
 start_id=$3 # inclusive start of run_ids
 end_id=$4 # inclusive end of run_ids
 isfigures=FALSE
-path2CLEO=${HOME}/CLEO
 python=/work/bm1183/m300950/bin/envs/superdrops-in-action/bin/python
 path2initcondsscripts=${path2cleo1dkid}/libs/cleo_sdm/initconds
 
@@ -39,7 +38,7 @@ fi
 run_ids=($(seq $start_id 1 $end_id))
 
 ### same files for all src_configs and all run_ids
-cleoconstants_filepath="${path2cleo1dkid}/cleo_deps/libs/"
+cleoconstants_filepath="${path2build}/_deps/cleo-src/libs/"
 grid_filename="${path2build}/share/dimlessGBxboundaries.dat"
 
 ### same files for all src_configs, different for run_ids
@@ -105,8 +104,8 @@ do
     echo "-- ${setup_filename}"
     echo "-- ${zarrbasedir}"
 
-    echo "python create_config.py ${path2CLEO} ${src_configfile} ${dest_configfile} [...]"
-    ${python} ${path2initcondsscripts}/create_config.py ${path2CLEO} ${src_configfile} ${dest_configfile} \
+    echo "python create_config.py ${src_configfile} ${dest_configfile} [...]"
+    ${python} ${path2initcondsscripts}/create_config.py ${src_configfile} ${dest_configfile} \
       --cleoconstants_filepath="${cleoconstants_filepath}" \
       --grid_filename="${grid_filename}" \
       --initsupers_filename="${initsupers_filename}" \
@@ -125,7 +124,6 @@ echo "path to build directory: ${path2build}"
 echo "gbxs config file: ${dest_configfile}"
 echo "python create_gbxboundariesbinary_script.py --config_filename=${dest_configfile} [...]"
 ${python} ${path2initcondsscripts}/create_gbxboundariesbinary_script.py \
-  --path2CLEO="${path2CLEO}" \
   --config_filename="${dest_configfile}" \
   --isfigures="${isfigures}" \
   --figpath="${grid_directory}" \
@@ -142,9 +140,8 @@ do
   echo "path to build directory: ${path2build}"
   echo "supers config file: ${dest_configfile}"
 
-  echo "python create_initsuperdropsbinary_script.py ${path2CLEO} ${path2build} ${dest_configfile}"
+  echo "python create_initsuperdropsbinary_script.py ${path2build} ${dest_configfile}"
   ${python} ${path2initcondsscripts}/create_initsuperdropsbinary_script.py \
-    --path2CLEO="${path2CLEO}" \
     --config_filename="${dest_configfile}" \
     --isfigures="${sds_isfigures}" \
     --figpath="${initsupers_directory}" \

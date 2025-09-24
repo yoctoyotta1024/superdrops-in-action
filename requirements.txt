@@ -8,6 +8,7 @@ sphinxcontrib-bibtex
 sphinxcontrib-applehelp
 sphinxcontrib-htmlhelp
 
+cleopy
 dask
 numba
 numdifftools

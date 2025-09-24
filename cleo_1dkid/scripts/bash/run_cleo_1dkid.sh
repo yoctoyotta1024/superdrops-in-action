@@ -22,8 +22,9 @@ path2cleo1dkid=$1
 path2build=$2
 start_id=$3 # inclusive start of run_ids
 end_id=$4 # inclusive end of run_ids
-path2pycleo="${path2build}/pycleo"
-python=/work/bm1183/m300950/bin/envs/superdrops-in-action/bin/python
+path2cleopythonbindings="${path2build}/_deps/cleo-build/cleo_python_bindings"
+python="/work/bm1183/m300950/bin/envs/superdrops-in-action/bin/python"
+pythonlibs="/work/bm1183/m300950/bin/envs/superdrops-in-action/lib/python3.13/site-packages"
 
 ### loop over configs_directory for all different for run_ids
 configs_directory=("${path2build}/tmp/condevap_only"
@@ -41,6 +42,9 @@ then
   exit 1
 fi
 run_ids=($(seq $start_id 1 $end_id))
+
+# Necessary Levante packages
+levante_gcc_fyamllib="/sw/spack-levante/libfyaml-0.7.12-fvbhgo/lib"
 ### ---------------------------------------------------- ###
 ### ---------------------------------------------------- ###
 ### ---------------------------------------------------- ###
@@ -64,6 +68,13 @@ then
 fi
 ### ---------------------------------------------------- ###
 
+### ---- set relevant packages and runtime settings ---- ###
+# add fyaml libraries path
+export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${levante_gcc_fyamllib}
+# (optional) prepend to python path to make import searches faster
+export PYTHONPATH=${pythonlibs}:${path2cleopythonbindings}:${path2cleo1dkid}:${PYTHONPATH}
+### ---------------------------------------------------- ###
+
 for i in "${!configs_directory[@]}"
 do
   echo "---------------------- src ${i} ----------------------"
@@ -77,7 +88,7 @@ do
     echo "--run_name=${run_name}"
     echo "--config_filename=${config_filename}"
     echo "--figpath=${figpath}"
-    echo "--path2pycleo=${path2pycleo}"
+    echo "--path2cleopythonbindings=${path2cleopythonbindings}"
 
     echo "${python} ${path2cleo1dkid}/scripts/run_cleo_1dkid.py --config_filename=${config_filename} [...]"
     ${python} ${path2cleo1dkid}/scripts/run_cleo_1dkid.py \
@@ -85,7 +96,7 @@ do
       --config_filename="${config_filename}" \
       --binpath="${binpath}" \
       --figpath="${figpath}" \
-      --path2pycleo="${path2pycleo}"
+      --path2cleopythonbindings="${path2cleopythonbindings}"
     done
   echo "---------------------------------------------------"
 done

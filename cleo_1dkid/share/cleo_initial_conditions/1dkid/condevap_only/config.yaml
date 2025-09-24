@@ -17,8 +17,8 @@
 # File Description:
 # Configuration file for CLEO SDM coupled to a dynamics solver.
 # Note: The initial superdroplets data read from file "initsupers_filename" can be made with
-# CLEO's pySD module (see Python script "create_initsuperdropsbinary_script.py" for usage).
-# Likewise the "grid_filename" can be made using pySD (see "create_gbxboundariesbinary_script.py"),
+# CLEO's cleopy module (see Python script "create_initsuperdropsbinary_script.py" for usage).
+# Likewise the "grid_filename" can be made using cleopy (see "create_gbxboundariesbinary_script.py"),
 # and so can the thermodynamics files when using coupled thermodynamics "fromfile".
 #
 
@@ -42,7 +42,7 @@ timesteps:
 
 ### Initialisation Parameters ###
 inputfiles:
-  constants_filename : ./cleo_1dkid/cleo_deps/libs/cleoconstants.hpp  # (relative path working for pytests in CI) name of file for values of physical constants
+  constants_filename : ./build/_deps/cleo-src/libs/cleoconstants.hpp  # (relative path working for pytests in CI) name of file for values of physical constants
   grid_filename : ./build/share/dimlessGBxboundaries.dat  # (relative path working for pytests in CI) binary filename for initialisation of GBxs / GbxMaps
 
 initsupers:
@@ -64,8 +64,24 @@ microphysics:
     rtol : 0.0                                         # relative tolerance for implicit Euler integration
     atol : 0.001                                       # absolute tolerance for implicit Euler integration
 
-### Pycleo (Python Bindings) Parameters ###
-pycleo:
+### Bounday Conditions Parameters ###
+boundary_conditions:
+  type: addsuperstodomain
+  LOWER_COORD3LIM: 0                                   # SDs added to domain with coord3 < LOWER_COORD3LIM [m]
+  UPPER_COORD3LIM: 3200                                # SDs added to domain with coord3 >= UPPER_COORD3LIM [m]
+  newnsupers: 256                                      # number SDs to add to each gridbox below/above LOWER/UPPER_COORD3LIM
+  DRYRADIUS: 1.0                                       # max dry radius of new super-droplets (for solute mass) [m]
+  MINRADIUS: 0.5e-8                                    # minimum radius of new super-droplets [m]
+  MAXRADIUS: 2.5e-7                                    # maximum radius of new super-droplets [m]
+  NUMCONC_a: 50e6                                      # number conc. of 1st droplet lognormal dist [m^-3]
+  GEOMEAN_a: 0.04e-6                                   # geometric mean radius of 1st lognormal dist [m]
+  geosigma_a: 1.4                                      # geometric standard deviation of 1st lognormal dist
+  NUMCONC_b: 0.0                                       # number conc. of 2nd droplet lognormal dist [m^-3]
+  GEOMEAN_b: 1e-6                                      # geometric mean radius of 2nd lognormal dist [m]
+  geosigma_b: 1.0                                      # geometric standard deviation of 2nd lognormal dist
+
+### CLEO Python Bindings Parameters ###
+python_bindings:
   enable_terminal_velocity : false                                 # true enables terminal velocity in superdroplet motion
   enable_condensation : true                                       # true enables condensation in microphysics
   enable_collisions : false                                        # true enables collisions in microphysics
