@@ -2,6 +2,35 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## [v0.11.1](https://github.com/yoctoyotta1024/superdrops-in-action/compare/4abd191919ee51743ecfc60b3912691e3e3a260e..v0.11.1) - 2025-09-24
+#### Bug Fixes
+- wrong order of arguments - ([b8a31a5](https://github.com/yoctoyotta1024/superdrops-in-action/commit/b8a31a5d601a6f6afc5d20a9796d995bb2a3074a)) - clara.bayley
+- correct configuration for reservoir distribs - ([475d0d1](https://github.com/yoctoyotta1024/superdrops-in-action/commit/475d0d1e981c32ea7fc0e91255dde4e8b450415f)) - clara.bayley
+- quick plot during run plots with z_min - ([9c6283f](https://github.com/yoctoyotta1024/superdrops-in-action/commit/9c6283f1f4854a90b5277a75be738730d159a8d3)) - clara.bayley
+- python tests can only initialise CLEO once per script - ([aa912cd](https://github.com/yoctoyotta1024/superdrops-in-action/commit/aa912cdf83e07297c47c922f281d62bb64ed60a3)) - clara.bayley
+- incorrect pytest setting variable - ([d0acf30](https://github.com/yoctoyotta1024/superdrops-in-action/commit/d0acf30e664a21b60c8c2c1b03d6bb10628b04cf)) - clara.bayley
+- correct path to python bindings - ([19fcc88](https://github.com/yoctoyotta1024/superdrops-in-action/commit/19fcc880aed8d67d014636781158cc7754bd6e3c)) - clara.bayley
+#### Continuous Integration
+- run each test in tests seperately - ([f2697fa](https://github.com/yoctoyotta1024/superdrops-in-action/commit/f2697fa09f188e58fa819a1fed17dea6fc0031d1)) - clara.bayley
+- compile with yac and yaxt - ([af55af7](https://github.com/yoctoyotta1024/superdrops-in-action/commit/af55af78eac4bd6c365ddc627dba2b0e9889a66c)) - clara.bayley
+#### Documentation
+- pytest explanation - ([b2624a8](https://github.com/yoctoyotta1024/superdrops-in-action/commit/b2624a8bb3b15d8ed9fee13267f7176933ded190)) - clara.bayley
+- note on how to install mpi4py in levante - ([e84ab30](https://github.com/yoctoyotta1024/superdrops-in-action/commit/e84ab302574a9bcf07844459f92480a3ffbca356)) - clara.bayley
+#### Miscellaneous Chores
+- update python version - ([4076d91](https://github.com/yoctoyotta1024/superdrops-in-action/commit/4076d91113373acfc05827457fc33b872139fb1f)) - clara.bayley
+#### Refactoring
+- make zgrid with reservoir below surface - ([5bebfa8](https://github.com/yoctoyotta1024/superdrops-in-action/commit/5bebfa8eeaec99188c0d66a6c9441024f58c86f8)) - clara.bayley
+- extend gridboxes into reserviour beneath surface - ([02b4e49](https://github.com/yoctoyotta1024/superdrops-in-action/commit/02b4e49c19b37775ef5ba57153508a48dd72c43f)) - clara.bayley
+- higher zcoord to boundary conditions in generic test - ([a01cdd1](https://github.com/yoctoyotta1024/superdrops-in-action/commit/a01cdd1b6d3f1f1844deac9f7d34256b56992b49)) - clara.bayley
+- clearer python and module loading - ([302a67f](https://github.com/yoctoyotta1024/superdrops-in-action/commit/302a67f71670c2b9d289827f305f6bd24a1209fd)) - clara.bayley
+- update from pycleo to new cleo_python_bindings - ([655e35d](https://github.com/yoctoyotta1024/superdrops-in-action/commit/655e35d97a31a2dcf51865c47b5d55cbb59dc352)) - clara.bayley
+- update config files to include boundary conditions and new cleo bindings parameter names - ([5105798](https://github.com/yoctoyotta1024/superdrops-in-action/commit/510579813a81d66550fe1d9151e1342c31a5587c)) - clara.bayley
+- use cleopy from pip installation - ([517bd89](https://github.com/yoctoyotta1024/superdrops-in-action/commit/517bd89e6a265ba8bfb38c51eaa91a30a0927a7a)) - clara.bayley
+- build cleo python bindings directly from fetched version of CLEO repository - ([2154da5](https://github.com/yoctoyotta1024/superdrops-in-action/commit/2154da5cde6af2fcd0e03c24806c4d1c664f56d9)) - clara.bayley
+- delete CLEO libraries - ([4abd191](https://github.com/yoctoyotta1024/superdrops-in-action/commit/4abd191919ee51743ecfc60b3912691e3e3a260e)) - clara.bayley
+
+- - -
+
 ## [v0.11.0](https://github.com/yoctoyotta1024/superdrops-in-action/compare/ceb6d2fa96c759e7b171071a53bbb2afeb40f710..v0.11.0) - 2025-09-18
 #### Features
 - option to use exner function to set density profile as in KiD-A repo - ([c775632](https://github.com/yoctoyotta1024/superdrops-in-action/commit/c775632357f630bfff29ac4d4c71eb32807f7ab3)) - clara.bayley
