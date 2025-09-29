@@ -77,7 +77,7 @@ class Settings:
                 nz = len(z)
                 p_ref = 100000.0
                 r_on_cp = const.Rd / const.c_pd
-                theta = self.thd(z)
+                theta = self._th(z)
 
                 dexner = np.zeros(nz)
                 dexner[0] = const.g * z[0] / (const.c_pd * theta[0])
