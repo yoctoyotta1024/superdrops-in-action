@@ -319,8 +319,11 @@ arr = xr.DataArray(
 )
 ds = ds.assign(**{arr.name: arr})
 
+surface = ds.height.sel(height=0.0, method="nearest")
 arr = xr.DataArray(
-    ds.precip.sel(height=ds.height.min()) * 1000 / (config["OBSTSTEP"] / 3600),
+    ds.precip.sel(height=surface, method="nearest")
+    * 1000
+    / (config["OBSTSTEP"] / 3600),
     name="surfprecip_rate",
     dims=["ensemble", "time"],
     attrs={
@@ -331,6 +334,9 @@ arr = xr.DataArray(
 ds = ds.assign(**{arr.name: arr})
 
 ds
+
+# %%
+print(f"surface precipitation identified at {surface.values}m")
 # %% (slow) superdroplet variables across ensemble
 xi = superdrops_variable_ensemble(ds, "xi")
 radius = superdrops_variable_ensemble(ds, "radius")
