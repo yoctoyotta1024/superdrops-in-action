@@ -80,7 +80,8 @@ def incloud_numconc(ds, xi, radius, assign_to_dataset=False):
         xi_incloud = ak.where(radius[e] > 1, v, 0.0)
 
         sum_xi_incloud = ak.to_numpy(ak.sum(xi_incloud, axis=2), allow_missing=False)
-        numconc_d[e] = sum_xi_incloud / ds.volume.values[None, :] / 1e6
+        vol = ds.volume.sel(ensemble=e)
+        numconc_d[e] = sum_xi_incloud / vol / 1e6
 
     numconc_d = xr.DataArray(
         list(numconc_d.values()),
@@ -193,6 +194,23 @@ def rho(press, temp, qvap):
     return p / Rq / temp
 
 
+def volume_from_thermo(ds, m_water, xi, default_volume):
+    volumes = {}
+
+    rho_dry = rho(ds.press, ds.temp, ds.qvap) / (1 + ds.qvap / 1000)
+
+    for e in ds.ensemble.values:
+        mwtot_kg = ak.to_numpy(ak.sum(m_water[e] * xi[e], axis=-1))  # [Kg]
+        qcond_kg = ds.qcond.sel(ensemble=e).values / 1000
+        rho_dry_kg = rho_dry.sel(ensemble=e).values
+
+        vol = mwtot_kg / qcond_kg / rho_dry_kg
+        vol = np.where(np.isinf(vol), default_volume, vol)
+        volumes[e] = vol
+
+    return volumes
+
+
 def mean_stddev(arr, dim="ensemble"):
     """return mean +- stddev over dimension of array (default over ensemble)"""
     mean = arr.mean(dim=dim)
@@ -285,13 +303,27 @@ arr = xr.DataArray(
 )
 ds = ds.assign(**{arr.name: arr})
 
+# %% (slow) superdroplet variables across ensemble
+xi = superdrops_variable_ensemble(ds, "xi")
+radius = superdrops_variable_ensemble(ds, "radius")
+msol = superdrops_variable_ensemble(ds, "msol")
+m_water = {
+    e: mass_water(radius[e], msol[e], consts["RHO_L"], consts["RHO_SOL"])
+    for e in ds.ensemble.values
+}
+
+# %%
 ds = ds.rename_dims({"gbxindex": "height"})
 ds = ds.drop_vars("gbxindex")
 ds = ds.assign_coords(height=("height", gbxs["zfull"]))
 ds["height"].attrs["units"] = "m"
 
+volumes = volume_from_thermo(ds, m_water, xi, gbxs["gbxvols"][0, 0, -1])
 arr = xr.DataArray(
-    gbxs["gbxvols"][0, 0, :], name="volume", dims="height", attrs={"units": "m^3"}
+    np.asarray(list(volumes.values())),
+    name="volume",
+    dims=["ensemble", "time", "height"],
+    attrs={"units": "m^3"},
 )
 ds = ds.assign(**{arr.name: arr})
 
@@ -320,10 +352,12 @@ arr = xr.DataArray(
 ds = ds.assign(**{arr.name: arr})
 
 surface = ds.height.sel(height=0.0, method="nearest")
+gbxs_deltaz = gbxs["zhalf"][1:] - gbxs["zhalf"][:-1]
+gbxareas = ds.volume / gbxs_deltaz[None, None, :]
+precip_corrected = ds.precip * gbxs["domainarea"] / gbxareas
+surfprecip = precip_corrected.sel(height=surface, method="nearest")  # [m]
 arr = xr.DataArray(
-    ds.precip.sel(height=surface, method="nearest")
-    * 1000
-    / (config["OBSTSTEP"] / 3600),
+    surfprecip * 1000 / (config["OBSTSTEP"] / 3600),
     name="surfprecip_rate",
     dims=["ensemble", "time"],
     attrs={
@@ -338,13 +372,6 @@ ds
 # %%
 print(f"surface precipitation identified at {surface.values}m")
 # %% (slow) superdroplet variables across ensemble
-xi = superdrops_variable_ensemble(ds, "xi")
-radius = superdrops_variable_ensemble(ds, "radius")
-msol = superdrops_variable_ensemble(ds, "msol")
-m_water = {
-    e: mass_water(radius[e], msol[e], consts["RHO_L"], consts["RHO_SOL"])
-    for e in ds.ensemble.values
-}
 ds = incloud_numconc(ds, xi, radius, assign_to_dataset=True)[0]
 ds = mass_weighted_mean_volume_diameter(
     ds, xi, m_water, consts["RHO_L"], assign_to_dataset=True
@@ -728,4 +755,74 @@ def plot_hill_figure4(ds):
 plot_hill_figure4(ds)
 plt.show()
 
+# %% THE ISSUE: LWC too high compared to q_cond
+ds.lwc.sel(ensemble="sol_0").sel(time=800, method="nearest").plot(y="height")
+ds.qcond.sel(ensemble="sol_0").sel(time=800, method="nearest").plot(
+    y="height", linestyle="--"
+)
+# %% THIS IS NOT BECAUSE MASS OF DROPLETS IS CALCULATED WRONG
+mtot = (
+    ak.to_numpy(ak.sum((m_water["sol_0"] + msol["sol_0"]) * xi["sol_0"], axis=-1)).T
+    * 1000
+)  # [g]
+mwtot = ak.to_numpy(ak.sum(m_water["sol_0"] * xi["sol_0"], axis=-1)).T * 1000  # [g]
+
+tidx = np.argmin(abs(time.secs - 800))
+print(tidx, time.secs[tidx])
+ds.massmom1.sel(ensemble="sol_0").sel(time=800, method="nearest").plot(
+    y="height", color="grey"
+)
+plt.plot(mtot[:, tidx], ds.height, linewidth=0.8, color="lightblue")
+plt.plot(mwtot[:, tidx], ds.height, linestyle="--", linewidth=0.8, color="green")
+plt.show()
+# %% IT IS BECAUSE OF THE CHOICE OF RHO_DRY BEING CONSTANT OR NOT
+rho_tot = rho(ds.press, ds.temp, ds.qvap)
+rho_dry = rho_tot / (1 + ds.qvap / 1000)
+
+lwc2 = mwtot / gbxs["gbxvols"][0, 0, :, None]
+lwc3 = ds.qcond * consts["RHO_DRY"]
+lwc4 = ds.qcond * rho_dry  # different to the others, more like in PySDM
+
+ds.qcond.sel(ensemble="sol_0").sel(time=800, method="nearest").plot(
+    y="height", linestyle="--", color="orange"
+)
+
+ds.lwc.sel(ensemble="sol_0").sel(time=800, method="nearest").plot(
+    y="height", color="grey"
+)
+plt.plot(lwc2[:, tidx], ds.height, linewidth=0.8, linestyle="--", color="lightblue")
+lwc3.sel(ensemble="sol_0").sel(time=800, method="nearest").plot(
+    y="height", linewidth=0.8, linestyle="--", color="green"
+)
+lwc4.sel(ensemble="sol_0").sel(time=800, method="nearest").plot(y="height", color="red")
+
+# %% BUT QUESTION REMAINS: WHY DOES LWC4 NOT EQUAL LWC2 ????
+# ANSWER => BECAUSE GRIDBOX VOLUME IS NOT EQUAL TO VOLUME FROM IDEAL GAS LAW
+mwtot_kg = mwtot.T / 1000
+qcond_kg_sol0 = ds.qcond.sel(ensemble="sol_0").values / 1000
+rho_tot_kg_sol0 = rho_tot.sel(ensemble="sol_0").values
+vol1 = (mwtot_kg / qcond_kg_sol0 / rho_tot_kg_sol0).T
+plt.plot(vol1[:, tidx], ds.height, color="k")
+plt.vlines(25, ymin=0.0, ymax=3200, color="k", linestyle="--")
+plt.show()
+
+lwc5 = mwtot / vol1
+plt.plot(lwc2[:, tidx], ds.height, linewidth=0.8, linestyle="--", color="lightblue")
+lwc4.sel(ensemble="sol_0").sel(time=800, method="nearest").plot(y="height", color="red")
+plt.plot(lwc5[:, tidx], ds.height, linewidth=0.8, linestyle="--", color="purple")
+
 # %%
+gbxareas = ds.volume / (gbxs["zhalf"][1:] - gbxs["zhalf"][:-1])[None, None, :]
+precip_corrected = ds.precip * gbxs["domainarea"] / gbxareas
+surface_precip = (
+    precip_corrected.sel(height=surface, method="nearest")
+    * 1000
+    / (config["OBSTSTEP"] / 3600)
+)
+
+ds.surfprecip_rate.sel(ensemble="sol_0").plot(linewidth=0.2)
+surface_precip.sel(ensemble="sol_0").plot(linewidth=0.2)
+plt.show()
+
+(ds.surfprecip_rate - surface_precip).sel(ensemble="sol_0").plot()
+plt.show()
