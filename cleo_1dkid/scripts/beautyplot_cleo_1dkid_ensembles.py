@@ -101,6 +101,20 @@ def get_configuration_data(setupfile):
     return config, consts, gbxs
 
 
+def drop_superdroplets(ds):
+    superdroplets = [
+        "sdId",
+        "sdgbxindex",
+        "coord3",
+        "coord1",
+        "coord2",
+        "msol",
+        "radius",
+        "xi",
+    ]
+    return ds.drop_vars(superdroplets)
+
+
 # %%
 assert args.binpath.is_dir()
 ensembles = {}
@@ -119,7 +133,11 @@ for ensemb in ["condevap_only", "fullscheme"]:
     )  # use first setup found
 
     ds = xr.open_mfdataset(
-        datasets, engine="zarr", combine="nested", concat_dim="ensemble"
+        datasets,
+        engine="zarr",
+        combine="nested",
+        concat_dim="ensemble",
+        preprocess=drop_superdroplets,
     )
     ensemble_coord = dict(ensemble=("ensemble", [str(Path(d).stem) for d in datasets]))
     ds = ds.assign_coords(ensemble_coord)
