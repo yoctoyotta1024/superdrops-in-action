@@ -83,10 +83,10 @@ def reshape_superdrops_pergbx(data, nsupers_values):
 # %%
 numconc = massmoms.mom0 / gbxs["gbxvols"][None, :, :, :] / 1e6  # [cm^-3]
 lwcontent = massmoms.mom1 / gbxs["gbxvols"][None, :, :, :]  # [g m^-3]
-lwpath = lwcontent * (gbxs["zhalf"][-1] - gbxs["zhalf"][0]) / 1000  # [kg m^-2]
+lwpath = np.trapezoid(lwcontent, x=gbxs["zfull"]) / 1000  # [kg m^-2]
 
 incloudmask = lwcontent[:, 0, 0, :] > 1e-5 * 1000
-lwpmax_idxs = np.argmax(lwpath, axis=-1, keepdims=True)
+lwcmax_idxs = np.argmax(lwcontent, axis=-1, keepdims=True)
 t10_idx = np.argmin(abs(time.mins - 10))
 rhol = consts["RHO_L"]  # kg/m^3
 print(f"time closest to 10mins: {time.mins[t10_idx]}mins")
@@ -256,26 +256,18 @@ plt.xlabel("time /s")
 plt.ylabel("height /m")
 plt.show()
 # %%
-fig, axs = plt.subplots(nrows=1, ncols=3, figsize=(15, 5))
+fig, axs = plt.subplots(nrows=1, ncols=2, figsize=(15, 5))
 
-axs[0].set_title("LWP (error)")
-contf = axs[0].contourf(ds.time, ds.height, lwpath[:, 0, 0, :].T)
+axs[0].set_title("LWC")
+contf = axs[0].contourf(ds.time, ds.height, lwcontent[:, 0, 0, :].T)
 plt.colorbar(contf, ax=axs[0])
 
-lwpmax1 = np.amax(lwpath, axis=-1)[:, 0, 0]
-lwpmax2 = np.take_along_axis(lwpath, lwpmax_idxs, axis=-1)[:, 0, 0, 0]
-axs[1].set_title("max LWP (error)")
-axs[1].plot(time.secs, lwpath[:, 0, 0, :], linewidth=0.8)
-axs[1].plot(time.secs, lwpmax1, color="k")
-axs[1].plot(time.secs, lwpmax2, color="lightgray", linestyle=":")
-axs[1].set_ylabel("LWP (error) / kg m$^{-2}$")
+tlwpmax, lwpmax1 = time.secs[np.argmax(lwpath)], np.amax(lwpath)
+axs[1].set_title("max LWP")
+axs[1].plot(time.secs, lwpath[:, 0, 0], linewidth=0.8)
+axs[1].scatter(tlwpmax, lwpmax1, color="k", marker="x")
+axs[1].set_ylabel("LWP / kg m$^{-2}$")
 axs[1].set_xlabel("time / s")
-
-lwpmax_height = ds.height.values[lwpmax_idxs[:, 0, 0, 0]]
-axs[2].set_title("height of maximum LWP (error)")
-axs[2].plot(time.secs, lwpmax_height, linewidth=0.8)
-axs[2].set_ylabel("height / m")
-axs[2].set_xlabel("time / s")
 
 fig.tight_layout()
 plt.show()
@@ -470,10 +462,9 @@ else:
 fig, axs = plt.subplots(nrows=nrows, ncols=1, figsize=(5, 10), sharex=True)
 fig.suptitle(figtitle)
 
-lwpmax = np.take_along_axis(lwpath, lwpmax_idxs, axis=-1)[:, 0, 0, 0]
 axs[0].set_title("(a)", loc="left")
-axs[0].plot(time.secs, lwpmax, color="b")
-axs[0].set_ylabel("LWP (error) / kg m$^{-2}$")
+axs[0].plot(time.secs, lwpath[:, 0, 0], color="b")
+axs[0].set_ylabel("LWP / kg m$^{-2}$")
 axs[0].set_ylim(bottom=0)
 
 mean_numconc_d = np.nan_to_num(np.nanmean(numconc_d, axis=1))
@@ -483,14 +474,14 @@ axs[1].set_title("(d)", loc="left")
 axs[1].set_ylabel("mean N$_d$ / cm$^{-3}$")
 axs[1].set_ylim(bottom=0)
 
-dvolmax = np.take_along_axis(dvol, lwpmax_idxs[:, 0, 0, :], axis=-1)[:, 0]
-wghtd_dvolmax = np.take_along_axis(wghtd_dvol, lwpmax_idxs[:, 0, 0, :], axis=-1)[:, 0]
+dvolmax = np.take_along_axis(dvol, lwcmax_idxs[:, 0, 0, :], axis=-1)[:, 0]
+wghtd_dvolmax = np.take_along_axis(wghtd_dvol, lwcmax_idxs[:, 0, 0, :], axis=-1)[:, 0]
 axs[2].plot(time.secs, dvolmax * 1e6, color="purple", linestyle="--")
 axs[2].plot(time.secs, wghtd_dvolmax * 1e6, color="b", linestyle="--")
 axs[2].set_title("(g)", loc="left")
 axs[2].set_ylabel("D$_{vol}$ / \u03BCm")
 
-wghtd_sigmamax = np.take_along_axis(wghtd_sigma, lwpmax_idxs[:, 0, 0, :], axis=-1)[:, 0]
+wghtd_sigmamax = np.take_along_axis(wghtd_sigma, lwcmax_idxs[:, 0, 0, :], axis=-1)[:, 0]
 axs[3].plot(time.secs, wghtd_sigmamax * 1e6, color="b")
 axs[3].set_title("(j)", loc="left")
 axs[3].set_ylabel("\u03C3 / \u03BCm")
@@ -519,3 +510,5 @@ axs[-1].set_xlabel("time / s")
 
 fig.tight_layout()
 plt.show()
+
+# %%

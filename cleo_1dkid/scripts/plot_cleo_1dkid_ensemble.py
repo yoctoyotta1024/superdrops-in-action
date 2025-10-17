@@ -59,14 +59,15 @@ def unflatten_superdrops(rawdata, raggedcount, nsupers):
     return sdarr
 
 
-def superdrops_variable_ensemble(ds, var):
+def superdrops_variable_ensemble(ensemble_ds, var):
+    sources = [xr.open_dataset(s, engine="zarr") for s in ensemble_ds.sources.values]
     data = {
         e: unflatten_superdrops(
-            ds.sel(ensemble=e)[var].values,
-            ds.sel(ensemble=e).raggedcount.values,
-            ds.sel(ensemble=e).nsupers.values,
+            ds[var].values,
+            ds.raggedcount.values,
+            ds.nsupers.values,
         )
-        for e in ds.ensemble.values
+        for e, ds in zip(ensemble_ds.ensemble.values, sources)
     }
     return data
 
@@ -249,10 +250,40 @@ config = pysetuptxt.get_config(setupfiles[0], nattrs=3, isprint=False)
 consts = pysetuptxt.get_consts(setupfiles[0], isprint=False)
 gbxs = pygbxsdat.get_gridboxes(args.grid_filename, consts["COORD0"], isprint=False)
 time = pyzarr.get_time(datasets[0])
+
+
 # %%
-ds = xr.open_mfdataset(datasets, engine="zarr", combine="nested", concat_dim="ensemble")
+def drop_superdroplets(ds):
+    superdroplets = [
+        "sdId",
+        "sdgbxindex",
+        "coord3",
+        "coord1",
+        "coord2",
+        "msol",
+        "radius",
+        "xi",
+    ]
+    return ds.drop_vars(superdroplets)
+
+
+ds = xr.open_mfdataset(
+    datasets,
+    engine="zarr",
+    combine="nested",
+    concat_dim="ensemble",
+    preprocess=drop_superdroplets,
+)
 ensemble_coord = dict(ensemble=("ensemble", [str(Path(d).stem) for d in datasets]))
 ds = ds.assign_coords(ensemble_coord)
+
+arr = xr.DataArray(
+    datasets,
+    name="sources",
+    dims=["ensemble"],
+    attrs={"long_name": "path to dataset of each ensemble member"},
+)
+ds = ds.assign(**{arr.name: arr})
 
 ds = ds.rename_dims({"gbxindex": "height"})
 ds = ds.drop_vars("gbxindex")
@@ -288,8 +319,11 @@ arr = xr.DataArray(
 )
 ds = ds.assign(**{arr.name: arr})
 
+surface = ds.height.sel(height=0.0, method="nearest")
 arr = xr.DataArray(
-    ds.precip.sel(height=ds.height.min()) * 1000 / (config["OBSTSTEP"] / 3600),
+    ds.precip.sel(height=surface, method="nearest")
+    * 1000
+    / (config["OBSTSTEP"] / 3600),
     name="surfprecip_rate",
     dims=["ensemble", "time"],
     attrs={
@@ -300,6 +334,9 @@ arr = xr.DataArray(
 ds = ds.assign(**{arr.name: arr})
 
 ds
+
+# %%
+print(f"surface precipitation identified at {surface.values}m")
 # %% (slow) superdroplet variables across ensemble
 xi = superdrops_variable_ensemble(ds, "xi")
 radius = superdrops_variable_ensemble(ds, "radius")
@@ -690,3 +727,5 @@ def plot_hill_figure4(ds):
 
 plot_hill_figure4(ds)
 plt.show()
+
+# %%
