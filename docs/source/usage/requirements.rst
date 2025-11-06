@@ -63,3 +63,8 @@ commands:
   $ rm  /work/bm1183/m300950/bin/envs/superdrops-in-action/lib/libmpi.so.40
 
   $ python -c 'import ctypes.util; print(ctypes.util.find_library("mpi"))'
+
+(If this still doesn't work: try creating a ``superdrops-in-action`` environment from a clone of
+another environment that does work with MPI (e.g. ```clouds``), then install mpi4py, and afterwards
+install the other requirements (``python -m pip install -r requirements.txt``) and delete any
+``libmpi.so`` and ``libmpi.so.40`` libraries created in the process.)
