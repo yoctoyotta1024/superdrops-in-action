@@ -23,6 +23,7 @@ from pathlib import Path
 import yaml
 
 import alphasampling
+from initial_pressure_profile import get_initial_pressure_profile
 from PySDM.initialisation import spectra
 
 ### ----------------------- INPUT PARAMETERS ----------------------- ###
@@ -54,7 +55,11 @@ args = parser.parse_args()
 
 if args.isfigures == "TRUE":
     isfigures = [True, True]
-    gbxs2plt = [0]  # indexes of GBx index of SDs to plot (nb. "all" can be very slow)
+    gbxs2plt = [
+        0,
+        64,
+        128,
+    ]  # indexes of GBx index of SDs to plot (nb. "all" can be very slow)
 else:
     isfigures = [False, False]
     gbxs2plt = None
@@ -84,6 +89,9 @@ spectrum = spectra.Lognormal(norm_factor=1.0, m_mode=geomean, s_geom=geosig)
 
 ### --- Choice of Superdroplet  --- ###
 nsupers = 256  # Number of Superdroplets per Gridbox
+xi_by_pressure = (
+    True  # initialise number concentration dependent on initial pressure, see below
+)
 alpha = 0.0  # sampling param: 0 -> const xi, 1 -> xi follows spectrum
 default_cdf_range = (0.00001, 0.99999)
 rspan = spectrum.percentiles(
@@ -93,6 +101,26 @@ radiigen, xiprobdist = alphasampling.AlphaSamplingWrapper(spectrum, alpha, rspan
 numconc_tolerance = (
     0.001  # 0.1% tolerance on resultant numconc not being equal to input numconc
 )
+
+### --- Initial Pressure profile (used if xi_by_pressure==True) --- ###
+if xi_by_pressure:
+    is_exner_novapour = False  # (!) Settings here MUST match kid_dynamics.py (!)
+    is_exner_novapour_uniformrho = False  # (!) Settings MUST match kid_dynamics.py (!)
+    p_surf = 1000  # [hPa] PSURF (!) Settings here MUST match kid_dynamics.py (!)
+    z_min = -25  # [m] (!) Settings here MUST match those in run_cleo_1dkid.py (!)
+    z_max = 3200  # [m] (!) Settings here MUST match those in run_cleo_1dkid.py (!)
+    z_delta = 25  # [m] (!) Settings here MUST match those in run_cleo_1dkid.py (!)
+    press, press_ref = get_initial_pressure_profile(
+        grid_filename=grid_filename,
+        is_exner_novapour=is_exner_novapour,
+        is_exner_novapour_uniformrho=is_exner_novapour_uniformrho,
+        p_surf=p_surf,
+        z_min=z_min,
+        z_max=z_max,
+        z_delta=z_delta,
+    )
+else:
+    press, press_ref = None, 0.0
 ### --------------------------------------------------------- ###
 
 ### --- Choice of Superdroplet Dry Radii Generator --- ###
@@ -108,7 +136,15 @@ coord2gen = None  # do not generate superdroplet coord2s
 
 ### -------------------- BINARY FILE GENERATION--------------------- ###
 initattrsgen = attrsgen.AttrsGenerator(
-    radiigen, dryradiigen, xiprobdist, coord3gen, coord1gen, coord2gen
+    radiigen,
+    dryradiigen,
+    xiprobdist,
+    coord3gen,
+    coord1gen,
+    coord2gen,
+    xi_by_pressure=xi_by_pressure,
+    press=press,
+    press_ref=press_ref,
 )
 geninitconds.generate_initial_superdroplet_conditions(
     initattrsgen,
