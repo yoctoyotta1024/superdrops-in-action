@@ -52,7 +52,7 @@ class KiDDynamics:
 
         WMAX = 3  # maximum vertical velocity [m/s], 'w1' of equation (6) in Shipway and Hill (2012)
         TSCALE = 600  # timescale of sinusoid [s], 't1' of equation (6) in Shipway and Hill (2012)
-        PSURF = 1000 * si.hPa  # only used if is_uniform_density==False
+        PSURF = 1000 * si.hPa
         is_exner_novapour = False
         is_exner_novapour_uniformrho = False
         self.settings = Settings(
