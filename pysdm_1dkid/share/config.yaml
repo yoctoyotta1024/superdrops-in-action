@@ -1,0 +1,31 @@
+---
+# ----- superdrops-in-action -----
+# File: config.yaml
+# Project: config
+# Created Date: Tuesday 9th December 2025
+# Author: Clara Bayley (CB)
+# Additional Contributors:
+# -----
+# License: BSD 3-Clause "New" or "Revised" License
+# https://opensource.org/licenses/BSD-3-Clause
+# -----
+# Copyright (c) 2025 MPI-M, Clara Bayley
+# -----
+# File Description:
+# Configuration file for running the PySDM 1-D KiD SDM
+#
+
+### Superdroplet Initialization Parameters ###
+superdroplet_initialization:
+  n_sd_per_gridbox: 256                            # number of superdroplets per gridbox
+  geomean : 4.0e-8                                 # geometric mean radius of initial droplet spectrum [m]
+  geosig : 1.4                                     # geometric standard deviation of initial droplet spectrum
+  numconc : 50e6                                   # number conc. of initial droplet spectrum [m^-3]
+
+sdm_settings:
+  is_precip: True                                  # enable/disable precipitation scheme
+  n_iters: 10                                      # number of iterations to run
+
+### Output File Parameters ###
+outputfiles:
+  output_path: "/work/bm1183/m300950/superdrops-in-action/pysdm_1dkid/build/bin/"    # path to output directory
