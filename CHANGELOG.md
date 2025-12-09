@@ -2,6 +2,25 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## [v0.11.2](https://github.com/yoctoyotta1024/superdrops-in-action/compare/2b3ca055cbc56b343c26eda8c25810eae60b2900..v0.11.2) - 2025-12-09
+#### Bug Fixes
+- python packages can't handle python 3.14 yet - ([be1f3be](https://github.com/yoctoyotta1024/superdrops-in-action/commit/be1f3be01ae91f7c08aa6a712521026c71fbf76e)) - clara.bayley
+- don't open superdroplet variables in ensemble dataset in beautyplots - ([d1e24d0](https://github.com/yoctoyotta1024/superdrops-in-action/commit/d1e24d03ef0e16849cbc15f64380b3a6480483b2)) - clara.bayley
+- surface is at height closest to 0.0m not at minimum - ([1f1dd65](https://github.com/yoctoyotta1024/superdrops-in-action/commit/1f1dd650395f4d166f627a18c69e8d44921eecf3)) - clara.bayley
+- don't open superdroplet variables in ensemble dataset - ([36fb7ea](https://github.com/yoctoyotta1024/superdrops-in-action/commit/36fb7ea0b9a292d4e33e5f189317039ad9200cba)) - clara.bayley
+- correct lwp in quickplots - ([74ac8b8](https://github.com/yoctoyotta1024/superdrops-in-action/commit/74ac8b8f87c244d78cbdd5eb92fe48eea0eaf69a)) - clara.bayley
+#### Documentation
+- another note on mpi4py on HPCs - ([ad7916a](https://github.com/yoctoyotta1024/superdrops-in-action/commit/ad7916a47228e0dd02df28c81547dba1850ef829)) - clara.bayley
+#### Miscellaneous Chores
+- delete old comment - ([0e015be](https://github.com/yoctoyotta1024/superdrops-in-action/commit/0e015be4f0a05c5441f97c448261826d80b961fc)) - clara.bayley
+- add missing header - ([e269613](https://github.com/yoctoyotta1024/superdrops-in-action/commit/e2696137553f5600d0fb5abeb82bf589ba206ca6)) - clara.bayley
+- update CLEO version - ([80f2f3c](https://github.com/yoctoyotta1024/superdrops-in-action/commit/80f2f3c948b4e50fa8fcdccc54f0c1505b1f98ef)) - clara.bayley
+#### Refactoring
+- use pressure profile to initialise superdroplets - ([37742fc](https://github.com/yoctoyotta1024/superdrops-in-action/commit/37742fc4dc2e3f33f24d6cd611e97577901ebf0e)) - clara.bayley
+- use theta not theta_dry in exner func calc - ([2b3ca05](https://github.com/yoctoyotta1024/superdrops-in-action/commit/2b3ca055cbc56b343c26eda8c25810eae60b2900)) - clara.bayley
+
+- - -
+
 ## [v0.11.1](https://github.com/yoctoyotta1024/superdrops-in-action/compare/4abd191919ee51743ecfc60b3912691e3e3a260e..v0.11.1) - 2025-09-24
 #### Bug Fixes
 - wrong order of arguments - ([b8a31a5](https://github.com/yoctoyotta1024/superdrops-in-action/commit/b8a31a5d601a6f6afc5d20a9796d995bb2a3074a)) - clara.bayley
