@@ -26,6 +26,9 @@ path2cleopythonbindings="${path2build}/_deps/cleo-build/cleo_python_bindings"
 python="/work/bm1183/m300950/bin/envs/superdrops-in-action/bin/python"
 pythonlibs="/work/bm1183/m300950/bin/envs/superdrops-in-action/lib/python3.13/site-packages"
 
+nsupers_pergbxs=(256) # for superdroplet initial conditions
+alphas=(0 0.5 1.0) # for superdroplet initial conditions alpha sampling
+
 ### loop over configs_directory for all different for run_ids
 configs_directory=("${path2build}/tmp/condevap_only"
                  "${path2build}/tmp/fullscheme")
@@ -78,25 +81,34 @@ export PYTHONPATH=${pythonlibs}:${path2cleopythonbindings}:${path2cleo1dkid}:${P
 for i in "${!configs_directory[@]}"
 do
   echo "---------------------- src ${i} ----------------------"
-  for j in "${run_ids[@]}"
+  for k in "${!nsupers_pergbxs[@]}"
   do
-    config_filename="${configs_directory[i]}/config_${j}.yaml"
-    run_name="${run_labels[i]}_${j}"
-    binpath="${bin_directory[i]}"
-    figpath="${fig_directory[i]}"
-    echo "---- src ${i}, run number: ${j} ----"
-    echo "--run_name=${run_name}"
-    echo "--config_filename=${config_filename}"
-    echo "--figpath=${figpath}"
-    echo "--path2cleopythonbindings=${path2cleopythonbindings}"
+    for l in "${!alphas[@]}"
+    do
+      for m in "${run_ids[@]}"
+      do
+        alpha_string="${alphas[l]//./p}" # replace . with p for filename
+        label="n${nsupers_pergbxs[k]}_a${alpha_string}_r${m}"
+        config_filename="${configs_directory[i]}/config_${label}.yaml"
+        run_name="${run_labels[i]}_${label}"
+        binpath="${bin_directory[i]}"
+        figpath="${fig_directory[i]}"
+        echo "---- src ${i}, run number: ${m} ----"
+        echo "---- nsupers ${nsupers_pergbxs[k]}, alpha ${alphas[l]} ----"
+        echo "--run_name=${run_name}"
+        echo "--config_filename=${config_filename}"
+        echo "--figpath=${figpath}"
+        echo "--path2cleopythonbindings=${path2cleopythonbindings}"
 
-    echo "${python} ${path2cleo1dkid}/scripts/run_cleo_1dkid.py --config_filename=${config_filename} [...]"
-    ${python} ${path2cleo1dkid}/scripts/run_cleo_1dkid.py \
-      --run_name="${run_name}" \
-      --config_filename="${config_filename}" \
-      --binpath="${binpath}" \
-      --figpath="${figpath}" \
-      --path2cleopythonbindings="${path2cleopythonbindings}"
+        echo "${python} ${path2cleo1dkid}/scripts/run_cleo_1dkid.py --config_filename=${config_filename} [...]"
+        ${python} ${path2cleo1dkid}/scripts/run_cleo_1dkid.py \
+          --run_name="${run_name}" \
+          --config_filename="${config_filename}" \
+          --binpath="${binpath}" \
+          --figpath="${figpath}" \
+          --path2cleopythonbindings="${path2cleopythonbindings}"
+        done
+      done
     done
   echo "---------------------------------------------------"
 done
