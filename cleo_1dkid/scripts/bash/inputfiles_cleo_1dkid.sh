@@ -24,6 +24,9 @@ isfigures=FALSE
 python=/work/bm1183/m300950/bin/envs/superdrops-in-action/bin/python
 path2initcondsscripts=${path2cleo1dkid}/libs/cleo_sdm/initconds
 
+nsupers_pergbxs=(256) # for superdroplet initial conditions
+alphas=(0 0.5 1.0) # for superdroplet initial conditions alpha sampling
+
 ### src_configs is list of absolute paths to source config files seperated by spaces
 ### e.g. src_configs=("$HOME/config1" "$HOME/config2"), following lists are
 src_configs=("${path2cleo1dkid}/share/cleo_initial_conditions/1dkid/condevap_only/config.yaml"
@@ -88,29 +91,42 @@ done
 for i in "${!src_configs[@]}"
 do
   echo "---------------------- src ${i} ----------------------"
-  for j in "${run_ids[@]}"
+  src_configfile="${src_configs[i]}"
+  for k in "${!nsupers_pergbxs[@]}"
   do
-    src_configfile="${src_configs[i]}"
-    dest_configfile="${configs_directory[i]}/config_${j}.yaml"
-    initsupers_filename="${initsupers_directory}/dimlessSDsinit_${j}.dat"
-    setup_filename="${bin_directory[i]}/setup_${j}.txt"
-    zarrbasedir="${bin_directory[i]}/sol_${j}.zarr"
-    echo "---- src ${i}, run number: ${j} ----"
-    echo "path to build directory: ${path2build}"
-    echo "src config file: ${src_configfile}"
-    echo "dest config file: ${dest_configfile}"
-    echo "-- ${grid_filename}"
-    echo "-- ${initsupers_filename}"
-    echo "-- ${setup_filename}"
-    echo "-- ${zarrbasedir}"
+    for l in "${!alphas[@]}"
+    do
+      for m in "${run_ids[@]}"
+      do
+        alpha_string="${alphas[l]//./p}" # replace . with p for filename
+        label="n${nsupers_pergbxs[k]}_a${alpha_string}_r${m}"
+        dest_configfile="${configs_directory[i]}/config_${label}.yaml"
+        initsupers_filename="${initsupers_directory}/dimlessSDsinit_${label}.dat"
+        setup_filename="${bin_directory[i]}/setup_${label}.txt"
+        zarrbasedir="${bin_directory[i]}/sol_${label}.zarr"
+        echo "---- src ${i}, run number: ${m} ----"
+        echo "---- nsupers ${nsupers_pergbxs[k]}, alpha ${alphas[l]} ----"
+        echo "path to build directory: ${path2build}"
+        echo "src config file: ${src_configfile}"
+        echo "dest config file: ${dest_configfile}"
+        echo "-- ${grid_filename}"
+        echo "-- ${initsupers_filename}"
+        echo "-- ${setup_filename}"
+        echo "-- ${zarrbasedir}"
+        echo "-- ${nsupers_pergbxs[k]}"
+        echo "-- ${alphas[l]}"
 
-    echo "python create_config.py ${src_configfile} ${dest_configfile} [...]"
-    ${python} ${path2initcondsscripts}/create_config.py ${src_configfile} ${dest_configfile} \
-      --cleoconstants_filepath="${cleoconstants_filepath}" \
-      --grid_filename="${grid_filename}" \
-      --initsupers_filename="${initsupers_filename}" \
-      --setup_filename="${setup_filename}" \
-      --zarrbasedir="${zarrbasedir}"
+        echo "python create_config.py ${src_configfile} ${dest_configfile} [...]"
+        ${python} ${path2initcondsscripts}/create_config.py ${src_configfile} ${dest_configfile} \
+          --cleoconstants_filepath="${cleoconstants_filepath}" \
+          --grid_filename="${grid_filename}" \
+          --initsupers_filename="${initsupers_filename}" \
+          --setup_filename="${setup_filename}" \
+          --zarrbasedir="${zarrbasedir}" \
+          --nsupers_pergbx="${nsupers_pergbxs[k]}" \
+          --alpha="${alphas[l]}"
+      done
+    done
   done
   echo "---------------------------------------------------"
 done
@@ -118,8 +134,10 @@ done
 
 ### ------------ create gbxboundaries file -------------- ###
 ### make same gbxboundaries file for all src_configs and all run_ids
-echo "---- gbxs using src 0, run number: 0 ----"
-dest_configfile="${configs_directory[0]}/config_0.yaml"
+echo "---- gbx using src 0, run number: 0 ----"
+echo "---- nsupers ${nsupers_pergbxs[0]}, alpha ${alphas[0]} ----"
+label="n${nsupers_pergbxs[0]}_a${alphas[0]//./p}_r0"
+dest_configfile="${configs_directory[0]}/config_${label}.yaml"
 echo "path to build directory: ${path2build}"
 echo "gbxs config file: ${dest_configfile}"
 echo "python create_gbxboundariesbinary_script.py --config_filename=${dest_configfile} [...]"
@@ -127,25 +145,36 @@ ${python} ${path2initcondsscripts}/create_gbxboundariesbinary_script.py \
   --config_filename="${dest_configfile}" \
   --isfigures="${isfigures}" \
   --figpath="${grid_directory}" \
-  --figlabel="_0_0"
+  --figlabel="_${label}"
 ### ---------------------------------------------------- ###
 
 ### -------- create superdrop initial conditions ------- ###
 ### make same superdroplets file for all src_configs
 sds_isfigures=${isfigures}
-for j in "${run_ids[@]}"
+for k in "${!nsupers_pergbxs[@]}"
 do
-  dest_configfile="${configs_directory[0]}/config_${j}.yaml"
-  echo "---- supers using src 0, run number: ${j} ----"
-  echo "path to build directory: ${path2build}"
-  echo "supers config file: ${dest_configfile}"
+  for l in "${!alphas[@]}"
+  do
+    for m in "${run_ids[@]}"
+    do
+      alpha_string="${alphas[l]//./p}" # replace . with p for filename
+      label="n${nsupers_pergbxs[k]}_a${alpha_string}_r${m}"
+      dest_configfile="${configs_directory[0]}/config_${label}.yaml"
+      echo "---- supers using src 0, run number: ${m} ----"
+      echo "---- nsupers ${nsupers_pergbxs[k]}, alpha ${alphas[l]} ----"
+      echo "path to build directory: ${path2build}"
+      echo "supers config file: ${dest_configfile}"
 
-  echo "python create_initsuperdropsbinary_script.py ${path2build} ${dest_configfile}"
-  ${python} ${path2initcondsscripts}/create_initsuperdropsbinary_script.py \
-    --config_filename="${dest_configfile}" \
-    --isfigures="${sds_isfigures}" \
-    --figpath="${initsupers_directory}" \
-    --figlabel="_0_${j}"
-  sds_isfigures=FALSE # never plot more than one realisation of SD initial conditions
+      echo "python create_initsuperdropsbinary_script.py ${path2build} ${dest_configfile}"
+      ${python} ${path2initcondsscripts}/create_initsuperdropsbinary_script.py \
+        --config_filename="${dest_configfile}" \
+        --isfigures="${sds_isfigures}" \
+        --figpath="${initsupers_directory}" \
+        --figlabel="_${label}"
+      sds_isfigures=FALSE # never plot more than one realisation of SD initial conditions
+    done
+    sds_isfigures=${isfigures} # reset sds_isfigures to plot different alphas
+  done
+  sds_isfigures=${isfigures} # reset sds_isfigures to plot different nsupers_pergbxs
 done
 ### ---------------------------------------------------- ###
