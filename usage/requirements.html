@@ -291,6 +291,10 @@ commands:</p>
 <span class="gp">$ </span>python<span class="w"> </span>-c<span class="w"> </span><span class="s1">&#39;import ctypes.util; print(ctypes.util.find_library(&quot;mpi&quot;))&#39;</span>
 </pre></div>
 </div>
+<p>(If this still doesn’t work: try creating a <code class="docutils literal notranslate"><span class="pre">superdrops-in-action</span></code> environment from a clone of
+another environment that does work with MPI (e.g. <code class="docutils literal notranslate"><span class="pre">`clouds</span></code>), then install mpi4py, and afterwards
+install the other requirements (<code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">-m</span> <span class="pre">pip</span> <span class="pre">install</span> <span class="pre">-r</span> <span class="pre">requirements.txt</span></code>) and delete any
+<code class="docutils literal notranslate"><span class="pre">libmpi.so</span></code> and <code class="docutils literal notranslate"><span class="pre">libmpi.so.40</span></code> libraries created in the process.)</p>
 </section>
 </section>
 
@@ -329,7 +333,7 @@ commands:</p>
             
             <a href="https://github.com/pradyunsg/furo">Furo</a>
             <div class="last-updated">
-              Last updated on 29 September 2025</div>
+              Last updated on 09 December 2025</div>
           </div>
           <div class="right-details">
             
