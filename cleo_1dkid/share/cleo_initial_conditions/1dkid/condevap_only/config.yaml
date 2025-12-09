@@ -22,6 +22,14 @@
 # and so can the thermodynamics files when using coupled thermodynamics "fromfile".
 #
 
+### Superdroplet Initialization Parameters ###
+superdroplet_initialization:
+  geomean : 4.0e-8                                 # geometric mean radius of initial droplet spectrum [m]
+  geosig : 1.4                                     # geometric standard deviation of initial droplet spectrum
+  numconc : 50e6                                   # number conc. of initial droplet spectrum [m^-3]
+  nsupers_pergbx: 256                              # no. of super-droplets per gridbox to initialise
+  alpha: 0.0                                       # sampling param: 0 -> const xi, 1 -> xi follows spectrum
+
 ### Kokkos Initialization Parameters ###
 kokkos_settings:
   num_threads : 64                                     # number of threads for host parallel backend

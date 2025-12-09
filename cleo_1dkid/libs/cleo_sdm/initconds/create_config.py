@@ -18,6 +18,7 @@ File Description:
 import argparse
 import shutil
 from pathlib import Path
+import yaml
 
 parser = argparse.ArgumentParser()
 parser.add_argument(
@@ -51,6 +52,16 @@ parser.add_argument(
     type=Path,
     help="path to output .zarr directory",
 )
+parser.add_argument(
+    "--nsupers_pergbx",
+    type=int,
+    help="number of superdroplets per gridbox",
+)
+parser.add_argument(
+    "--alpha",
+    type=float,
+    help="alpha value for superdroplet initial conditions",
+)
 args = parser.parse_args()
 
 from cleopy import editconfigfile
@@ -61,6 +72,13 @@ grid_filename = args.grid_filename
 initsupers_filename = args.initsupers_filename
 setup_filename = args.setup_filename
 zarrbasedir = args.zarrbasedir
+nsupers_pergbx = args.nsupers_pergbx
+alpha = args.alpha
+
+cnfg = yaml.safe_load(open(args.src_config_filename))
+initnsupers = int(cnfg["domain"]["ngbxs"]) * nsupers_pergbx
+newnsupers = nsupers_pergbx
+maxnsupers = initnsupers * 2
 
 # check directories meet requirements
 assert cleoconstants_filepath.parent.is_dir()
@@ -78,6 +96,11 @@ params = {
     "initsupers_filename": str(initsupers_filename),
     "setup_filename": str(setup_filename),
     "zarrbasedir": str(zarrbasedir),
+    "nsupers_pergbx": int(nsupers_pergbx),
+    "alpha": float(alpha),
+    "maxnsupers": int(maxnsupers),
+    "initnsupers": int(initnsupers),
+    "newnsupers": int(newnsupers),
 }
 
 print("--- create_config configuration arguments ---")

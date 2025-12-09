@@ -82,17 +82,21 @@ if isfigures[1]:
 ### ------------------------------------------- ###
 
 ### --- Choice of Droplet Radius Probability Distribution and Radii Generator --- ###
-geomean = 0.04e-6
-geosig = 1.4
-numconc = 50 * 1e6
+geomean = float(cnfg["superdroplet_initialization"]["geomean"])
+geosig = float(cnfg["superdroplet_initialization"]["geosig"])
+numconc = float(cnfg["superdroplet_initialization"]["numconc"])
 spectrum = spectra.Lognormal(norm_factor=1.0, m_mode=geomean, s_geom=geosig)
 
 ### --- Choice of Superdroplet  --- ###
-nsupers = 256  # Number of Superdroplets per Gridbox
+nsupers = int(
+    cnfg["superdroplet_initialization"]["nsupers_pergbx"]
+)  # Number of Superdroplets per Gridbox
 xi_by_pressure = (
     True  # initialise number concentration dependent on initial pressure, see below
 )
-alpha = 0.0  # sampling param: 0 -> const xi, 1 -> xi follows spectrum
+alpha = float(
+    cnfg["superdroplet_initialization"]["alpha"]
+)  # sampling param: 0 -> const xi, 1 -> xi follows spectrum
 default_cdf_range = (0.00001, 0.99999)
 rspan = spectrum.percentiles(
     default_cdf_range

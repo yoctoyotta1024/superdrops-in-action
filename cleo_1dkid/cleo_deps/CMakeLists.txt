@@ -23,12 +23,12 @@ include(FetchContent)
 FetchContent_Declare(
   cleo
   DOWNLOAD_EXTRACT_TIMESTAMP TRUE
-  URL https://github.com/yoctoyotta1024/CLEO/archive/refs/tags/v0.62.0.zip
-  GIT_TAG 2bee4f85c88840ef780fb1d251b6aee9ecee523b
+  URL https://github.com/yoctoyotta1024/CLEO/archive/refs/tags/v0.63.0.zip
+  GIT_TAG 5af4642cc6305d93577ad3e4c027890fbd52fded
 )
 FetchContent_MakeAvailable(cleo)
 
-message(STATUS "CLEO version v0.62.0, installation in: ${CLEO_BINARY_DIR}")
+message(STATUS "CLEO version v0.63.0, installation in: ${CLEO_BINARY_DIR}")
 
 # print default compiler flags
 message(STATUS "CLEO primary CMAKE_CXX_FLAGS: ${CMAKE_CXX_FLAGS}")
