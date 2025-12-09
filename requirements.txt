@@ -23,4 +23,4 @@ scipy
 ruamel.yaml
 xarray
 zarr
-git+https://github.com/emmacware/PySDM.git@alpha_sampling
+pysdm
