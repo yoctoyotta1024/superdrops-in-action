@@ -24,8 +24,8 @@ isfigures=FALSE
 python=/work/bm1183/m300950/bin/envs/superdrops-in-action/bin/python
 path2initcondsscripts=${path2cleo1dkid}/libs/cleo_sdm/initconds
 
-nsupers_pergbxs=(256) # for superdroplet initial conditions
-alphas=(0 0.5 1.0) # for superdroplet initial conditions alpha sampling
+nsupers_pergbxs=(16 128 256 1024) # for superdroplet initial conditions
+alphas=(0.5) # for superdroplet initial conditions alpha sampling
 
 ### src_configs is list of absolute paths to source config files seperated by spaces
 ### e.g. src_configs=("$HOME/config1" "$HOME/config2"), following lists are

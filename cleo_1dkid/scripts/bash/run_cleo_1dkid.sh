@@ -4,7 +4,6 @@
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=1
 #SBATCH --cpus-per-task=128
-#SBATCH --mem=20G
 #SBATCH --time=02:00:00
 #SBATCH --mail-user=clara.bayley@mpimet.mpg.de
 #SBATCH --mail-type=FAIL
@@ -26,8 +25,8 @@ path2cleopythonbindings="${path2build}/_deps/cleo-build/cleo_python_bindings"
 python="/work/bm1183/m300950/bin/envs/superdrops-in-action/bin/python"
 pythonlibs="/work/bm1183/m300950/bin/envs/superdrops-in-action/lib/python3.13/site-packages"
 
-nsupers_pergbxs=(256) # for superdroplet initial conditions
-alphas=(0 0.5 1.0) # for superdroplet initial conditions alpha sampling
+nsupers_pergbxs=(16 128 256 1024) # for superdroplet initial conditions
+alphas=(0.5) # for superdroplet initial conditions alpha sampling
 
 ### loop over configs_directory for all different for run_ids
 configs_directory=("${path2build}/tmp/condevap_only"
