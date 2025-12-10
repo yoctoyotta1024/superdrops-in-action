@@ -26,7 +26,7 @@
 superdroplet_initialization:
   geomean : 4.0e-8                                 # geometric mean radius of initial droplet spectrum [m]
   geosig : 1.4                                     # geometric standard deviation of initial droplet spectrum
-  numconc : 150e6                                  # number conc. of initial droplet spectrum [m^-3]
+  numconc : 50e6                                   # number conc. of initial droplet spectrum [m^-3]
   nsupers_pergbx: 256                              # no. of super-droplets per gridbox to initialise
   alpha: 0.0                                       # sampling param: 0 -> const xi, 1 -> xi follows spectrum
 
@@ -82,7 +82,7 @@ boundary_conditions:
   DRYRADIUS: 1.0                                       # max dry radius of new super-droplets (for solute mass) [m]
   MINRADIUS: 1.0e-8                                    # minimum radius of new super-droplets [m]
   MAXRADIUS: 1.5e-7                                    # maximum radius of new super-droplets [m]
-  NUMCONC_a: 1.5e8                                     # number conc. of 1st droplet lognormal dist [m^-3]
+  NUMCONC_a: 5.0e7                                     # number conc. of 1st droplet lognormal dist [m^-3]
   GEOMEAN_a: 4.0e-8                                    # geometric mean radius of 1st lognormal dist [m]
   geosigma_a: 1.4                                      # geometric standard deviation of 1st lognormal dist
   NUMCONC_b: 0.0                                       # number conc. of 2nd droplet lognormal dist [m^-3]
