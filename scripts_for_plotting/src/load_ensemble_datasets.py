@@ -24,6 +24,8 @@ from pathlib import Path
 
 from cleopy.sdmout_src import pyzarr, pysetuptxt, pygbxsdat
 from PySDM.physics import si
+from metpy import calc as mtpy_calc
+from metpy.units import units as mtpy_units
 
 from . import calcs
 
@@ -115,6 +117,7 @@ def get_cleo_ensemble_dataset(config, gbxs, datasets, precip_rolling_window):
         combine="nested",
         concat_dim="ensemble",
         preprocess=drop_superdroplets,
+        consolidated=False,
     )
     ensemble_coord = dict(ensemble=("ensemble", [str(Path(d).stem) for d in datasets]))
     ds = ds.assign_coords(ensemble_coord)
@@ -183,6 +186,17 @@ def get_cleo_ensemble_dataset(config, gbxs, datasets, precip_rolling_window):
             "units": "mm hr^-1",
             "long_name": "rolling mean of surface precipitation rate",
         },
+    )
+    ds = ds.assign(**{arr.name: arr})
+
+    arr = xr.DataArray(
+        mtpy_calc.relative_humidity_from_mixing_ratio(
+            ds.press * mtpy_units.hPa,
+            ds.temp * mtpy_units.kelvin,
+            ds.qvap / 1000,
+        ),
+        name="relh",
+        dims=["ensemble", "time", "height"],
     )
     ds = ds.assign(**{arr.name: arr})
 
@@ -336,6 +350,13 @@ def get_pysdm_ensemble_dataset(datasets, precip_rolling_window):
             "units": "mm hr^-1",
             "long_name": "rolling mean of surface precipitation rate",
         },
+    )
+    ds = ds.assign(**{arr.name: arr})
+
+    arr = xr.DataArray(
+        ds.rain_water_mixing_ratio + ds.cloud_water_mixing_ratio,
+        name="water_liquid_mixing_ratio",
+        dims=["ensemble", "height", "time"],
     )
     ds = ds.assign(**{arr.name: arr})
 
