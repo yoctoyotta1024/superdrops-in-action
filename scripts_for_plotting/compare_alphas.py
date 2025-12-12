@@ -62,20 +62,6 @@ assert args.pysdm_path2build.is_dir(), f"pysdm_path2build: {args.pysdm_path2buil
 assert args.path4figs.is_dir(), f"path4figs: {args.path4figs}"
 
 
-# %% Generic functions
-def cleo_lwc_fixed(press, temp, qvap, qcond):
-    def rho(press, temp, qvap):
-        p = press * 100  # [Pa]
-        qv = qvap / 1000  # [kg/kg]
-        Rd = 287.0027
-        Rv = 461.52998157941937
-        Rq = (Rv * qv + Rd) / (1 + qv)
-        return p / Rq / temp
-
-    rho_dry = rho(press, temp, qvap) / (1 + qvap / 1000)
-    return qcond * rho_dry
-
-
 # %% Load CLEO ensembles
 setups = {  # (numconc, fixed_coaleffs) : (nsupers_per_gbxs, alphas)
     (50, False): ([256], [0, 0.5, 1.0]),
@@ -229,17 +215,6 @@ for a in range(len(axes_setups)):
                     ds, precip_rolling_window, dim="ensemble"
                 )
                 ax[1].fill_between(ds.time, lower, upper, **style)
-
-                fstyle = get_style("cleo", fixed_coaleff, alpha)
-                fstyle["label"] += "\n -- LWP fix"
-                fstyle["color"] = "medium" + fstyle["color"]
-                lwpfix = (
-                    cleo_lwc_fixed(ds.press, ds.temp, ds.qvap, ds.qcond).integrate(
-                        coord="height"
-                    )
-                    / 1000
-                )
-                ax[0].plot(lwpfix.mean(dim="ensemble"), **fstyle)
 
     hands, labs = ax[0].get_legend_handles_labels()
     for lab in labs:
