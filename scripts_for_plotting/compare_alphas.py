@@ -96,7 +96,7 @@ cleo_datasets = led.fetch_cleo_datasets(
 
 print(f"---- {len(cleo_datasets)} ensembles of cleo data ---- ")
 for key, value in cleo_datasets.items():
-    print(key)
+    print(key, f"members={value.ensemble.size}")
 print("-------------------------------- ")
 
 
@@ -113,16 +113,16 @@ pysdm_datasets = led.fetch_pysdm_datasets(
 
 print(f"---- {len(pysdm_datasets)} ensembles of pysdm data ---- ")
 for key, value in pysdm_datasets.items():
-    print(key)
+    print(key, f"members={value.ensemble.size}")
 print("-------------------------------- ")
 # %% print available ensemble names
 print(f"---- {len(pysdm_datasets)} ensembles of pysdm data ---- ")
 for key, value in pysdm_datasets.items():
-    print(key)
+    print(key, f"members={value.ensemble.size}")
 print("-------------------------------- ")
 print(f"---- {len(cleo_datasets)} ensembles of cleo data ---- ")
 for key, value in cleo_datasets.items():
-    print(key)
+    print(key, f"members={value.ensemble.size}")
 print("-------------------------------- ")
 # %% Plot Hill figure 4 (top 2 rows only)
 fig, axes = plt.subplots(nrows=2, ncols=4, figsize=(16, 5), width_ratios=[5, 5, 5, 4])
