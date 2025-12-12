@@ -194,9 +194,13 @@ def get_cleo_ensemble_dataset(config, gbxs, datasets, precip_rolling_window):
             ds.press * mtpy_units.hPa,
             ds.temp * mtpy_units.kelvin,
             ds.qvap / 1000,
-        ),
+        )
+        * 100,
         name="relh",
         dims=["ensemble", "time", "height"],
+        attrs={
+            "units": "%",
+        },
     )
     ds = ds.assign(**{arr.name: arr})
 
@@ -279,13 +283,19 @@ def convert_numpy_arrays_to_dataset(dataset):
         assert Path(d).parent == Path(datafiles[0]).parent
     datafiles.remove(f"{Path(d).parent}/activating.npy")
     datafiles.remove(f"{Path(d).parent}/deactivating.npy")
-    datafiles.remove(f"{Path(d).parent}/coalescence_rate.npy")
-    datafiles.remove(f"{Path(d).parent}/collision_deficit.npy")
     datafiles.remove(f"{Path(d).parent}/dry_spectrum.npy")
     datafiles.remove(f"{Path(d).parent}/wet_spectrum.npy")
     datafiles.remove(f"{Path(d).parent}/peak_saturation.npy")
     datafiles.remove(f"{Path(d).parent}/rain_averaged_terminal_velocity.npy")
     datafiles.remove(f"{Path(d).parent}/ripening.npy")
+    try:
+        datafiles.remove(f"{Path(d).parent}/coalescence_rate.npy")
+    except ValueError:
+        print("no coalescence_rate in dataset")
+    try:
+        datafiles.remove(f"{Path(d).parent}/collision_deficit.npy")
+    except ValueError:
+        print("no collision_deficit in dataset")
 
     rawdata = {Path(file).stem: np.load(file) for file in datafiles}
 
@@ -323,42 +333,58 @@ def get_pysdm_ensemble_dataset(datasets, precip_rolling_window):
     )
     ds = ds.assign(**{arr.name: arr})
 
+    ds["p"] = ds["p"] / 100
+    ds["p"].attrs["unit"] = "hPa"
+
+    ds["lwc"] = ds["lwc"] * 1000
+    ds["lwc"].attrs["unit"] = "g m^-3"
+
+    ds["water_vapour_mixing_ratio"] = ds["water_vapour_mixing_ratio"] * 1000
+    ds["water_vapour_mixing_ratio"].attrs["unit"] = "g/kg"
+
     arr = xr.DataArray(
-        ds.lwc.integrate(coord="height"),
+        ds.rain_water_mixing_ratio + ds.cloud_water_mixing_ratio,
+        name="water_liquid_mixing_ratio",
+        dims=["ensemble", "height", "time"],
+        attrs={"units": "g/kg"},
+    )
+    ds = ds.assign(**{arr.name: arr})
+
+    arr = xr.DataArray(
+        ds.lwc.integrate(coord="height") / 1000,
         name="lwp",
         dims=["ensemble", "time"],
         attrs={"units": "Kg m^-2"},
     )
     ds = ds.assign(**{arr.name: arr})
 
-    arr = xr.DataArray(
-        ds.surface_precipitation * si.hour / si.mm,
-        name="surfprecip_rate",
-        dims=["ensemble", "time"],
-        attrs={
-            "units": "mm hr^-1",
-            "long_name": "surface precipitation rate",
-        },
-    )
-    ds = ds.assign(**{arr.name: arr})
+    try:
+        arr = xr.DataArray(
+            ds.surface_precipitation * si.hour / si.mm,
+            name="surfprecip_rate",
+            dims=["ensemble", "time"],
+            attrs={
+                "units": "mm hr^-1",
+                "long_name": "surface precipitation rate",
+            },
+        )
+        ds = ds.assign(**{arr.name: arr})
+    except AttributeError:
+        print("no precipitation in dataset")
 
-    arr = xr.DataArray(
-        calcs.mean_rolling_window(ds.surfprecip_rate, precip_rolling_window),
-        name="surfprecip_rolling",
-        dims=["ensemble", "time"],
-        attrs={
-            "units": "mm hr^-1",
-            "long_name": "rolling mean of surface precipitation rate",
-        },
-    )
-    ds = ds.assign(**{arr.name: arr})
-
-    arr = xr.DataArray(
-        ds.rain_water_mixing_ratio + ds.cloud_water_mixing_ratio,
-        name="water_liquid_mixing_ratio",
-        dims=["ensemble", "height", "time"],
-    )
-    ds = ds.assign(**{arr.name: arr})
+    try:
+        arr = xr.DataArray(
+            calcs.mean_rolling_window(ds.surfprecip_rate, precip_rolling_window),
+            name="surfprecip_rolling",
+            dims=["ensemble", "time"],
+            attrs={
+                "units": "mm hr^-1",
+                "long_name": "rolling mean of surface precipitation rate",
+            },
+        )
+        ds = ds.assign(**{arr.name: arr})
+    except AttributeError:
+        print("no precipitation in dataset")
 
     return ds
 
