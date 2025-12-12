@@ -51,7 +51,8 @@ parser.add_argument(
 )
 args = parser.parse_known_args()[0]
 
-is_precip = False
+# is_precip = False
+is_precip = True
 precip_rolling_window = 100  # [number of timesteps, 1 timestep~1.25s]
 
 # %% Check directories containing datasets exist
@@ -62,7 +63,7 @@ assert args.path4figs.is_dir(), f"path4figs: {args.path4figs}"
 # %% Load CLEO ensembles
 setups = {  # (numconc, fixed_coaleffs) : (nsupers_per_gbxs, alphas)
     (50, False): ([256], [0.5]),
-    # (50, True): ([256], [0.5]),
+    (50, True): ([256], [0.5]),
 }
 
 cleo_datasets = led.fetch_cleo_datasets(
@@ -102,9 +103,12 @@ for key, value in cleo_datasets.items():
 print("-------------------------------- ")
 
 # %%
-fig, axs = plt.subplots(nrows=9, ncols=1, figsize=(8, 20))
-cds = cleo_datasets["is_precipFalse_numconc50p000_nsupers256_alpha0p500_fixedeffFalse"]
-pds = pysdm_datasets["is_precipFalse_numconc50p000_nsupers256_alpha0p500_fixedeffTrue"]
+fig, axs = plt.subplots(nrows=10, ncols=1, figsize=(8, 20))
+# cds = cleo_datasets["is_precipFalse_numconc50p000_nsupers256_alpha0p500_fixedeffFalse"]
+# pds = pysdm_datasets["is_precipFalse_numconc50p000_nsupers256_alpha0p500_fixedeffTrue"]
+# cds = cleo_datasets["is_precipTrue_numconc50p000_nsupers256_alpha0p500_fixedeffFalse"]
+cds = cleo_datasets["is_precipTrue_numconc50p000_nsupers256_alpha0p500_fixedeffTrue"]
+pds = pysdm_datasets["is_precipTrue_numconc50p000_nsupers256_alpha0p500_fixedeffTrue"]
 
 fig.suptitle("CLEO - PySDM")
 
@@ -171,7 +175,15 @@ for t, c in zip(times2plot, colors):
 axs[8].legend(loc="upper left")
 axs[8].set_xlim([0.4, 1.6])
 axs[8].set_ylim([0.0, 3000])
-axs[8].set_title(f"lwc {times2plot}s /g/kg")
+axs[8].set_title(f"lwc {times2plot}s /g/m$^3$")
+
+
+cds.lwp.mean(dim="ensemble").plot(ax=axs[9], x="time", c="green")
+pds.lwp.mean(dim="ensemble").plot(ax=axs[9], x="time", c="darkgreen", linestyle="--")
+axs[9].set_xlim([0.0, 3600])
+axs[9].set_ylim([0.0, 1.6])
+axs[9].set_title("lwp /kg/m$^3$")
+axs[9].spines[["right", "top"]].set_visible(False)
 
 fig.tight_layout()
 plt.show()
@@ -181,7 +193,7 @@ cds1 = cleo_datasets["is_precipTrue_numconc50p000_nsupers256_alpha0p500_fixedeff
 cds2 = cleo_datasets["is_precipTrue_numconc50p000_nsupers256_alpha0p500_fixedeffTrue"]
 pds = pysdm_datasets["is_precipTrue_numconc50p000_nsupers256_alpha0p500_fixedeffTrue"]
 
-fig.suptitle("CLEO with fixed CoalEff - CLEO or PySDM")
+fig.suptitle("Reference is CLEO with fixed CoalEff, Ec=1")
 
 
 def diff(v1, v2):
@@ -190,7 +202,8 @@ def diff(v1, v2):
 
 diff(cds2.temp, cds1.temp).plot(ax=axs[0, 0], y="height", cmap="bwr")
 diff(cds2.temp, pds.T).plot(ax=axs[0, 1], y="height", cmap="bwr")
-axs[0, 0].set_title("temp /K")
+axs[0, 0].set_title("CLEO Ec=1 - CLEO with Ec\ntemp /K")
+axs[0, 1].set_title("CLEO Ec=1 - PySDM\ntemp /K")
 
 diff(cds2.press, cds1.press).plot(ax=axs[1, 0], y="height", cmap="bwr")
 diff(cds2.press, pds.p).plot(ax=axs[1, 1], y="height", cmap="bwr")
@@ -207,7 +220,7 @@ diff(cds2.relh, pds.RH).plot(ax=axs[3, 1], y="height", cmap="bwr")
 axs[3, 0].set_title("relh /%")
 
 diff(cds2.qcond, cds1.qcond).plot(ax=axs[4, 0], y="height", cmap="bwr")
-diff(cds2.qcond, pds.water_liquid_mixing_ratio * 1000).plot(
+diff(cds2.qcond, pds.water_liquid_mixing_ratio).plot(
     ax=axs[4, 1], y="height", cmap="bwr"
 )
 axs[4, 0].set_title("qcond /g/kg")
@@ -218,3 +231,5 @@ axs[5, 0].set_title("precip /mm h$^-1$")
 
 fig.tight_layout()
 plt.show()
+
+# %%
