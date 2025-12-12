@@ -76,7 +76,7 @@ cleo_datasets = led.fetch_cleo_datasets(
 
 print(f"---- {len(cleo_datasets)} ensembles of cleo data ---- ")
 for key, value in cleo_datasets.items():
-    print(key)
+    print(key, f"members={value.ensemble.size}")
 print("-------------------------------- ")
 
 # %% Load PySDM ensembles
@@ -90,16 +90,16 @@ pysdm_datasets = led.fetch_pysdm_datasets(
 
 print(f"---- {len(pysdm_datasets)} ensembles of pysdm data ---- ")
 for key, value in pysdm_datasets.items():
-    print(key)
+    print(key, f"members={value.ensemble.size}")
 print("-------------------------------- ")
 # %% print available ensemble names
 print(f"---- {len(pysdm_datasets)} ensembles of pysdm data ---- ")
 for key, value in pysdm_datasets.items():
-    print(key)
+    print(key, f"members={value.ensemble.size}")
 print("-------------------------------- ")
 print(f"---- {len(cleo_datasets)} ensembles of cleo data ---- ")
 for key, value in cleo_datasets.items():
-    print(key)
+    print(key, f"members={value.ensemble.size}")
 print("-------------------------------- ")
 
 # %%
