@@ -51,8 +51,8 @@ parser.add_argument(
 )
 args = parser.parse_known_args()[0]
 
-# is_precip = False
-is_precip = True
+is_precip = False
+# is_precip = True
 precip_rolling_window = 100  # [number of timesteps, 1 timestep~1.25s]
 
 # %% Check directories containing datasets exist
@@ -63,7 +63,7 @@ assert args.path4figs.is_dir(), f"path4figs: {args.path4figs}"
 # %% Load CLEO ensembles
 setups = {  # (numconc, fixed_coaleffs) : (nsupers_per_gbxs, alphas)
     (50, False): ([256], [0.5]),
-    (50, True): ([256], [0.5]),
+    # (50, True): ([256], [0.5]),
 }
 
 cleo_datasets = led.fetch_cleo_datasets(
@@ -104,11 +104,11 @@ print("-------------------------------- ")
 
 # %%
 fig, axs = plt.subplots(nrows=10, ncols=1, figsize=(8, 20))
-# cds = cleo_datasets["is_precipFalse_numconc50p000_nsupers256_alpha0p500_fixedeffFalse"]
-# pds = pysdm_datasets["is_precipFalse_numconc50p000_nsupers256_alpha0p500_fixedeffTrue"]
+cds = cleo_datasets["is_precipFalse_numconc50p000_nsupers256_alpha0p500_fixedeffFalse"]
+pds = pysdm_datasets["is_precipFalse_numconc50p000_nsupers256_alpha0p500_fixedeffTrue"]
 # cds = cleo_datasets["is_precipTrue_numconc50p000_nsupers256_alpha0p500_fixedeffFalse"]
-cds = cleo_datasets["is_precipTrue_numconc50p000_nsupers256_alpha0p500_fixedeffTrue"]
-pds = pysdm_datasets["is_precipTrue_numconc50p000_nsupers256_alpha0p500_fixedeffTrue"]
+# cds = cleo_datasets["is_precipTrue_numconc50p000_nsupers256_alpha0p500_fixedeffTrue"]
+# pds = pysdm_datasets["is_precipTrue_numconc50p000_nsupers256_alpha0p500_fixedeffTrue"]
 
 fig.suptitle("CLEO - PySDM")
 
@@ -231,5 +231,158 @@ axs[5, 0].set_title("precip /mm h$^-1$")
 
 fig.tight_layout()
 plt.show()
+
+# %% relative humidity from CLEO thermo
+from metpy import calc
+from metpy.units import units
+
+cds_temp = cds.temp.mean(dim="ensemble") * units.K
+cds_press = cds.press.mean(dim="ensemble") * units.hPa
+cds_qvap = cds.qvap.mean(dim="ensemble") / 1000
+
+cds_relh = calc.relative_humidity_from_mixing_ratio(cds_press, cds_temp, cds_qvap)
+cds_relh.plot(y="height")
+# %% relative humidity from PySDM thermo
+pds_temp = pds.T.mean(dim="ensemble") * units.K
+pds_press = pds.p.mean(dim="ensemble") * units.hPa
+pds_qvap = pds.water_vapour_mixing_ratio.mean(dim="ensemble") / 1000
+
+pds_relh = calc.relative_humidity_from_mixing_ratio(pds_press, pds_temp, pds_qvap)
+pds_relh.plot(y="height")
+# %% sanity check, calculated relh similar to model output
+fig, ax = plt.subplots(nrows=2, ncols=3)
+cds.relh.mean(dim="ensemble").plot(ax=ax[0, 0], y="height")
+cds_relh.plot(ax=ax[0, 1], y="height")
+(cds.relh.mean(dim="ensemble") / 100 - cds_relh).plot(ax=ax[0, 2], y="height")
+pds.RH.mean(dim="ensemble").plot(ax=ax[1, 0], y="height")
+pds_relh.plot(ax=ax[1, 1], y="height")
+(pds.RH.mean(dim="ensemble") / 100 - pds_relh).plot(ax=ax[1, 2], y="height")
+fig.tight_layout()
+# %% temp difference -> cds colder by O(0.1K)
+(cds_temp - pds_temp).plot(y="height")
+# %% whereas press different (looks like relh difference!)
+(cds_press - pds_press).plot(y="height")
+# %% relh difference could be due to pressure (and consequently qvap) difference?
+fig, ax = plt.subplots(nrows=1, ncols=2)
+((cds_qvap - pds_qvap) * 1000).plot(y="height", ax=ax[0])
+(cds_relh - pds_relh).plot(y="height", ax=ax[1])
+fig.tight_layout()
+# %% CLEO 'press' is total pressure at start and remain constant ignoring changing qvap
+# however PySDM 'press' is total pressure at the start and changes with changing qvap
+RGAS_UNIV = 8.314462618
+MR_WATER = 0.01801528
+MR_DRY = 0.028966216
+RGAS_DRY = RGAS_UNIV / MR_DRY
+RGAS_V = RGAS_UNIV / MR_WATER
+EPS = RGAS_DRY / RGAS_V
+
+cds_pvap_t0 = (cds_press * (1 + cds_qvap / EPS) - cds_press).sel(
+    time=0.0, method="nearest"
+)
+
+cds_press_tot = (cds_press - cds_pvap_t0) * (1 + cds_qvap / EPS)
+cds_pvap = cds_press_tot - cds_press
+cds_pvap.plot(y="height", cmap="bwr")
+# %% temperature different remains constant throughout simulation
+(cds_temp - pds_temp).sel(time=0.0).plot(y="height")
+(cds_temp - pds_temp).sel(time=100, method="nearest").plot(y="height")
+(cds_temp - pds_temp).sel(time=500).plot(y="height")
+# %% whereas pressure difference increases due to condensation chaning vapour pressure in PySDM
+(cds_press - pds_press).sel(time=0.0).plot(y="height")
+(cds_press - pds_press).sel(time=100, method="nearest").plot(y="height")
+(cds_press - pds_press).sel(time=500).plot(y="height")
+# %% not accoutning for change in vapour is screwing up CLEO vs. PySDM!
+(cds_press_tot - pds_press).sel(time=0.0).plot(y="height")
+(cds_press_tot - pds_press).sel(time=100, method="nearest").plot(y="height")
+(cds_press_tot - pds_press).sel(time=500).plot(y="height")
+# %% further confirmation
+for time in [0, 100, 500]:
+    pt0 = pds_qvap.sel(time=0.0, method="nearest")
+    pt = pds_qvap.sel(time=time, method="nearest")
+    (pt0 - pt).plot(y="height")
+plt.show()
+for time in [0, 100, 500]:
+    pt0 = pds_press.sel(time=0.0, method="nearest")
+    pt = pds_press.sel(time=time, method="nearest")
+    (pt0 - pt).plot(y="height")
+plt.show()
+pds_pvap = calc.vapor_pressure(pds_press, pds_qvap)
+for time in [0, 100, 500]:
+    pt0 = pds_pvap.sel(time=0.0, method="nearest")
+    pt = pds_pvap.sel(time=time, method="nearest")
+    (pt0 - pt).plot(y="height")
+plt.show()
+pds_pdry = pds_press - pds_pvap
+for time in [0, 100, 500]:
+    pt0 = pds_pdry.sel(time=0.0, method="nearest")
+    pt = pds_pdry.sel(time=time, method="nearest")
+    (pt0 - pt).plot(y="height")
+# %% further confirmation
+((cds_press - cds_pvap_t0) - pds_pdry).sel(time=0.0).plot(y="height")
+((cds_press - cds_pvap_t0) - pds_pdry).sel(time=100, method="nearest").plot(y="height")
+((cds_press - cds_pvap_t0) - pds_pdry).sel(time=500).plot(y="height")
+# %% swapping in PySDM temperature to relH
+pds_temp_on_cdsgrid = pds_temp.interp(height=cds.height)
+pds_temp_on_cdsgrid = pds_temp_on_cdsgrid.interp(time=cds.time)
+pds_temp_on_cdsgrid = pds_temp_on_cdsgrid.T * units.K
+
+cds_relh_with_pds_temp = calc.relative_humidity_from_mixing_ratio(
+    cds_press, pds_temp_on_cdsgrid, cds_qvap
+)
+(cds_relh_with_pds_temp - pds_relh).plot(y="height")
+# %% swapping in PySDM pressure to relH
+pds_press_on_cdsgrid = pds_press.interp(height=cds.height)
+pds_press_on_cdsgrid = pds_press_on_cdsgrid.interp(time=cds.time)
+pds_press_on_cdsgrid = pds_press_on_cdsgrid.T * units.hPa
+
+cds_relh_with_pds_press = calc.relative_humidity_from_mixing_ratio(
+    pds_press_on_cdsgrid, cds_temp, cds_qvap
+)
+(cds_relh_with_pds_press - pds_relh).plot(y="height")
+# %% swapping in PySDM vapour to relH
+pds_qvap_on_cdsgrid = pds_qvap.interp(height=cds.height)
+pds_qvap_on_cdsgrid = pds_qvap_on_cdsgrid.interp(time=cds.time)
+pds_qvap_on_cdsgrid = pds_qvap_on_cdsgrid.T
+
+cds_relh_with_pds_qvap = calc.relative_humidity_from_mixing_ratio(
+    cds_press, cds_temp, pds_qvap_on_cdsgrid
+)
+(cds_relh_with_pds_qvap - pds_relh).plot(y="height")
+# %% swapping in PySDM vapour and pressure to relH
+cds_relh_with_pds_pressqvap = calc.relative_humidity_from_mixing_ratio(
+    pds_press_on_cdsgrid, cds_temp, pds_qvap_on_cdsgrid
+)
+(cds_relh_with_pds_pressqvap - pds_relh).plot(y="height")
+
+# %% Now qvap/qcond seems to be the problem
+cds_qcond = cds.qcond.mean(dim="ensemble")
+pds_qcond = pds.water_liquid_mixing_ratio.mean(dim="ensemble")
+for time in [0, 100, 500]:
+    fig, ax = plt.subplots(nrows=1, ncols=2)
+    ((cds_qvap - pds_qvap) * 1000).sel(time=time, method="nearest").plot(
+        y="height", ax=ax[0]
+    )
+    (cds_qcond).sel(time=time, method="nearest").plot(y="height", ax=ax[1])
+    (pds_qcond).sel(time=time, method="nearest").plot(
+        y="height", linestyle="--", ax=ax[1]
+    )
+    ax[0].set_ylim(bottom=-10)
+    ax[1].set_ylim(bottom=-10)
+    fig.tight_layout()
+    plt.show()
+# %%
+cds_tot = cds_qcond / 1000 + cds_qvap
+pds_tot = pds_qcond / 1000 + pds_qvap
+for time in [0, 30, 50, 100, 300, 500]:
+    fig, ax = plt.subplots(nrows=1, ncols=2)
+    (cds_tot - pds_tot).sel(time=time, method="nearest").plot(y="height", ax=ax[0])
+    (cds_tot).sel(time=time, method="nearest").plot(y="height", ax=ax[1])
+    (pds_tot).sel(time=time, method="nearest").plot(
+        y="height", linestyle="--", ax=ax[1]
+    )
+    ax[0].set_ylim(bottom=-10)
+    ax[1].set_ylim(bottom=-10)
+    fig.tight_layout()
+    plt.show()
 
 # %%
