@@ -16,7 +16,7 @@ https://opensource.org/licenses/BSD-3-Clause
 -----
 File Description:
 class and functions for handing setup and running of CLEO via python bindings,
-functions adapted from CLEO v0.63.0 python_bindings example.
+functions adapted from CLEO v0.64.0 python_bindings example.
 NOTE: To use the wrapper, you must first export "CLEO_PYTHON_BINDINGS".
 E.g. if python bindings are built in $HOME/superdrops-in-action/build/, do:
 export CLEO_PYTHON_BINDINGS=$HOME/superdrops-in-action/build/_deps/cleo-build/cleo_python_bindings/

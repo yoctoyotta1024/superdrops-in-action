@@ -12,7 +12,8 @@ License: BSD 3-Clause "New" or "Revised" License
 https://opensource.org/licenses/BSD-3-Clause
 -----
 File Description:
-Run 1-D kid test case for CLEO SDM with only condensation/evaporation enabled.
+Run 1-D kid test case for CLEO SDM with only condensation/evaporation enabled
+or with precipitation enabled.
 
 NOTE: script assumes CLEO's initial condition binary files already exist
 (i.e. 'dimlessGBxboundaries.dat' and 'dimlessSDsinit.dat' files, whose
