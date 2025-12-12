@@ -24,13 +24,12 @@ isfigures=FALSE
 python=/work/bm1183/m300950/bin/envs/superdrops-in-action/bin/python
 path2initcondsscripts=${path2cleo1dkid}/libs/cleo_sdm/initconds
 
-nsupers_pergbxs=(16 128 256 1024) # for superdroplet initial conditions
+nsupers_pergbxs=(256) # for superdroplet initial conditions
 alphas=(0.5) # for superdroplet initial conditions alpha sampling
 
 ### src_configs is list of absolute paths to source config files seperated by spaces
 ### e.g. src_configs=("$HOME/config1" "$HOME/config2"), following lists are
-src_configs=("${path2cleo1dkid}/share/cleo_initial_conditions/1dkid/condevap_only/config.yaml"
-      "${path2cleo1dkid}/share/cleo_initial_conditions/1dkid/fullscheme/config.yaml")
+src_configs=("${path2cleo1dkid}/share/cleo_initial_conditions/1dkid/condevap_only/config.yaml")
 
 ### IDs of ensemble members (diff superdrop initial conditions) for each src_configs to create
 if [[ "${start_id}" == "" || "${end_id}" == "" ]]
@@ -48,10 +47,8 @@ grid_filename="${path2build}/share/dimlessGBxboundaries.dat"
 initsupers_directory="${path2build}/share"
 
 ### different for all src_configs and different for run_ids
-configs_directory=("${path2build}/tmp/condevap_only"
-                 "${path2build}/tmp/fullscheme")
-bin_directory=("${path2build}/bin/condevap_only"
-                "${path2build}/bin/fullscheme")
+configs_directory=("${path2build}/tmp/condevap_only")
+bin_directory=("${path2build}/bin/condevap_only")
 ### ---------------------------------------------------- ###
 ### ---------------------------------------------------- ###
 ### ---------------------------------------------------- ###

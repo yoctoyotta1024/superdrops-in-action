@@ -20,11 +20,11 @@ superdroplet_initialization:
   n_sd_per_gridbox: 256                            # number of superdroplets per gridbox
   geomean : 4.0e-8                                 # geometric mean radius of initial droplet spectrum [m]
   geosig : 1.4                                     # geometric standard deviation of initial droplet spectrum
-  numconc : 50e6                                  # number conc. of initial droplet spectrum [m^-3]
+  numconc : 50e6                                   # number conc. of initial droplet spectrum [m^-3]
 
 sdm_settings:
-  is_precip: True                                  # enable/disable precipitation scheme
-  n_iters: 10                                      # number of iterations to run
+  is_precip: False                                 # enable/disable precipitation scheme
+  n_iters: 1                                       # number of iterations to run
 
 ### Output File Parameters ###
 outputfiles:

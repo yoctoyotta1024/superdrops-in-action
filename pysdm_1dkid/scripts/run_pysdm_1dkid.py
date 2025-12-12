@@ -52,7 +52,7 @@ common_params = {
     # 'collision_kernel': Hydrodynamic(),
 }
 
-alphas = [0.0, 0.5, 1.0]
+alphas = [0.5]
 n_sd_per_gridbox = int(cnfg["superdroplet_initialization"]["n_sd_per_gridbox"])
 aerosol_conc = float(cnfg["superdroplet_initialization"]["numconc"]) / si.m**3
 geomean = float(cnfg["superdroplet_initialization"]["geomean"])

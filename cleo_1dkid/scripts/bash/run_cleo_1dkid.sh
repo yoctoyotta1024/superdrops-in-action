@@ -25,17 +25,14 @@ path2cleopythonbindings="${path2build}/_deps/cleo-build/cleo_python_bindings"
 python="/work/bm1183/m300950/bin/envs/superdrops-in-action/bin/python"
 pythonlibs="/work/bm1183/m300950/bin/envs/superdrops-in-action/lib/python3.13/site-packages"
 
-nsupers_pergbxs=(16 128 256 1024) # for superdroplet initial conditions
+nsupers_pergbxs=(256) # for superdroplet initial conditions
 alphas=(0.5) # for superdroplet initial conditions alpha sampling
 
 ### loop over configs_directory for all different for run_ids
-configs_directory=("${path2build}/tmp/condevap_only"
-                 "${path2build}/tmp/fullscheme")
-run_labels=("condevap_only" "fullscheme")
-bin_directory=("${path2build}/bin/condevap_only"
-                "${path2build}/bin/fullscheme") # Note! must match paths in config's 'outputdata'
-fig_directory=("${path2build}/bin/condevap_only"
-                "${path2build}/bin/fullscheme")
+configs_directory=("${path2build}/tmp/condevap_only")
+run_labels=("condevap_only")
+bin_directory=("${path2build}/bin/condevap_only") # Note! must match paths in config's 'outputdata'
+fig_directory=("${path2build}/bin/condevap_only")
 
 ### IDs of ensemble members (diff superdrop initial conditions) for each src_configs to create
 if [[ "${start_id}" == "" || "${end_id}" == "" ]]
