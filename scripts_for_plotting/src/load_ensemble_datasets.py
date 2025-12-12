@@ -213,6 +213,11 @@ def fetch_cleo_datasets(
     cleo_config, cleo_consts, cleo_gbxs, cleo_time = get_cleo_consts_gbxs_time(
         cleo_path2build,
         cleo_grid_filename,
+        is_precip=is_precip,
+        numconc=50,
+        nsupers=256,
+        alpha=0.5,
+        runn=0,
     )
 
     cleo_datasets = {
