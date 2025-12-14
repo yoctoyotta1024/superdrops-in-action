@@ -31,8 +31,8 @@ class Thermodynamics:
     Parameters:
       temp (np.ndarray):
         Temperature (K).
-      rho (np.ndarray):
-        Density of moist air (kg/m3).
+      rhod (np.ndarray):
+        Density of dry air (kg/m3).
       press (np.ndarray):
         Pressure (Pa).
       qvap (np.ndarray):
@@ -51,8 +51,8 @@ class Thermodynamics:
     Attributes:
       temp (np.ndarray):
         Temperature (K).
-      rho (np.ndarray):
-        Density of moist air (kg/m3).
+      rhod (np.ndarray):
+        Density of dry air (kg/m3).
       press (np.ndarray):
         Pressure (Pa).
       massmix_ratios (dict):
@@ -71,7 +71,7 @@ class Thermodynamics:
     def __init__(
         self,
         temp: np.ndarray,
-        rho: np.ndarray,
+        rhod: np.ndarray,
         press: np.ndarray,
         qvap: np.ndarray,
         qcond: np.ndarray,
@@ -88,7 +88,7 @@ class Thermodynamics:
         Parameters:
             press (np.ndarray): Pressure (Pa).
             temp (np.ndarray): Temperature (K).
-            rho (np.ndarray): Density of moist air (kg/m3)
+            rhod (np.ndarray): Density of moist air (kg/m3)
             qvap (np.ndarray): Specific water vapor content (kg/kg)
             qcond (np.ndarray): Specific cloud water content (kg/kg)
             qice (np.ndarray): Specific cloud ice content (kg/kg)
@@ -100,7 +100,7 @@ class Thermodynamics:
             vvel (np.ndarray): meridional wind velocity, 'y', (m/s)
         """
         self.temp = deepcopy(temp)
-        self.rho = deepcopy(rho)
+        self.rhod = deepcopy(rhod)
         self.press = deepcopy(press)
         self.massmix_ratios = {
             "qvap": deepcopy(qvap),
@@ -116,7 +116,7 @@ class Thermodynamics:
 
     def print_state(self):
         print(self.temp)
-        print(self.rho)
+        print(self.rhod)
         print(self.press)
         print(self.massmix_ratios)
 
