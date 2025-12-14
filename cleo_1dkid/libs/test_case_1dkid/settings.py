@@ -129,6 +129,7 @@ class Settings:
                 t_span=(0, self.z_max),
                 y0=np.asarray((rhod0,)),
                 t_eval=z_points,
+                max_step=self.dz / 2,
             )
             assert rhod_solution.success
 
