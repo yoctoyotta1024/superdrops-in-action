@@ -18,6 +18,7 @@ or with precipitation enabled.
 
 # %%
 import argparse
+import numpy as np
 import matplotlib.pyplot as plt
 from pathlib import Path
 
@@ -62,8 +63,8 @@ assert args.path4figs.is_dir(), f"path4figs: {args.path4figs}"
 
 # %% Load CLEO ensembles
 setups = {  # (numconc, fixed_coaleffs) : (nsupers_per_gbxs, alphas)
-    (50, False): ([256], [0.5]),
-    # (50, True): ([256], [0.5]),
+    # (50, False): ([256], [0.5]),
+    (50, True): ([256], [0.5]),
 }
 
 cleo_datasets = led.fetch_cleo_datasets(
@@ -104,7 +105,7 @@ print("-------------------------------- ")
 
 # %%
 fig, axs = plt.subplots(nrows=10, ncols=1, figsize=(8, 20))
-cds = cleo_datasets["is_precipFalse_numconc50p000_nsupers256_alpha0p500_fixedeffFalse"]
+cds = cleo_datasets["is_precipFalse_numconc50p000_nsupers256_alpha0p500_fixedeffTrue"]
 pds = pysdm_datasets["is_precipFalse_numconc50p000_nsupers256_alpha0p500_fixedeffTrue"]
 # cds = cleo_datasets["is_precipTrue_numconc50p000_nsupers256_alpha0p500_fixedeffFalse"]
 # cds = cleo_datasets["is_precipTrue_numconc50p000_nsupers256_alpha0p500_fixedeffTrue"]
@@ -354,7 +355,7 @@ cds_relh_with_pds_pressqvap = calc.relative_humidity_from_mixing_ratio(
 )
 (cds_relh_with_pds_pressqvap - pds_relh).plot(y="height")
 
-# %% Now qvap/qcond seems to be the problem
+# %% Now qvap/qcond seems to be the problem -> collisions start earlier in CLEO
 cds_qcond = cds.qcond.mean(dim="ensemble")
 pds_qcond = pds.water_liquid_mixing_ratio.mean(dim="ensemble")
 for time in [0, 100, 500]:
@@ -370,10 +371,10 @@ for time in [0, 100, 500]:
     ax[1].set_ylim(bottom=-10)
     fig.tight_layout()
     plt.show()
-# %%
+# %% check total water content
 cds_tot = cds_qcond / 1000 + cds_qvap
 pds_tot = pds_qcond / 1000 + pds_qvap
-for time in [0, 30, 50, 100, 300, 500]:
+for time in [0, 100, 500]:
     fig, ax = plt.subplots(nrows=1, ncols=2)
     (cds_tot - pds_tot).sel(time=time, method="nearest").plot(y="height", ax=ax[0])
     (cds_tot).sel(time=time, method="nearest").plot(y="height", ax=ax[1])
@@ -385,4 +386,177 @@ for time in [0, 30, 50, 100, 300, 500]:
     fig.tight_layout()
     plt.show()
 
+# %% check number of superdroplets per grid-box
+cds_nsupers = cds.nsupers.mean(dim="ensemble")
+cds_nsupers.plot(y="height", vmin=0, vmax=800)
+plt.ylim(0, 3000)
+plt.show()
+
+pds_nsupers = pds.super_droplet_count_per_gridbox.mean(dim="ensemble")
+pds_nsupers.plot(y="height", vmin=0, vmax=800)
+plt.ylim(0, 3000)
+plt.show()
+
+# %% attempt to look at effective radius
+import xarray as xr
+import awkward as ak
+
+rawds = xr.open_dataset(cds.sources.values[0], engine="zarr")
+
+
+# %%
+def unflatten_superdrops(rawdata, raggedcount, nsupers):
+    sdarr = ak.unflatten(rawdata, raggedcount)
+    sdarr = ak.to_regular(ak.unflatten(sdarr, ak.flatten(nsupers), axis=1), axis=1)
+    return sdarr
+
+
+radius = unflatten_superdrops(
+    rawds.radius.values, rawds.raggedcount.values, rawds.nsupers.values
+)
+radius = radius / 1e6  # [m]
+xi = unflatten_superdrops(
+    rawds.xi.values, rawds.raggedcount.values, rawds.nsupers.values
+)
+# %%
+r3 = ak.sum((radius**3) * xi, axis=-1)
+r2 = ak.sum((radius**2) * xi, axis=-1)
+cds_reff = xr.DataArray(
+    np.asarray(ak.to_numpy(r3 / r2)),
+    name="effective_radius",
+    dims=["time", "height"],
+    attrs={"units": "m"},
+)
+# %%
+pds_reff = pds.effective_radius.mean(dim="ensemble")
+pds_reff.plot(vmin=1e-5, vmax=5e-5)
+plt.show()
+
+cds_reff.plot(y="height", vmin=1e-5, vmax=5e-5)
+
+# %% looking at activated droplets
+pds_aerosol = (pds.na / 1e6).mean(dim="ensemble")
+pds_cloud = (pds.nc / 1e6).mean(dim="ensemble")
+pds_rain = (pds.nr / 1e6).mean(dim="ensemble")
+
+pds_numconc = pds_aerosol + pds_cloud + pds_rain
+pds_numconc.plot(vmin=0.0, vmax=60)
+plt.ylim(bottom=0.0)
+plt.show()
+
+cds_numconc = cds.numconc.mean(dim="ensemble")
+cds_numconc.plot(y="height", vmin=0.0, vmax=60)
+plt.show()
+# %% calculate number concentration of categories in CLEO
+ntot = ak.sum(xi, axis=-1) / cds.volume.values[None, :] / 1e6  # [cm^-3]
+na = (
+    ak.sum(ak.where(radius < 1e-6, xi, 0.0), axis=-1) / cds.volume.values[None, :] / 1e6
+)  # [cm^-3]
+nr = (
+    ak.sum(ak.where(radius > 50e-6, xi, 0.0), axis=-1)
+    / cds.volume.values[None, :]
+    / 1e6
+)  # [cm^-3]
+nc = ntot - nr - na
+
+cds_aerosol = xr.DataArray(
+    np.asarray(ak.to_numpy(na)),
+    name="number conc aerosol droplets",
+    dims=["time", "height"],
+    attrs={"units": "cm^-3"},
+)
+cds_aerosol = cds_aerosol.assign_coords(height=cds.height)
+cds_aerosol = cds_aerosol.assign_coords(time=cds.time)
+
+cds_cloud = xr.DataArray(
+    np.asarray(ak.to_numpy(nc)),
+    name="number conc cloud droplets",
+    dims=["time", "height"],
+    attrs={"units": "cm^-3"},
+)
+cds_cloud = cds_cloud.assign_coords(height=cds.height)
+cds_cloud = cds_cloud.assign_coords(time=cds.time)
+
+cds_rain = xr.DataArray(
+    np.asarray(ak.to_numpy(nr)),
+    name="number conc rain droplets",
+    dims=["time", "height"],
+    attrs={"units": "cm^-3"},
+)
+cds_rain = cds_rain.assign_coords(height=cds.height)
+cds_rain = cds_rain.assign_coords(time=cds.time)
+
+# %% sanity check numconc
+(cds_numconc - ak.to_numpy(ntot)).plot(y="height")
+# %%
+fig, axs = plt.subplots(nrows=1, ncols=2, figsize=(8, 5))
+cds_aerosol.plot(vmin=0.0, vmax=60, ax=axs[0], y="height")
+pds_aerosol.plot(vmin=0.0, vmax=60, ax=axs[1], y="height")
+axs[0].set_title("CLEO")
+axs[1].set_title("PySDM")
+plt.ylim(bottom=0.0)
+plt.tight_layout()
+plt.show()
+
+fig, axs = plt.subplots(nrows=1, ncols=2, figsize=(8, 5))
+cds_cloud.plot(vmin=0.0, vmax=60, ax=axs[0], y="height")
+pds_cloud.plot(vmin=0.0, vmax=60, ax=axs[1], y="height")
+plt.ylim(bottom=0.0)
+plt.tight_layout()
+plt.show()
+
+fig, axs = plt.subplots(nrows=1, ncols=2, figsize=(8, 5))
+cds_rain.plot(vmin=0.0, vmax=0.3, ax=axs[0], y="height")
+pds_rain.plot(vmin=0.0, vmax=0.3, ax=axs[1], y="height")
+plt.ylim(bottom=0.0)
+plt.tight_layout()
+plt.show()
+# %% aerosol
+for time in [0, 100, 500]:
+    fig, axs = plt.subplots(nrows=1, ncols=2, figsize=(8, 5))
+    (cds_aerosol - pds_aerosol).sel(time=time, method="nearest").plot(
+        ax=axs[0], y="height"
+    )
+    cds_aerosol.sel(time=time, method="nearest").plot(ax=axs[1], y="height")
+    pds_aerosol.sel(time=time, method="nearest").plot(ax=axs[1], y="height")
+    axs[0].set_title("CLEO - PySDM")
+    axs[1].set_title("CLEO and PySDM")
+    plt.ylim(bottom=0.0)
+    plt.tight_layout()
+    plt.show()
+
+# %% cloud
+for time in [0, 100, 500]:
+    fig, axs = plt.subplots(nrows=1, ncols=2, figsize=(8, 5))
+    (cds_cloud - pds_cloud).sel(time=time, method="nearest").plot(ax=axs[0], y="height")
+    cds_cloud.sel(time=time, method="nearest").plot(ax=axs[1], y="height")
+    pds_cloud.sel(time=time, method="nearest").plot(ax=axs[1], y="height")
+    axs[0].set_title("CLEO - PySDM")
+    axs[1].set_title("CLEO and PySDM")
+    plt.ylim(bottom=0.0)
+    plt.tight_layout()
+    plt.show()
+# %% rain
+for time in [700, 1000, 1500]:
+    fig, axs = plt.subplots(nrows=1, ncols=2, figsize=(8, 5))
+    (cds_rain - pds_rain).sel(time=time, method="nearest").plot(ax=axs[0], y="height")
+    cds_rain.sel(time=time, method="nearest").plot(ax=axs[1], y="height")
+    pds_rain.sel(time=time, method="nearest").plot(ax=axs[1], y="height")
+    axs[0].set_title("CLEO - PySDM")
+    axs[1].set_title("CLEO and PySDM")
+    plt.ylim(bottom=0.0)
+    plt.tight_layout()
+    plt.show()
+# %%
+fig, axs = plt.subplots(nrows=3, ncols=1, figsize=(5, 8))
+(cds_aerosol - pds_aerosol).plot(ax=axs[0], y="height")
+axs[0].set_title("CLEO - PySDM")
+plt.ylim(bottom=0.0)
+
+(cds_cloud - pds_cloud).plot(ax=axs[1], y="height")
+(cds_rain - pds_rain).plot(ax=axs[2], y="height")
+
+plt.ylim(bottom=0.0)
+plt.tight_layout()
+plt.show()
 # %%
