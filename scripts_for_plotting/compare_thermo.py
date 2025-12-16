@@ -276,6 +276,7 @@ MR_DRY = 0.028966216
 RGAS_DRY = RGAS_UNIV / MR_DRY
 RGAS_V = RGAS_UNIV / MR_WATER
 EPS = RGAS_DRY / RGAS_V
+CP_DRY = 1004.64
 
 cds_pvap_t0 = (cds_press * (1 + cds_qvap / EPS) - cds_press).sel(
     time=0.0, method="nearest"
@@ -559,4 +560,48 @@ plt.ylim(bottom=0.0)
 plt.ylim(bottom=0.0)
 plt.tight_layout()
 plt.show()
+
+
+# %%
+def th_dry(temp, press_hpa):
+    p_pa = press_hpa / units.hPa * 100
+    return temp / units.K * np.power(100000 / p_pa, RGAS_DRY / CP_DRY)
+
+
+cds_thd = th_dry(cds_temp, cds_press)
+pds_thd = th_dry(pds_temp, pds_press)
+# %% sanity check thd formula
+(pds.thd.mean(dim="ensemble")).plot(y="height")
+plt.show()
+(pds.thd.mean(dim="ensemble") - pds_thd).plot(y="height")
+# %%
+(cds_thd).plot(y="height")
+plt.show()
+(pds_thd).plot(y="height")
+plt.show()
+(cds_thd - pds_thd).plot(y="height")
+
+
+# %%
+def rho_dry(temp, press_hpa, qvap):
+    p_pa = press_hpa / units.hPa * 100
+    return p_pa / (RGAS_DRY * temp / units.K * (1 + qvap / EPS))
+
+
+cds_rhod = rho_dry(cds_temp, cds_press, cds_qvap)
+pds_rhod = rho_dry(pds_temp, pds_press, pds_qvap)
+# %% sanity check rhod formula
+(pds.rhod.mean(dim="ensemble")).plot(y="height")
+plt.show()
+(pds.rhod.mean(dim="ensemble") - pds_rhod).plot(y="height")
+# %%
+(cds_rhod).plot(y="height")
+plt.show()
+(pds_rhod).plot(y="height")
+plt.show()
+(cds_rhod - pds_rhod).sel(time=0.0, method="nearest").plot(y="height")
+# %%
+(cds_press - pds_press).sel(time=0.0, method="nearest").plot(y="height")
+plt.show()
+(cds_temp - pds_temp).sel(time=0.0, method="nearest").plot(y="height")
 # %%
