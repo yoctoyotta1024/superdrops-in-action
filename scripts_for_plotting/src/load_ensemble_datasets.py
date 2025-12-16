@@ -63,8 +63,10 @@ def get_cleo_ensemble_of_runs(
     setupfiles = glob.glob(os.path.join(binpath, f"setup_{label}*.txt"))
     datasets = glob.glob(os.path.join(binpath, f"sol_{label}*.zarr"))
     print(os.path.join(binpath, f"sol_{label}*.zarr"))
-    assert setupfiles and datasets, "no CLEO setupfiles or datasets found"
-    print(f"CLEO Setup and datasets found in\n{binpath}:")
+    assert (
+        setupfiles and datasets
+    ), f"no CLEO setupfiles or datasets for sol_{label}*.zarr found in\n{binpath}"
+    print(f"CLEO Setup and datasets for sol_{label}*.zarr found in\n{binpath}:")
     print(", ".join([Path(s).name for s in setupfiles]))
     print(", ".join([Path(s).name for s in datasets]))
 
@@ -263,8 +265,8 @@ def get_pysdm_ensemble_of_runs(path2build, is_precip, numconc, nsupers, alpha):
     datasets = glob.glob(os.path.join(binpath, f"{label}*/"))
     print(os.path.join(binpath, f"{label}*/"))
     print(datasets)
-    assert datasets, "no PySDM datasets found"
-    print(f"PySDM Datasets found in\n{binpath}:")
+    assert datasets, f"no PySDM datasets for {label}*/ found in\n{binpath}"
+    print(f"PySDM Datasets found for {label}*/ in\n{binpath}:")
     print(", ".join([Path(s).name for s in datasets]))
 
     return datasets
