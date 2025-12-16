@@ -102,12 +102,12 @@ for key, value in cleo_datasets.items():
     print(key, f"members={value.ensemble.size}")
 print("-------------------------------- ")
 # %% Plot Hill figure 4 (top 2 rows only)
-fig, axes = plt.subplots(nrows=2, ncols=2, figsize=(8, 5), width_ratios=[3, 2])
+fig, axes = plt.subplots(nrows=2, ncols=2, figsize=(9, 5), width_ratios=[3, 2])
 gs = axes[0, -1].get_gridspec()
-for ax in axes[:, -1]:
-    ax.remove()
+axes[0, -1].remove()
+stdax = axes[1, -1]
 axes = axes[:, :-1]
-legax = fig.add_subplot(gs[:, -1])
+legax = fig.add_subplot(gs[0, -1])
 legax.spines[["right", "top", "left", "bottom"]].set_visible(False)
 legax.set_xticks([])
 legax.set_yticks([])
@@ -124,11 +124,11 @@ def get_style(model, fixed_coaleff, nsupers):
         line = "solid"
 
     if nsupers == 8:
-        c = "gold"
-    if nsupers == 32:
         c = "orange"
+    if nsupers == 32:
+        c = "chocolate"
     if nsupers == 64:
-        c = "sandybrown"
+        c = "maroon"
     elif nsupers == 128:
         c = "red"
     elif nsupers == 256:
@@ -136,7 +136,7 @@ def get_style(model, fixed_coaleff, nsupers):
     elif nsupers == 1024:
         c = "purple"
     elif nsupers == 4096:
-        c = "indigo"
+        c = "black"
 
     if model == "pysdm":
         mdl = "PySDM"
@@ -185,6 +185,11 @@ for a in range(len(axes_setups)):
                 )
                 ax[1].fill_between(ds.time, lower, upper, **style)
 
+                mean = np.mean(ds.surfprecip_rolling.mean(dim="ensemble"))
+                # yerr = [[mean-np.mean(lower)], [np.mean(upper)-mean]]
+                yerr = np.mean((upper - lower) / 2.0)
+                stdax.errorbar(nsupers, mean, yerr=yerr, fmt="x", color=style["color"])
+
             if label not in cleo_datasets.keys():
                 print(f"skipping CLEO {label}")
             else:
@@ -202,6 +207,13 @@ for a in range(len(axes_setups)):
                     ds, precip_rolling_window, dim="ensemble"
                 )
                 ax[1].fill_between(ds.time, lower, upper, **style)
+
+                mean = np.mean(ds.surfprecip_rolling.mean(dim="ensemble"))
+                # yerr = [[mean-np.mean(lower)], [np.mean(upper)-mean]]
+                yerr = np.mean((upper - lower) / 2.0)
+                stdax.errorbar(
+                    np.log2(nsupers), mean, yerr=yerr, fmt="x", color=style["color"]
+                )
 
     hands, labs = ax[0].get_legend_handles_labels()
     for lab in labs:
@@ -231,6 +243,11 @@ yticks2 = np.arange(ylims2[0], ylims2[1] + 0.5, 0.5)
 for ax in axes[1, :]:
     ax.set_ylim(ylims2)
     ax.set_yticks(yticks2)
+
+
+stdax.set_ylabel("<P> / mm h$^{-1}$")
+stdax.spines[["right", "top"]].set_visible(False)
+stdax.set_xlabel("log$_{2}$|N$_{SD}$|")
 
 plt.savefig(args.path4figs / "fig4_nsupers.pdf", format="pdf", bbox_inches="tight")
 plt.show()
