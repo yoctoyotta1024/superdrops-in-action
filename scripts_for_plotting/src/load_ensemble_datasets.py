@@ -47,17 +47,8 @@ def get_label(is_precip, fixed_coaleff, numconc, nsupers, alpha):
 
 
 # %% CLEO functions
-def get_cleo_ensemble_of_runs(
-    path2build, is_precip, fixed_coaleff, numconc, nsupers, alpha
-):
+def search_for_ensemble_of_cleo_runs(binpath, nsupers, alpha):
     label = f"n{nsupers}_a{alpha}_r".replace(".", "p")
-    binpath = path2build / f"bin_{numconc}cm3"
-    if is_precip:
-        binpath = binpath / "fullscheme"
-        if fixed_coaleff:
-            binpath = Path(str(binpath) + "_fixed_coaleff")
-    else:
-        binpath = binpath / "condevap_only"
 
     assert binpath.is_dir(), f"binpath: {binpath}"
     setupfiles = glob.glob(os.path.join(binpath, f"setup_{label}*.txt"))
@@ -71,6 +62,20 @@ def get_cleo_ensemble_of_runs(
     print(", ".join([Path(s).name for s in datasets]))
 
     return setupfiles, datasets
+
+
+def get_cleo_ensemble_of_runs(
+    path2build, is_precip, fixed_coaleff, numconc, nsupers, alpha
+):
+    binpath = path2build / f"bin_{numconc}cm3"
+    if is_precip:
+        binpath = binpath / "fullscheme"
+        if fixed_coaleff:
+            binpath = Path(str(binpath) + "_fixed_coaleff")
+    else:
+        binpath = binpath / "condevap_only"
+
+    return search_for_ensemble_of_cleo_runs(binpath, nsupers, alpha)
 
 
 def get_cleo_consts_gbxs_time(
@@ -253,13 +258,8 @@ def fetch_cleo_datasets(
 
 
 # %% PySDM functions
-def get_pysdm_ensemble_of_runs(path2build, is_precip, numconc, nsupers, alpha):
-    precip = "False"
-    if is_precip:
-        precip = "True"
-    label = f"naero{numconc}_precip{precip}_a{alpha}_r".replace(".", "p")
-
-    binpath = path2build / f"bin_nsupers{nsupers}"
+def search_for_ensemble_of_pysdm_runs(binpath, numconc, precip_str, alpha):
+    label = f"naero{numconc}_precip{precip_str}_a{alpha}_r".replace(".", "p")
 
     assert binpath.is_dir()
     datasets = glob.glob(os.path.join(binpath, f"{label}*/"))
@@ -270,6 +270,16 @@ def get_pysdm_ensemble_of_runs(path2build, is_precip, numconc, nsupers, alpha):
     print(", ".join([Path(s).name for s in datasets]))
 
     return datasets
+
+
+def get_pysdm_ensemble_of_runs(path2build, is_precip, numconc, nsupers, alpha):
+    precip_str = "False"
+    if is_precip:
+        precip_str = "True"
+
+    binpath = path2build / f"bin_nsupers{nsupers}"
+
+    return search_for_ensemble_of_pysdm_runs(binpath, numconc, precip_str, alpha)
 
 
 def convert_numpy_arrays_to_dataset(dataset):
