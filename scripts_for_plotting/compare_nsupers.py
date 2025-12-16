@@ -63,8 +63,7 @@ assert args.path4figs.is_dir(), f"path4figs: {args.path4figs}"
 
 # %% Load CLEO ensembles
 setups = {  # (numconc, fixed_coaleffs) : (nsupers_per_gbxs, alphas)
-    (50, False): ([16, 128, 256, 1024], [0.5]),
-    (50, True): ([256], [0.5]),
+    (50, False): ([8, 32, 64, 128, 256, 1024, 4096], [0.5]),
 }
 
 cleo_datasets = led.fetch_cleo_datasets(
@@ -82,7 +81,7 @@ print("-------------------------------- ")
 
 # %% Load PySDM ensembles
 setups = {  # (numconc, fixed_coaleffs) : (nsupers_per_gbxs, alphas)
-    (50.0, True): ([8, 256], [0.5]),
+    # (50.0, True): ([256], [0.5]),
 }
 
 pysdm_datasets = led.fetch_pysdm_datasets(
@@ -126,14 +125,18 @@ def get_style(model, fixed_coaleff, nsupers):
 
     if nsupers == 8:
         c = "gold"
-    if nsupers == 16:
+    if nsupers == 32:
         c = "orange"
+    if nsupers == 64:
+        c = "sandybrown"
     elif nsupers == 128:
         c = "red"
     elif nsupers == 256:
         c = "blue"
     elif nsupers == 1024:
         c = "purple"
+    elif nsupers == 4096:
+        c = "indigo"
 
     if model == "pysdm":
         mdl = "PySDM"
@@ -149,7 +152,7 @@ def get_style(model, fixed_coaleff, nsupers):
 axes_setups = {
     0: {
         "numconc": 50,
-        "nsupers": [8, 16, 128, 256, 1024],
+        "nsupers": [8, 32, 64, 128, 256, 1024, 4096],
         "alpha": 0.5,
         "fixed_coaleff": [True, False],
     },
@@ -223,8 +226,8 @@ for ax in axes[0, :]:
     ax.set_yticks(yticks1)
 
 axes[1, 0].set_ylabel("P / mm h$^{-1}$")
-ylims2 = [0.0, 4.0]
-yticks2 = np.arange(ylims2[0], ylims2[1] + 1.0, 1.0)
+ylims2 = [0.0, 1.5]
+yticks2 = np.arange(ylims2[0], ylims2[1] + 0.5, 0.5)
 for ax in axes[1, :]:
     ax.set_ylim(ylims2)
     ax.set_yticks(yticks2)
