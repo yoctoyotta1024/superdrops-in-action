@@ -64,12 +64,12 @@ assert args.path4figs.is_dir(), f"path4figs: {args.path4figs}"
 
 # %% Load CLEO ensembles
 setups = {  # (numconc, fixed_coaleffs) : (nsupers_per_gbxs, alphas)
-    (50, False): ([256], [0, 0.5, 1.0]),
-    (50, True): ([256], [0, 0.5, 1.0]),
-    (150, False): ([256], [0, 0.5, 1.0]),
-    (150, True): ([256], [0, 0.5, 1.0]),
-    (300, False): ([256], [0, 0.5, 1.0]),
-    (300, True): ([256], [0, 0.5, 1.0]),
+    (50, False): ([256], [0.0, 0.5, 1.0]),  # [0, 0.5, 1.0]),
+    (50, True): ([256], [0.0, 0.5, 1.0]),
+    (150, False): ([256], [0.0, 0.5, 1.0]),
+    (150, True): ([256], [0.0, 0.5, 1.0]),
+    (300, False): ([256], [0.0, 0.5, 1.0]),
+    (300, True): ([256], [0.0, 0.5, 1.0]),
 }
 
 cleo_datasets = led.fetch_cleo_datasets(
@@ -88,7 +88,7 @@ print("-------------------------------- ")
 
 # %% Load PySDM ensembles
 setups = {  # (numconc, fixed_coaleffs) : (nsupers_per_gbxs, alphas)
-    (50.0, True): ([8, 256], [0.0, 0.5, 1.0]),
+    (50.0, True): ([256], [0.0, 0.5, 1.0]),
     (150.0, True): ([256], [0.0, 0.5, 1.0]),
     (300.0, True): ([256], [0.0, 0.5, 1.0]),
 }
