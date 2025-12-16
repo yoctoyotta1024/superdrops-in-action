@@ -52,10 +52,10 @@ def get_cleo_ensemble_of_runs(
 ):
     label = f"n{nsupers}_a{alpha}_r".replace(".", "p")
     binpath = path2build / f"bin_{numconc}cm3"
-    if fixed_coaleff:
-        binpath = Path(str(binpath) + "_fixed_coaleff")
     if is_precip:
         binpath = binpath / "fullscheme"
+        if fixed_coaleff:
+            binpath = Path(str(binpath) + "_fixed_coaleff")
     else:
         binpath = binpath / "condevap_only"
 
@@ -81,10 +81,16 @@ def get_cleo_consts_gbxs_time(
     runn=0,
 ):
     label = f"n{nsupers}_a{alpha}_r{runn}".replace(".", "p")
-    if is_precip:
+    binpath = path2build / f"bin_{numconc}cm3" / "condevap_only"
+    if not binpath.is_dir():
+        binpath = path2build / f"bin_{numconc}cm3" / "fullscheme_fixed_coaleff"
+    if not binpath.is_dir():
         binpath = path2build / f"bin_{numconc}cm3" / "fullscheme"
-    else:
-        binpath = path2build / f"bin_{numconc}cm3" / "condevap_only"
+    if not binpath.is_dir():
+        raise FileNotFoundError(
+            f"{binpath} doesn't exist for get_cleo_consts_gbxs_time"
+        )
+    print(f"using {binpath} for get_cleo_consts_gbxs_time")
 
     setup = binpath / f"setup_{label}.txt"
     dataset = binpath / f"sol_{label}.zarr"
