@@ -311,6 +311,28 @@ def fetch_cleo_datasets(
     return cleo_datasets
 
 
+def get_single_cleo_dataset(dataset, setup, grid_filename, precip_rolling_window):
+    from cleopy.sdmout_src import pyzarr, pysetuptxt, pygbxsdat
+
+    assert dataset.exists(), f"dataset: {dataset}"
+    assert setup.exists(), f"setup: {setup}"
+    assert grid_filename.exists(), f"grid_filename: {grid_filename}"
+
+    config = pysetuptxt.get_config(setup, nattrs=3, isprint=False)
+    consts = pysetuptxt.get_consts(setup, isprint=False)
+    gbxs = pygbxsdat.get_gridboxes(grid_filename, consts["COORD0"], isprint=False)
+
+    ds = xr.open_dataset(dataset, engine="zarr")
+    ds = postprocess_cleo_dataset(
+        ds, config, gbxs, precip_rolling_window, is_ensemble=False
+    )
+
+    superdrops = pyzarr.get_supers(dataset, consts)
+    time = pyzarr.get_time(dataset)
+
+    return ds, superdrops, time
+
+
 # %% PySDM functions
 def search_for_ensemble_of_pysdm_runs(binpath, numconc, precip_str, alpha):
     label = f"naero{numconc}_precip{precip_str}_a{alpha}_r".replace(".", "p")
@@ -531,3 +553,11 @@ def fetch_pysdm_datasets(pysdm_path2build, setups, is_precip, precip_rolling_win
     }
 
     return pysdm_datasets
+
+
+def get_single_pysdm_dataset(dataset, precip_rolling_window):
+    assert dataset.exists(), f"dataset: {dataset}"
+
+    ds = convert_numpy_arrays_to_dataset(dataset)
+    ds = postprocess_pysdm_dataset(ds, precip_rolling_window, is_ensemble=False)
+    return ds
