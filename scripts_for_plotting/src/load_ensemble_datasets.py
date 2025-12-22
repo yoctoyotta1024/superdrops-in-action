@@ -170,13 +170,13 @@ def postprocess_cleo_dataset(ds, config, gbxs, precip_rolling_window, is_ensembl
     )
     ds = ds.assign(**{arr.name: arr})
 
+    relh = mtpy_calc.relative_humidity_from_mixing_ratio(
+        ds.press.values * mtpy_units.hPa,
+        ds.temp.values * mtpy_units.kelvin,
+        ds.qvap.values / 1000,
+    ).magnitude
     arr = xr.DataArray(
-        mtpy_calc.relative_humidity_from_mixing_ratio(
-            ds.press * mtpy_units.hPa,
-            ds.temp * mtpy_units.kelvin,
-            ds.qvap / 1000,
-        )
-        * 100,
+        relh * 100,
         name="relh",
         dims=["ensemble", "time", "height"] if is_ensemble else ["time", "height"],
         attrs={
