@@ -21,6 +21,18 @@ from metpy.units import units as mtpy_units
 
 
 # %%
+def vapor_pressure(ds):
+    press = ds.press.values * 100 * mtpy_units.Pa  # [Pa]
+    qvap = ds.qvap.values / 1000  # [kg/kg]
+
+    return mtpy_calc.vapor_pressure(press, qvap).magnitude / 100  # [hPa]
+
+
+def dry_pressure(ds):
+    return ds.press.values - vapor_pressure(ds)  # [hPa]
+
+
+# %%
 def cleo_theta(ds):
     press = ds.press.values * 100 * mtpy_units.Pa  # [Pa]
     temp = ds.temp.values * mtpy_units.kelvin  # [K]
@@ -55,15 +67,20 @@ def cleo_dry_density(ds):
     return cleo_density(ds) / (1 + qvap)  # [kg/m^3]
 
 
-def cleo_vapor_pressure(ds):
-    press = ds.press.values * 100 * mtpy_units.Pa  # [Pa]
+# %%
+def pysdm_density(ds):
     qvap = ds.qvap.values / 1000  # [kg/kg]
 
-    return mtpy_calc.vapor_pressure(press, qvap).magnitude / 100  # [hPa]
+    return ds.rho_dry.values * (1 + qvap)  # [kg/m^3]
 
 
-def cleo_dry_pressure(ds):
-    return ds.press.values - cleo_vapor_pressure(ds)  # [hPa]
+def pysdm_theta(ds):
+    press = ds.press.values * 100 * mtpy_units.Pa  # [Pa]
+    temp = ds.temp.values * mtpy_units.kelvin  # [K]
+
+    theta = mtpy_calc.potential_temperature(press, temp).magnitude
+
+    return theta  # [K]
 
 
 # %%

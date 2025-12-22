@@ -141,7 +141,7 @@ def postprocess_cleo_dataset(ds, config, gbxs, precip_rolling_window, is_ensembl
         ds.lwc.integrate(coord="height") / 1000,
         name="lwp",
         dims=["ensemble", "time"] if is_ensemble else ["time"],
-        attrs={"units": "Kg m^-2"},
+        attrs={"units": "kg m^-2"},
     )
     ds = ds.assign(**{arr.name: arr})
 
@@ -205,7 +205,7 @@ def postprocess_cleo_dataset(ds, config, gbxs, precip_rolling_window, is_ensembl
         calcs.cleo_density(ds),
         name="rho",
         dims=["ensemble", "time", "height"] if is_ensemble else ["time", "height"],
-        attrs={"units": "kg/m^3"},
+        attrs={"units": "kg m^-3"},
     )
     ds = ds.assign(**{arr.name: arr})
 
@@ -213,12 +213,12 @@ def postprocess_cleo_dataset(ds, config, gbxs, precip_rolling_window, is_ensembl
         calcs.cleo_dry_density(ds),
         name="rho_dry",
         dims=["ensemble", "time", "height"] if is_ensemble else ["time", "height"],
-        attrs={"units": "kg/m^3"},
+        attrs={"units": "kg m^-3"},
     )
     ds = ds.assign(**{arr.name: arr})
 
     arr = xr.DataArray(
-        calcs.cleo_vapor_pressure(ds),
+        calcs.vapor_pressure(ds),
         name="press_vapour",
         dims=["ensemble", "time", "height"] if is_ensemble else ["time", "height"],
         attrs={"units": "hPa"},
@@ -226,7 +226,7 @@ def postprocess_cleo_dataset(ds, config, gbxs, precip_rolling_window, is_ensembl
     ds = ds.assign(**{arr.name: arr})
 
     arr = xr.DataArray(
-        calcs.cleo_dry_pressure(ds),
+        calcs.dry_pressure(ds),
         name="press_dry",
         dims=["ensemble", "time", "height"] if is_ensemble else ["time", "height"],
         attrs={"units": "hPa"},
@@ -386,9 +386,111 @@ def convert_numpy_arrays_to_dataset(dataset):
     ### rename variables to match CLEO naming conventions
     data["time"] = data.pop("t")
     data["height"] = data.pop("z")
+    data["temp"] = data.pop("T")
+    data["press"] = data.pop("p")
+    data["relh"] = data.pop("RH")
+    data["theta_virtual"] = data.pop("thd")
+    data["rho_dry"] = data.pop("rhod")
+    data["qvap"] = data.pop("water_vapour_mixing_ratio")
     data["lwc"] = data.pop("LWC")
 
     ds = xr.Dataset.from_dict(data)
+
+    return ds
+
+
+def postprocess_pysdm_dataset(ds, precip_rolling_window, is_ensemble=True):
+    ds["time"].attrs["unit"] = "s"
+    ds["height"].attrs["unit"] = "m"
+    ds["temp"].attrs["unit"] = "K"
+    ds["rho_dry"].attrs["unit"] = "kg m^-3"
+    ds["theta_virtual"].attrs["unit"] = "K"
+    ds["relh"].attrs["unit"] = "%"
+
+    ds["press"] = ds["press"] / 100
+    ds["press"].attrs["unit"] = "hPa"
+
+    ds["lwc"] = ds["lwc"] * 1000
+    ds["lwc"].attrs["unit"] = "g m^-3"
+
+    ds["qvap"] = ds["qvap"] * 1000
+    ds["qvap"].attrs["unit"] = "g/kg"
+
+    arr = xr.DataArray(
+        ds.rain_water_mixing_ratio + ds.cloud_water_mixing_ratio,
+        name="qcond",
+        dims=["ensemble", "height", "time"] if is_ensemble else ["height", "time"],
+        attrs={"units": "g/kg"},
+    )
+    ds = ds.assign(**{arr.name: arr})
+
+    arr = xr.DataArray(
+        ds.lwc.integrate(coord="height") / 1000,
+        name="lwp",
+        dims=["ensemble", "time"] if is_ensemble else ["time"],
+        attrs={"units": "kg m^-2"},
+    )
+    ds = ds.assign(**{arr.name: arr})
+
+    arr = xr.DataArray(
+        calcs.pysdm_density(ds),
+        name="rho",
+        dims=["ensemble", "height", "time"] if is_ensemble else ["height", "time"],
+        attrs={"units": "kg m^-3"},
+    )
+    ds = ds.assign(**{arr.name: arr})
+
+    arr = xr.DataArray(
+        calcs.vapor_pressure(ds),
+        name="press_vapour",
+        dims=["ensemble", "height", "time"] if is_ensemble else ["height", "time"],
+        attrs={"units": "hPa"},
+    )
+    ds = ds.assign(**{arr.name: arr})
+
+    arr = xr.DataArray(
+        calcs.dry_pressure(ds),
+        name="press_dry",
+        dims=["ensemble", "height", "time"] if is_ensemble else ["height", "time"],
+        attrs={"units": "hPa"},
+    )
+    ds = ds.assign(**{arr.name: arr})
+
+    arr = xr.DataArray(
+        calcs.pysdm_theta(ds),
+        name="theta",
+        dims=["ensemble", "height", "time"] if is_ensemble else ["height", "time"],
+        attrs={"units": "K"},
+    )
+    ds = ds.assign(**{arr.name: arr})
+
+    try:
+        arr = xr.DataArray(
+            ds.surface_precipitation * si.hour / si.mm,
+            name="surfprecip_rate",
+            dims=["ensemble", "time"] if is_ensemble else ["time"],
+            attrs={
+                "units": "mm hr^-1",
+                "long_name": "surface precipitation rate",
+            },
+        )
+        ds = ds.assign(**{arr.name: arr})
+    except AttributeError:
+        print("no precipitation in dataset")
+
+    try:
+        arr = xr.DataArray(
+            calcs.mean_rolling_window(ds.surfprecip_rate, precip_rolling_window),
+            name="surfprecip_rolling",
+            dims=["ensemble", "time"] if is_ensemble else ["time"],
+            attrs={
+                "units": "mm hr^-1",
+                "long_name": "rolling mean of surface precipitation rate",
+            },
+        )
+        ds = ds.assign(**{arr.name: arr})
+    except AttributeError:
+        print("no precipitation in dataset")
 
     return ds
 
@@ -410,60 +512,7 @@ def get_pysdm_ensemble_dataset(datasets, precip_rolling_window):
     )
     ds = ds.assign(**{arr.name: arr})
 
-    ds["p"] = ds["p"] / 100
-    ds["p"].attrs["unit"] = "hPa"
-
-    ds["lwc"] = ds["lwc"] * 1000
-    ds["lwc"].attrs["unit"] = "g m^-3"
-
-    ds["water_vapour_mixing_ratio"] = ds["water_vapour_mixing_ratio"] * 1000
-    ds["water_vapour_mixing_ratio"].attrs["unit"] = "g/kg"
-
-    arr = xr.DataArray(
-        ds.rain_water_mixing_ratio + ds.cloud_water_mixing_ratio,
-        name="water_liquid_mixing_ratio",
-        dims=["ensemble", "height", "time"],
-        attrs={"units": "g/kg"},
-    )
-    ds = ds.assign(**{arr.name: arr})
-
-    arr = xr.DataArray(
-        ds.lwc.integrate(coord="height") / 1000,
-        name="lwp",
-        dims=["ensemble", "time"],
-        attrs={"units": "Kg m^-2"},
-    )
-    ds = ds.assign(**{arr.name: arr})
-
-    try:
-        arr = xr.DataArray(
-            ds.surface_precipitation * si.hour / si.mm,
-            name="surfprecip_rate",
-            dims=["ensemble", "time"],
-            attrs={
-                "units": "mm hr^-1",
-                "long_name": "surface precipitation rate",
-            },
-        )
-        ds = ds.assign(**{arr.name: arr})
-    except AttributeError:
-        print("no precipitation in dataset")
-
-    try:
-        arr = xr.DataArray(
-            calcs.mean_rolling_window(ds.surfprecip_rate, precip_rolling_window),
-            name="surfprecip_rolling",
-            dims=["ensemble", "time"],
-            attrs={
-                "units": "mm hr^-1",
-                "long_name": "rolling mean of surface precipitation rate",
-            },
-        )
-        ds = ds.assign(**{arr.name: arr})
-    except AttributeError:
-        print("no precipitation in dataset")
-
-    return ds
+    return postprocess_pysdm_dataset(ds, precip_rolling_window, is_ensemble=True)
 
 
 def fetch_pysdm_datasets(pysdm_path2build, setups, is_precip, precip_rolling_window):
