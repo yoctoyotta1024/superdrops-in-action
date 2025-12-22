@@ -110,39 +110,7 @@ def get_cleo_consts_gbxs_time(
     return config, consts, gbxs, time
 
 
-def get_cleo_ensemble_dataset(config, gbxs, datasets, precip_rolling_window):
-    def drop_superdroplets(ds):
-        superdroplets = [
-            "sdId",
-            "sdgbxindex",
-            "coord3",
-            "coord1",
-            "coord2",
-            "msol",
-            "radius",
-            "xi",
-        ]
-        return ds.drop_vars(superdroplets)
-
-    ds = xr.open_mfdataset(
-        datasets,
-        engine="zarr",
-        combine="nested",
-        concat_dim="ensemble",
-        preprocess=drop_superdroplets,
-        consolidated=False,
-    )
-    ensemble_coord = dict(ensemble=("ensemble", [str(Path(d).stem) for d in datasets]))
-    ds = ds.assign_coords(ensemble_coord)
-
-    arr = xr.DataArray(
-        datasets,
-        name="sources",
-        dims=["ensemble"],
-        attrs={"long_name": "path to dataset of each ensemble member"},
-    )
-    ds = ds.assign(**{arr.name: arr})
-
+def postprocess_cleo_dataset(ds, config, gbxs, precip_rolling_window):
     ds = ds.rename_dims({"gbxindex": "height"})
     ds = ds.drop_vars("gbxindex")
     ds = ds.assign_coords(height=("height", gbxs["zfull"]))
@@ -218,6 +186,42 @@ def get_cleo_ensemble_dataset(config, gbxs, datasets, precip_rolling_window):
     ds = ds.assign(**{arr.name: arr})
 
     return ds
+
+
+def get_cleo_ensemble_dataset(config, gbxs, datasets, precip_rolling_window):
+    def drop_superdroplets(ds):
+        superdroplets = [
+            "sdId",
+            "sdgbxindex",
+            "coord3",
+            "coord1",
+            "coord2",
+            "msol",
+            "radius",
+            "xi",
+        ]
+        return ds.drop_vars(superdroplets)
+
+    ds = xr.open_mfdataset(
+        datasets,
+        engine="zarr",
+        combine="nested",
+        concat_dim="ensemble",
+        preprocess=drop_superdroplets,
+        consolidated=False,
+    )
+    ensemble_coord = dict(ensemble=("ensemble", [str(Path(d).stem) for d in datasets]))
+    ds = ds.assign_coords(ensemble_coord)
+
+    arr = xr.DataArray(
+        datasets,
+        name="sources",
+        dims=["ensemble"],
+        attrs={"long_name": "path to dataset of each ensemble member"},
+    )
+    ds = ds.assign(**{arr.name: arr})
+
+    return postprocess_cleo_dataset(ds, config, gbxs, precip_rolling_window)
 
 
 def fetch_cleo_datasets(
