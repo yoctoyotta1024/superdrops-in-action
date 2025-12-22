@@ -110,7 +110,7 @@ def get_cleo_consts_gbxs_time(
     return config, consts, gbxs, time
 
 
-def postprocess_cleo_dataset(ds, config, gbxs, precip_rolling_window):
+def postprocess_cleo_dataset(ds, config, gbxs, precip_rolling_window, is_ensemble=True):
     ds = ds.rename_dims({"gbxindex": "height"})
     ds = ds.drop_vars("gbxindex")
     ds = ds.assign_coords(height=("height", gbxs["zfull"]))
@@ -124,7 +124,7 @@ def postprocess_cleo_dataset(ds, config, gbxs, precip_rolling_window):
     arr = xr.DataArray(
         ds.massmom0 / ds.volume / 1e6,
         name="numconc",
-        dims=["ensemble", "time", "height"],
+        dims=["ensemble", "time", "height"] if is_ensemble else ["time", "height"],
         attrs={"units": "cm^-3"},
     )
     ds = ds.assign(**{arr.name: arr})
@@ -132,7 +132,7 @@ def postprocess_cleo_dataset(ds, config, gbxs, precip_rolling_window):
     arr = xr.DataArray(
         ds.massmom1 / ds.volume,
         name="lwc",
-        dims=["ensemble", "time", "height"],
+        dims=["ensemble", "time", "height"] if is_ensemble else ["time", "height"],
         attrs={"units": "g m^-3"},
     )
     ds = ds.assign(**{arr.name: arr})
@@ -140,7 +140,7 @@ def postprocess_cleo_dataset(ds, config, gbxs, precip_rolling_window):
     arr = xr.DataArray(
         ds.lwc.integrate(coord="height") / 1000,
         name="lwp",
-        dims=["ensemble", "time"],
+        dims=["ensemble", "time"] if is_ensemble else ["time"],
         attrs={"units": "Kg m^-2"},
     )
     ds = ds.assign(**{arr.name: arr})
@@ -151,7 +151,7 @@ def postprocess_cleo_dataset(ds, config, gbxs, precip_rolling_window):
         * 1000
         / (config["OBSTSTEP"] / 3600),
         name="surfprecip_rate",
-        dims=["ensemble", "time"],
+        dims=["ensemble", "time"] if is_ensemble else ["time"],
         attrs={
             "units": "mm hr^-1",
             "long_name": "surface precipitation rate",
@@ -162,7 +162,7 @@ def postprocess_cleo_dataset(ds, config, gbxs, precip_rolling_window):
     arr = xr.DataArray(
         calcs.mean_rolling_window(ds.surfprecip_rate, precip_rolling_window),
         name="surfprecip_rolling",
-        dims=["ensemble", "time"],
+        dims=["ensemble", "time"] if is_ensemble else ["time"],
         attrs={
             "units": "mm hr^-1",
             "long_name": "rolling mean of surface precipitation rate",
@@ -178,10 +178,58 @@ def postprocess_cleo_dataset(ds, config, gbxs, precip_rolling_window):
         )
         * 100,
         name="relh",
-        dims=["ensemble", "time", "height"],
+        dims=["ensemble", "time", "height"] if is_ensemble else ["time", "height"],
         attrs={
             "units": "%",
         },
+    )
+    ds = ds.assign(**{arr.name: arr})
+
+    arr = xr.DataArray(
+        calcs.cleo_theta(ds),
+        name="theta",
+        dims=["ensemble", "time", "height"] if is_ensemble else ["time", "height"],
+        attrs={"units": "K"},
+    )
+    ds = ds.assign(**{arr.name: arr})
+
+    arr = xr.DataArray(
+        calcs.cleo_virtual_theta(ds),
+        name="theta_virtual",
+        dims=["ensemble", "time", "height"] if is_ensemble else ["time", "height"],
+        attrs={"units": "K"},
+    )
+    ds = ds.assign(**{arr.name: arr})
+
+    arr = xr.DataArray(
+        calcs.cleo_density(ds),
+        name="rho",
+        dims=["ensemble", "time", "height"] if is_ensemble else ["time", "height"],
+        attrs={"units": "kg/m^3"},
+    )
+    ds = ds.assign(**{arr.name: arr})
+
+    arr = xr.DataArray(
+        calcs.cleo_dry_density(ds),
+        name="rho_dry",
+        dims=["ensemble", "time", "height"] if is_ensemble else ["time", "height"],
+        attrs={"units": "kg/m^3"},
+    )
+    ds = ds.assign(**{arr.name: arr})
+
+    arr = xr.DataArray(
+        calcs.cleo_vapor_pressure(ds),
+        name="press_vapour",
+        dims=["ensemble", "time", "height"] if is_ensemble else ["time", "height"],
+        attrs={"units": "hPa"},
+    )
+    ds = ds.assign(**{arr.name: arr})
+
+    arr = xr.DataArray(
+        calcs.cleo_dry_pressure(ds),
+        name="press_dry",
+        dims=["ensemble", "time", "height"] if is_ensemble else ["time", "height"],
+        attrs={"units": "hPa"},
     )
     ds = ds.assign(**{arr.name: arr})
 
@@ -221,7 +269,9 @@ def get_cleo_ensemble_dataset(config, gbxs, datasets, precip_rolling_window):
     )
     ds = ds.assign(**{arr.name: arr})
 
-    return postprocess_cleo_dataset(ds, config, gbxs, precip_rolling_window)
+    return postprocess_cleo_dataset(
+        ds, config, gbxs, precip_rolling_window, is_ensemble=True
+    )
 
 
 def fetch_cleo_datasets(

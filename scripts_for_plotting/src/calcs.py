@@ -16,6 +16,54 @@ Calculations for xarray datasets of CLEO and PySDM 1-D kid test case
 """
 
 import numpy as np
+from metpy import calc as mtpy_calc
+from metpy.units import units as mtpy_units
+
+
+# %%
+def cleo_theta(ds):
+    press = ds.press.values * 100 * mtpy_units.Pa  # [Pa]
+    temp = ds.temp.values * mtpy_units.kelvin  # [K]
+
+    theta = mtpy_calc.potential_temperature(press, temp).magnitude
+
+    return theta  # [K]
+
+
+def cleo_virtual_theta(ds):
+    """sometimes called "dry theta, is theta as if parcel was dry"""
+    press = ds.press.values * 100 * mtpy_units.Pa  # [Pa]
+    temp = ds.temp.values * mtpy_units.kelvin  # [K]
+    qvap = ds.qvap.values / 1000  # [kg/kg]
+
+    theta_virtual = mtpy_calc.virtual_potential_temperature(press, temp, qvap).magnitude
+
+    return theta_virtual  # [K]
+
+
+def cleo_density(ds):
+    press = ds.press.values * 100 * mtpy_units.Pa  # [Pa]
+    temp = ds.temp.values * mtpy_units.kelvin  # [K]
+    qvap = ds.qvap.values / 1000  # [kg/kg]
+
+    return mtpy_calc.density(press, temp, qvap).magnitude  # [kg/m^3]
+
+
+def cleo_dry_density(ds):
+    qvap = ds.qvap.values / 1000  # [kg/kg]
+
+    return cleo_density(ds) / (1 + qvap)  # [kg/m^3]
+
+
+def cleo_vapor_pressure(ds):
+    press = ds.press.values * 100 * mtpy_units.Pa  # [Pa]
+    qvap = ds.qvap.values / 1000  # [kg/kg]
+
+    return mtpy_calc.vapor_pressure(press, qvap).magnitude / 100  # [hPa]
+
+
+def cleo_dry_pressure(ds):
+    return ds.press.values - cleo_vapor_pressure(ds)  # [hPa]
 
 
 # %%
