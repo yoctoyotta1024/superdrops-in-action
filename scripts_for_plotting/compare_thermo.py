@@ -118,19 +118,19 @@ def diff(v1, v2):
     return v1.mean(dim="ensemble") - v2.mean(dim="ensemble")
 
 
-diff(cds.temp, pds.T).plot(ax=axs[0], y="height", cmap="bwr")
+diff(cds.temp, pds.temp).plot(ax=axs[0], y="height", cmap="bwr")
 axs[0].set_title("temp /K")
 
-diff(cds.press, pds.p).plot(ax=axs[1], y="height", cmap="bwr")
+diff(cds.press, pds.press).plot(ax=axs[1], y="height", cmap="bwr")
 axs[1].set_title("press / hPa")
 
-diff(cds.qvap, pds.water_vapour_mixing_ratio).plot(ax=axs[2], y="height", cmap="bwr")
+diff(cds.qvap, pds.qvap).plot(ax=axs[2], y="height", cmap="bwr")
 axs[2].set_title("qvap /g/kg")
 
-diff(cds.relh, pds.RH).plot(ax=axs[3], y="height", cmap="bwr")
+diff(cds.relh, pds.relh).plot(ax=axs[3], y="height", cmap="bwr")
 axs[3].set_title("relh /%")
 
-diff(cds.qcond, pds.water_liquid_mixing_ratio).plot(ax=axs[4], y="height", cmap="bwr")
+diff(cds.qcond, pds.qcond).plot(ax=axs[4], y="height", cmap="bwr")
 axs[4].set_title("qcond /g/kg")
 
 diff(cds.lwc, pds.lwc).plot(ax=axs[5], y="height", cmap="bwr")
@@ -142,9 +142,9 @@ for t, c in zip(times2plot, colors):
     cds.qvap.mean(dim="ensemble").sel(time=t, method="nearest").plot(
         ax=axs[6], y="height", c=c, label=t
     )
-    pds.water_vapour_mixing_ratio.mean(dim="ensemble").sel(
-        time=t, method="nearest"
-    ).plot(ax=axs[6], y="height", linestyle="--", c=c, label=t)
+    pds.qvap.mean(dim="ensemble").sel(time=t, method="nearest").plot(
+        ax=axs[6], y="height", linestyle="--", c=c, label=t
+    )
 axs[6].legend(loc="upper left")
 axs[6].set_xlim([10, 15.25])
 axs[6].set_ylim([0.0, 3000])
@@ -156,9 +156,9 @@ for t, c in zip(times2plot, colors):
     cds.qcond.mean(dim="ensemble").sel(time=t, method="nearest").plot(
         ax=axs[7], y="height", c=c, label=t
     )
-    pds.water_liquid_mixing_ratio.mean(dim="ensemble").sel(
-        time=t, method="nearest"
-    ).plot(ax=axs[7], y="height", linestyle="--", c=c, label=t)
+    pds.qcond.mean(dim="ensemble").sel(time=t, method="nearest").plot(
+        ax=axs[7], y="height", linestyle="--", c=c, label=t
+    )
 axs[7].legend(loc="upper left")
 axs[7].set_xlim([0.4, 1.4])
 axs[7].set_ylim([0.0, 3000])
@@ -202,28 +202,24 @@ def diff(v1, v2):
 
 
 diff(cds2.temp, cds1.temp).plot(ax=axs[0, 0], y="height", cmap="bwr")
-diff(cds2.temp, pds.T).plot(ax=axs[0, 1], y="height", cmap="bwr")
+diff(cds2.temp, pds.temp).plot(ax=axs[0, 1], y="height", cmap="bwr")
 axs[0, 0].set_title("CLEO Ec=1 - CLEO with Ec\ntemp /K")
 axs[0, 1].set_title("CLEO Ec=1 - PySDM\ntemp /K")
 
 diff(cds2.press, cds1.press).plot(ax=axs[1, 0], y="height", cmap="bwr")
-diff(cds2.press, pds.p).plot(ax=axs[1, 1], y="height", cmap="bwr")
+diff(cds2.press, pds.press).plot(ax=axs[1, 1], y="height", cmap="bwr")
 axs[1, 0].set_title("press /hPa")
 
 diff(cds2.qvap, cds1.qvap).plot(ax=axs[2, 0], y="height", cmap="bwr")
-diff(cds2.qvap, pds.water_vapour_mixing_ratio).plot(
-    ax=axs[2, 1], y="height", cmap="bwr"
-)
+diff(cds2.qvap, pds.qvap).plot(ax=axs[2, 1], y="height", cmap="bwr")
 axs[2, 0].set_title("qvap /g/kg")
 
 diff(cds2.relh, cds1.relh).plot(ax=axs[3, 0], y="height", cmap="bwr")
-diff(cds2.relh, pds.RH).plot(ax=axs[3, 1], y="height", cmap="bwr")
+diff(cds2.relh, pds.relh).plot(ax=axs[3, 1], y="height", cmap="bwr")
 axs[3, 0].set_title("relh /%")
 
 diff(cds2.qcond, cds1.qcond).plot(ax=axs[4, 0], y="height", cmap="bwr")
-diff(cds2.qcond, pds.water_liquid_mixing_ratio).plot(
-    ax=axs[4, 1], y="height", cmap="bwr"
-)
+diff(cds2.qcond, pds.qcond).plot(ax=axs[4, 1], y="height", cmap="bwr")
 axs[4, 0].set_title("qcond /g/kg")
 
 diff(cds2.surfprecip_rate, cds1.surfprecip_rate).plot(ax=axs[5, 0])
@@ -244,9 +240,9 @@ cds_qvap = cds.qvap.mean(dim="ensemble") / 1000
 cds_relh = calc.relative_humidity_from_mixing_ratio(cds_press, cds_temp, cds_qvap)
 cds_relh.plot(y="height")
 # %% relative humidity from PySDM thermo
-pds_temp = pds.T.mean(dim="ensemble") * units.K
-pds_press = pds.p.mean(dim="ensemble") * units.hPa
-pds_qvap = pds.water_vapour_mixing_ratio.mean(dim="ensemble") / 1000
+pds_temp = pds.temp.mean(dim="ensemble") * units.K
+pds_press = pds.press.mean(dim="ensemble") * units.hPa
+pds_qvap = pds.qvap.mean(dim="ensemble") / 1000
 
 pds_relh = calc.relative_humidity_from_mixing_ratio(pds_press, pds_temp, pds_qvap)
 pds_relh.plot(y="height")
@@ -255,9 +251,9 @@ fig, ax = plt.subplots(nrows=2, ncols=3)
 cds.relh.mean(dim="ensemble").plot(ax=ax[0, 0], y="height")
 cds_relh.plot(ax=ax[0, 1], y="height")
 (cds.relh.mean(dim="ensemble") / 100 - cds_relh).plot(ax=ax[0, 2], y="height")
-pds.RH.mean(dim="ensemble").plot(ax=ax[1, 0], y="height")
+pds.relh.mean(dim="ensemble").plot(ax=ax[1, 0], y="height")
 pds_relh.plot(ax=ax[1, 1], y="height")
-(pds.RH.mean(dim="ensemble") / 100 - pds_relh).plot(ax=ax[1, 2], y="height")
+(pds.relh.mean(dim="ensemble") / 100 - pds_relh).plot(ax=ax[1, 2], y="height")
 fig.tight_layout()
 # %% temp difference -> cds colder by O(0.1K)
 (cds_temp - pds_temp).plot(y="height")
@@ -358,7 +354,7 @@ cds_relh_with_pds_pressqvap = calc.relative_humidity_from_mixing_ratio(
 
 # %% Now qvap/qcond seems to be the problem -> collisions start earlier in CLEO
 cds_qcond = cds.qcond.mean(dim="ensemble")
-pds_qcond = pds.water_liquid_mixing_ratio.mean(dim="ensemble")
+pds_qcond = pds.qcond.mean(dim="ensemble")
 for time in [0, 100, 500]:
     fig, ax = plt.subplots(nrows=1, ncols=2)
     ((cds_qvap - pds_qvap) * 1000).sel(time=time, method="nearest").plot(
@@ -571,9 +567,9 @@ def th_dry(temp, press_hpa):
 cds_thd = th_dry(cds_temp, cds_press)
 pds_thd = th_dry(pds_temp, pds_press)
 # %% sanity check thd formula
-(pds.thd.mean(dim="ensemble")).plot(y="height")
+(pds.theta_virtual.mean(dim="ensemble")).plot(y="height")
 plt.show()
-(pds.thd.mean(dim="ensemble") - pds_thd).plot(y="height")
+(pds.theta_virtual.mean(dim="ensemble") - pds_thd).plot(y="height")
 # %%
 (cds_thd).plot(y="height")
 plt.show()
@@ -591,9 +587,9 @@ def rho_dry(temp, press_hpa, qvap):
 cds_rhod = rho_dry(cds_temp, cds_press, cds_qvap)
 pds_rhod = rho_dry(pds_temp, pds_press, pds_qvap)
 # %% sanity check rhod formula
-(pds.rhod.mean(dim="ensemble")).plot(y="height")
+(pds.rho_dry.mean(dim="ensemble")).plot(y="height")
 plt.show()
-(pds.rhod.mean(dim="ensemble") - pds_rhod).plot(y="height")
+(pds.rho_dry.mean(dim="ensemble") - pds_rhod).plot(y="height")
 # %%
 (cds_rhod).plot(y="height")
 plt.show()
