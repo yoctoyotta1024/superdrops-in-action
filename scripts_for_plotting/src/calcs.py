@@ -3,7 +3,7 @@ Copyright (c) 2025 MPI-M, Clara Bayley
 
 ----- superdrops-in-action -----
 File: calcs.py
-Project: scripts
+Project: src
 Created Date: Thursday 11th December 2025
 Author: Clara Bayley (CB)
 Additional Contributors:
