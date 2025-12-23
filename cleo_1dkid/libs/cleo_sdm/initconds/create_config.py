@@ -62,6 +62,11 @@ parser.add_argument(
     type=float,
     help="alpha value for superdroplet initial conditions",
 )
+parser.add_argument(
+    "--numconc",
+    type=float,
+    help="number concentration /cm^3 for superdroplet initial conditions",
+)
 args = parser.parse_args()
 
 from cleopy import editconfigfile
@@ -74,6 +79,7 @@ setup_filename = args.setup_filename
 zarrbasedir = args.zarrbasedir
 nsupers_pergbx = args.nsupers_pergbx
 alpha = args.alpha
+numconc_perm3 = float(args.numconc) * 1e6  # [m^-3]
 
 cnfg = yaml.safe_load(open(args.src_config_filename))
 initnsupers = int(cnfg["domain"]["ngbxs"]) * nsupers_pergbx
@@ -101,6 +107,8 @@ params = {
     "maxnsupers": int(maxnsupers),
     "initnsupers": int(initnsupers),
     "newnsupers": int(newnsupers),
+    "numconc": int(numconc_perm3),
+    "NUMCONC_a": int(numconc_perm3),
 }
 
 print("--- create_config configuration arguments ---")

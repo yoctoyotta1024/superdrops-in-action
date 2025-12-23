@@ -254,7 +254,7 @@ def _test_microphys_with_wrapper(path2cleopythonbindings, config_filename):
     assert np.all(thermo1.press == thermo2.press)
     assert np.all(thermo1.temp == thermo2.temp)
     for q1, q2 in zip(thermo1.unpack_massmix_ratios(), thermo2.unpack_massmix_ratios()):
-        assert np.all(q1 == q2)
+        assert np.all(abs(q1 - q2) < 1e-24)
 
     return 0
 

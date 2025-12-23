@@ -24,13 +24,14 @@ isfigures=FALSE
 python=/work/bm1183/m300950/bin/envs/superdrops-in-action/bin/python
 path2initcondsscripts=${path2cleo1dkid}/libs/cleo_sdm/initconds
 
+runtype=condevap_only
 nsupers_pergbxs=(256) # for superdroplet initial conditions
-alphas=(0 0.5 1.0) # for superdroplet initial conditions alpha sampling
+alphas=(0.5) # for superdroplet initial conditions alpha sampling
+numconc=150
 
 ### src_configs is list of absolute paths to source config files seperated by spaces
 ### e.g. src_configs=("$HOME/config1" "$HOME/config2"), following lists are
-src_configs=("${path2cleo1dkid}/share/cleo_initial_conditions/1dkid/condevap_only/config.yaml"
-      "${path2cleo1dkid}/share/cleo_initial_conditions/1dkid/fullscheme/config.yaml")
+src_configs=("${path2cleo1dkid}/share/cleo_initial_conditions/1dkid/${runtype}/config.yaml")
 
 ### IDs of ensemble members (diff superdrop initial conditions) for each src_configs to create
 if [[ "${start_id}" == "" || "${end_id}" == "" ]]
@@ -45,13 +46,11 @@ cleoconstants_filepath="${path2build}/_deps/cleo-src/libs/"
 grid_filename="${path2build}/share/dimlessGBxboundaries.dat"
 
 ### same files for all src_configs, different for run_ids
-initsupers_directory="${path2build}/share"
+initsupers_directory="${path2build}/share/share_${numconc}cm3"
 
 ### different for all src_configs and different for run_ids
-configs_directory=("${path2build}/tmp/condevap_only"
-                 "${path2build}/tmp/fullscheme")
-bin_directory=("${path2build}/bin/condevap_only"
-                "${path2build}/bin/fullscheme")
+configs_directory=("${path2build}/tmp_${numconc}cm3/${runtype}")
+bin_directory=("${path2build}/bin_${numconc}cm3/${runtype}")
 ### ---------------------------------------------------- ###
 ### ---------------------------------------------------- ###
 ### ---------------------------------------------------- ###
@@ -104,7 +103,7 @@ do
         initsupers_filename="${initsupers_directory}/dimlessSDsinit_${label}.dat"
         setup_filename="${bin_directory[i]}/setup_${label}.txt"
         zarrbasedir="${bin_directory[i]}/sol_${label}.zarr"
-        echo "---- src ${i}, run number: ${m} ----"
+        echo "---- src ${i}, run number: ${m}, numconc: ${numconc}cm^-3  ----"
         echo "---- nsupers ${nsupers_pergbxs[k]}, alpha ${alphas[l]} ----"
         echo "path to build directory: ${path2build}"
         echo "src config file: ${src_configfile}"
@@ -115,6 +114,7 @@ do
         echo "-- ${zarrbasedir}"
         echo "-- ${nsupers_pergbxs[k]}"
         echo "-- ${alphas[l]}"
+        echo "-- ${numconc}"
 
         echo "python create_config.py ${src_configfile} ${dest_configfile} [...]"
         ${python} ${path2initcondsscripts}/create_config.py ${src_configfile} ${dest_configfile} \
@@ -124,7 +124,8 @@ do
           --setup_filename="${setup_filename}" \
           --zarrbasedir="${zarrbasedir}" \
           --nsupers_pergbx="${nsupers_pergbxs[k]}" \
-          --alpha="${alphas[l]}"
+          --alpha="${alphas[l]}" \
+          --numconc="${numconc}"
       done
     done
   done

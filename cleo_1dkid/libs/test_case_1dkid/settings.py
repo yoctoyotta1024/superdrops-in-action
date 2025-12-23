@@ -56,14 +56,14 @@ class Settings:
         self.z_max = z_max
         self.t_max = t_max
 
-        self.qv = interp1d(
+        self.qv0 = interp1d(
             (0, 740, 3260), (0.015, 0.0138, 0.0024), fill_value="extrapolate"
         )
         self._th = interp1d(
             (0, 740, 3260), (297.9, 297.9, 312.66), fill_value="extrapolate"
         )
 
-        self.thd = lambda z: formulae.th_dry(self._th(z), self.qv(z))
+        self.thd = lambda z, qv: formulae.th_dry(self._th(z), qv)
 
         z_points = np.arange(0, self.z_max + self.dz / 2, self.dz / 2)
 
@@ -104,7 +104,7 @@ class Settings:
                     return exner
 
             self.temp = lambda z: z2exner(zpos(z), return_temp=True)
-            self.press = lambda z: z2exner(zpos(z), return_press=True)
+            self.press = lambda z, qv: z2exner(zpos(z), return_press=True)
             self.rhod = lambda z: z2exner(zpos(z), return_rho=True)
             if is_exner_novapour_uniformrho:
                 rhod0 = 1.0 * np.ones_like(z_points)  # [kg / m^3]
@@ -114,30 +114,31 @@ class Settings:
             # note: not in the paper,
             # https://github.com/BShipway/KiD/tree/master/src/physconst.f90#L43
             def drhod_dz(z, rhod):
-                T = formulae.temperature(rhod[0], self.thd(z))
-                p = formulae.pressure(rhod[0], T, self.qv(z))
-                drhod_dz = formulae.drho_dz(const.g, p, T, self.qv(z), const.lv)
+                T = formulae.temperature(rhod[0], self.thd(z, self.qv0(z)))
+                p = formulae.pressure(rhod[0], T, self.qv0(z))
+                drhod_dz = formulae.drho_dz(const.g, p, T, self.qv0(z), const.lv)
                 if not is_approx_drhod_dz:  # to resolve issue #335
-                    qv = self.qv(z)
-                    dqv_dz = Derivative(self.qv)(z)
+                    qv = self.qv0(z)
+                    dqv_dz = Derivative(self.qv0)(z)
                     drhod_dz = drhod_dz / (1 + qv) - rhod * dqv_dz / (1 + qv) ** 2
                 return drhod_dz
 
-            rhod0 = formulae.rho_d(p_surf, self.qv(0), self._th(0))
+            rhod0 = formulae.rho_d(p_surf, self.qv0(0), self._th(0))
             rhod_solution = solve_ivp(
                 fun=drhod_dz,
                 t_span=(0, self.z_max),
                 y0=np.asarray((rhod0,)),
                 t_eval=z_points,
+                max_step=self.dz / 2,
             )
             assert rhod_solution.success
 
             self.rhod = lambda z: interp1d(z_points, rhod_solution.y[0])(zpos(z))
             self.temp = lambda z: formulae.temperature(
-                self.rhod(zpos(z)), self.thd(zpos(z))
+                self.rhod(zpos(z)), self.thd(zpos(z), self.qv0(zpos(z)))
             )
-            self.press = lambda z: formulae.pressure(
-                self.rhod(zpos(z)), self.temp(zpos(z)), self.qv(zpos(z))
+            self.press = lambda z, qv: formulae.pressure(
+                self.rhod(zpos(z)), self.temp(zpos(z)), qv
             )
 
         rhod_w_const = wmax_const * si.m / si.s * si.kg / si.m**3
@@ -147,6 +148,7 @@ class Settings:
         )
 
         self.nz_vec = arakawa_c.z_vector_coord((self.nz,))
+        self.press0 = lambda z: self.press(z, self.qv0(zpos(z)))
 
     @property
     def nz(self):

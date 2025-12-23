@@ -91,8 +91,8 @@ class OutputThermodynamics:
           time (s).
         temp (OutputVariable):
           Temperature (K).
-        rho (OutputVariable):
-          Density of moist air (kg/m3).
+        rhod (OutputVariable):
+          Density of dry air (kg/m3).
         press (OutputVariable):
           Pressure (Pa).
         qvap (OutputVariable):
@@ -121,7 +121,7 @@ class OutputThermodynamics:
 
         self.time = OutputVariable("time", "s", [shape[0]])
         self.temp = OutputVariable("temp", "K", shape)
-        self.rho = OutputVariable("rho", "kg m-3", shape)
+        self.rhod = OutputVariable("rhod", "kg m-3", shape)
         self.press = OutputVariable("press", "Pa", shape)
         self.qvap = OutputVariable("qvap", "kg/kg", shape)
         self.qcond = OutputVariable("qcond", "kg/kg", shape)
@@ -165,7 +165,7 @@ class OutputThermodynamics:
         """
         self.time.write(time)
         self.temp.write(thermo.temp)
-        self.rho.write(thermo.rho)
+        self.rhod.write(thermo.rhod)
         self.press.write(thermo.press)
         self.qvap.write(thermo.massmix_ratios["qvap"])
         self.qcond.write(thermo.massmix_ratios["qcond"])
@@ -212,7 +212,7 @@ class OutputThermodynamics:
         """
         self.time.finalize()
         self.temp.finalize()
-        self.rho.finalize()
+        self.rhod.finalize()
         self.press.finalize()
         self.qvap.finalize()
         self.qcond.finalize()

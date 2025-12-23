@@ -72,7 +72,7 @@ class KiDDynamics:
         self.mpdata = MPDATA(
             nz=self.settings.nz,
             dt=self.settings.dt,
-            qv_of_zZ_at_t0=lambda zZ: self.settings.qv(
+            qv_of_zZ_at_t0=lambda zZ: self.settings.qv0(
                 zZ * self.settings.dz + self.settings.z_min
             ),
             g_factor_of_zZ=lambda zZ: self.settings.rhod(
@@ -87,13 +87,9 @@ class KiDDynamics:
         assert self.settings.z_min == z_min
         assert self.settings.z_max == z_max
         assert self.settings.dz == z_delta
-        zfull = np.arange(z_min + z_delta / 2, z_max + z_delta / 2, z_delta)
+        self.zfull = np.arange(z_min + z_delta / 2, z_max + z_delta / 2, z_delta)
         self.zhalf = np.arange(z_min, z_max + z_delta, z_delta)
-        assert np.all((self.zhalf[1:] + self.zhalf[:-1]) / 2 == zfull)
-
-        self.rhod_prof = self.settings.rhod(zfull)
-        self.temp_prof = self.settings.temp(zfull)
-        self.press_prof = self.settings.press(zfull)
+        assert np.all((self.zhalf[1:] + self.zhalf[:-1]) / 2 == self.zfull)
 
         key = f"nr={self.mpdata.nr}, dz={self.settings.dz}, dt={self.settings.dt}, options={options}"
         print(f"Simulating {self.settings.nt} timesteps using {key}")
@@ -107,15 +103,15 @@ class KiDDynamics:
         Returns:
             Thermodynamics: Updated thermodynamic state.
         """
-        thermo.temp[:] = self.temp_prof
-        thermo.rho[:] = self.rhod_prof
-        thermo.press[:] = self.press_prof
         thermo.massmix_ratios["qvap"][:] = self.mpdata["qvap"].advectee.get()
         thermo.massmix_ratios["qcond"][:] = self.mpdata["qcond"].advectee.get()
         thermo.massmix_ratios["qice"][:] = self.mpdata["qice"].advectee.get()
         thermo.massmix_ratios["qrain"][:] = self.mpdata["qrain"].advectee.get()
         thermo.massmix_ratios["qsnow"][:] = self.mpdata["qsnow"].advectee.get()
         thermo.massmix_ratios["qgrau"][:] = self.mpdata["qgrau"].advectee.get()
+        thermo.rhod[:] = self.settings.rhod(self.zfull)
+        thermo.temp[:] = self.settings.temp(self.zfull)
+        thermo.press[:] = self.settings.press(self.zfull, thermo.massmix_ratios["qvap"])
 
         if thermo.wvel.size != 0:
             z_half_reps = np.repeat(

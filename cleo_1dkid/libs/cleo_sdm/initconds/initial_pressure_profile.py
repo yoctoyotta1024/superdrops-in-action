@@ -52,7 +52,7 @@ def get_initial_pressure_profile(
         is_approx_drhod_dz=False,
     )
     zfull = np.arange(z_min + z_delta / 2, z_max + z_delta / 2, z_delta)
-    press_prof = settings.press(zfull)
+    press_prof = settings.press0(zfull)
 
     gbxbounds = rgrid.read_dimless_gbxboundaries_binary(grid_filename, isprint=False)
 
