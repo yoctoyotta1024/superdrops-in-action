@@ -160,6 +160,17 @@ def postprocess_cleo_dataset(ds, config, gbxs, precip_rolling_window, is_ensembl
     ds = ds.assign(**{arr.name: arr})
 
     arr = xr.DataArray(
+        ds.surfprecip_rate.cumsum(dim="time") * config["OBSTSTEP"] / 3600,
+        name="surfprecip_cumulative",
+        dims=["ensemble", "time"] if is_ensemble else ["time"],
+        attrs={
+            "units": "mm",
+            "long_name": "accumulated surface precipitation",
+        },
+    )
+    ds = ds.assign(**{arr.name: arr})
+
+    arr = xr.DataArray(
         calcs.mean_rolling_window(ds.surfprecip_rate, precip_rolling_window),
         name="surfprecip_rolling",
         dims=["ensemble", "time"] if is_ensemble else ["time"],
@@ -494,6 +505,18 @@ def postprocess_pysdm_dataset(ds, precip_rolling_window, is_ensemble=True):
             attrs={
                 "units": "mm hr^-1",
                 "long_name": "surface precipitation rate",
+            },
+        )
+        ds = ds.assign(**{arr.name: arr})
+
+        delta_time = np.mean(ds.time.values[1:] - ds.time.values[:-1])
+        arr = xr.DataArray(
+            ds.surfprecip_rate.cumsum(dim="time") * delta_time / 3600,
+            name="surfprecip_cumulative",
+            dims=["ensemble", "time"] if is_ensemble else ["time"],
+            attrs={
+                "units": "mm",
+                "long_name": "accumulated surface precipitation",
             },
         )
         ds = ds.assign(**{arr.name: arr})
