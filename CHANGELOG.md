@@ -2,6 +2,62 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## [v0.12.0](https://github.com/yoctoyotta1024/superdrops-in-action/compare/7475649f2cdd8814e2a1cee511c5960d5ab33022..v0.12.0) - 2025-12-23
+#### Bug Fixes
+- use values not pint quantity - ([231eb48](https://github.com/yoctoyotta1024/superdrops-in-action/commit/231eb485afb7f14947ef0865d71ec1aeff6a130b)) - clara.bayley
+- need max_step in solve_ivp to get accurate dry density profile like in PySDM example - ([f774c73](https://github.com/yoctoyotta1024/superdrops-in-action/commit/f774c736dd67052ef4ac24d0f78cefea9dfd1f4b)) - clara.bayley
+#### Continuous Integration
+- fix tolerance on diff - ([9dd2689](https://github.com/yoctoyotta1024/superdrops-in-action/commit/9dd2689af64c52e84e322002d18f423300155e81)) - clara.bayley
+#### Features
+- new script for plotting initial conditions - ([b88af40](https://github.com/yoctoyotta1024/superdrops-in-action/commit/b88af4065c93ceaa20c6de9ebf9f116b80a9bf26)) - clara.bayley
+- new file for plotting different profile results from CLEO - ([04b4212](https://github.com/yoctoyotta1024/superdrops-in-action/commit/04b4212086dae273cc009fd31f286d12107689f3)) - clara.bayley
+- new file to plot changing thermo - ([5bfdc87](https://github.com/yoctoyotta1024/superdrops-in-action/commit/5bfdc87a348e57a4aa40973d43f16214ed5645c1)) - clara.bayley
+- new file to plot changing nsupers - ([a54bca5](https://github.com/yoctoyotta1024/superdrops-in-action/commit/a54bca57d86b89c8ae07a4db3fb388addcd59ba5)) - clara.bayley
+- new file to plot cleo pysdm comparison - ([7fa5cee](https://github.com/yoctoyotta1024/superdrops-in-action/commit/7fa5cee4ef2ce3c54a7d8079f8db7ae3ce70fb9c)) - clara.bayley
+- new scripts to run kid1d within superdrops-in-action - ([4ffff19](https://github.com/yoctoyotta1024/superdrops-in-action/commit/4ffff191f375ee5916b6b9703cfe4a717269638a)) - clara.bayley
+#### Miscellaneous Chores
+- correct header - ([943fa06](https://github.com/yoctoyotta1024/superdrops-in-action/commit/943fa06dad028d693f31bc4c27808f007c49cbef)) - clara.bayley
+- name changes - ([2fb5c61](https://github.com/yoctoyotta1024/superdrops-in-action/commit/2fb5c619f87c63ae1a3032eb43f1b6f7770e451a)) - clara.bayley
+- update CLEO version - ([5181e67](https://github.com/yoctoyotta1024/superdrops-in-action/commit/5181e6770371df5fa0c72d30b538a69c06efb135)) - clara.bayley
+- extend slurm time - ([b314d34](https://github.com/yoctoyotta1024/superdrops-in-action/commit/b314d346c2f39f7d8967c4bdc47f6f9eb30593ad)) - clara.bayley
+- correct file info. string - ([8514185](https://github.com/yoctoyotta1024/superdrops-in-action/commit/85141855b8cafbb43daf332bbed91a6dc652bf87)) - clara.bayley
+- update CLEO version - ([7475649](https://github.com/yoctoyotta1024/superdrops-in-action/commit/7475649f2cdd8814e2a1cee511c5960d5ab33022)) - clara.bayley
+#### Refactoring
+- add functions to get single post-processed dataset - ([82775e8](https://github.com/yoctoyotta1024/superdrops-in-action/commit/82775e8df7e3bc1bd3a72274cd43e2a51ae5e56d)) - clara.bayley
+- more derived thermodynamic variables in pysdm dataset - ([573ee0a](https://github.com/yoctoyotta1024/superdrops-in-action/commit/573ee0aa6a69e12bbecf9a9f71217c12112085c9)) - clara.bayley
+- more derived thermodynamic variables in cleo dataset - ([fb30e4f](https://github.com/yoctoyotta1024/superdrops-in-action/commit/fb30e4fb889438eb92ee1ad456d813f0b7785414)) - clara.bayley
+- postprocess of dataset seperate step to loading ensemble - ([ef17d1a](https://github.com/yoctoyotta1024/superdrops-in-action/commit/ef17d1aff3f502b2ab92495b04a94f2b3f5acb4e)) - clara.bayley
+- modularise functions for searching for datasets - ([542091f](https://github.com/yoctoyotta1024/superdrops-in-action/commit/542091f89d342fed5e25c416d4537b6ddfdbb526)) - clara.bayley
+- add precip mean to nsupers plot - ([b94eda5](https://github.com/yoctoyotta1024/superdrops-in-action/commit/b94eda5c56c9cf1d3a0e3d7a4329cd2c68edc2e8)) - clara.bayley
+- choose different setups for nsupers plot - ([25a292b](https://github.com/yoctoyotta1024/superdrops-in-action/commit/25a292b3113bb47db871cbebbb7e976bcad5a112)) - clara.bayley
+- choose different setups for alpha plot - ([b08b1f5](https://github.com/yoctoyotta1024/superdrops-in-action/commit/b08b1f5e63a2695fb1a008fc19d84ce537da0d8b)) - clara.bayley
+- print where datasets are searched for in error - ([9e7b6a7](https://github.com/yoctoyotta1024/superdrops-in-action/commit/9e7b6a7d270859fa4aaa524b3a8bd04f31458631)) - clara.bayley
+- change location of fixed_coaleff cleo runs - ([afa0eb8](https://github.com/yoctoyotta1024/superdrops-in-action/commit/afa0eb884f5e7838edbd55e35df6a67dc04088c7)) - clara.bayley
+- make it possible to run different numconcs from bash - ([f37cdd5](https://github.com/yoctoyotta1024/superdrops-in-action/commit/f37cdd57ea49fd3be9f2a5bb1c1770c798af3eaf)) - clara.bayley
+- understanding theta_dry and rho_dry profiles - ([fd7ef41](https://github.com/yoctoyotta1024/superdrops-in-action/commit/fd7ef4139588c8bafc6fcb4b9001d3eb39a32836)) - clara.bayley
+- understanding source of differences in droplet activation and raindrop formation - ([221236f](https://github.com/yoctoyotta1024/superdrops-in-action/commit/221236f3ee587b95f8992181decaa84b07097cbe)) - clara.bayley
+- understanding effect of pressure and temperature differences in PySDM and CLEO - ([c1c92c9](https://github.com/yoctoyotta1024/superdrops-in-action/commit/c1c92c91ed4a983394056eaa4e67a8cbd6f7af03)) - clara.bayley
+- recalculate pressure at every timestep accounting for change in moisture pressure - ([d8dd328](https://github.com/yoctoyotta1024/superdrops-in-action/commit/d8dd328efab1b44c495def1cec38858b49eea9ce)) - clara.bayley
+- delete lwc_fixed plotting - ([48e1dbd](https://github.com/yoctoyotta1024/superdrops-in-action/commit/48e1dbd59929dddb405f67af0d2127191ae945ab)) - clara.bayley
+- more infomation in print statements - ([5485e4e](https://github.com/yoctoyotta1024/superdrops-in-action/commit/5485e4ee8839aa374f5a4cdfff356077b91e774c)) - clara.bayley
+- be more explicit about which setupfile is used - ([167e9e6](https://github.com/yoctoyotta1024/superdrops-in-action/commit/167e9e6b65b43addbc9a4e8aed39858c7ba00dc4)) - clara.bayley
+- setup for condevap_only test - ([a795050](https://github.com/yoctoyotta1024/superdrops-in-action/commit/a795050d7f99c961069da84bad1de63d069baecc)) - clara.bayley
+- exceptions for pysdm datasets that don't have precip data - ([dd75658](https://github.com/yoctoyotta1024/superdrops-in-action/commit/dd756587d7c99d7be220a1de4286421a4c168d2b)) - clara.bayley
+- more derived variables in dataset - ([01fae40](https://github.com/yoctoyotta1024/superdrops-in-action/commit/01fae40ab0b20514e8acda05767f1478ebe028d1)) - clara.bayley
+- move generic plotting functions to seperate file - ([0afd75c](https://github.com/yoctoyotta1024/superdrops-in-action/commit/0afd75c227e7b40d3dee87852cdb1f8238603848)) - clara.bayley
+- test 50cm^-3 alpha=0.5 changing nsupers - ([9643635](https://github.com/yoctoyotta1024/superdrops-in-action/commit/96436359a7bf988817a99a00cce57c0ba7a3c56e)) - clara.bayley
+- use 50cm^-3 number concentration - ([ebbdf92](https://github.com/yoctoyotta1024/superdrops-in-action/commit/ebbdf928fabbd34889ca34116c12f0c2b03a54d1)) - clara.bayley
+- use 150cm^-3 number concentration - ([d422fed](https://github.com/yoctoyotta1024/superdrops-in-action/commit/d422fed63d9fe95b7896a3e7e1343d6486b517e4)) - clara.bayley
+- use 300cm^-3 number concentration - ([24556ba](https://github.com/yoctoyotta1024/superdrops-in-action/commit/24556bac0d06781033305cd07b7b7c97e87400a1)) - clara.bayley
+- add functionality to quickplot result - ([243cd32](https://github.com/yoctoyotta1024/superdrops-in-action/commit/243cd32f5e7863bb07ebd9c8993c5ffd27a8cb0d)) - clara.bayley
+- run script over ensembles of nsupers and alpha - ([1d6ef20](https://github.com/yoctoyotta1024/superdrops-in-action/commit/1d6ef2013e475576acda2548e230263258261115)) - clara.bayley
+- generate ensemble of nsupers and alpha initial conditions - ([adc1d08](https://github.com/yoctoyotta1024/superdrops-in-action/commit/adc1d089adcdf62964b39daeb933d7bcce4a37e0)) - clara.bayley
+- more reasonable example in docs - ([b0bd322](https://github.com/yoctoyotta1024/superdrops-in-action/commit/b0bd322e3cbcb6675dfa9493f29815d376ec62a0)) - clara.bayley
+- use updated alpha sampling API - ([48b3f21](https://github.com/yoctoyotta1024/superdrops-in-action/commit/48b3f21a114f86aa6e40456703677f8320352408)) - clara.bayley
+- update pysdm version to install - ([ca2c1f0](https://github.com/yoctoyotta1024/superdrops-in-action/commit/ca2c1f0a14dbd69d38a009569af49a01af42960f)) - clara.bayley
+
+- - -
+
 ## [v0.11.2](https://github.com/yoctoyotta1024/superdrops-in-action/compare/2b3ca055cbc56b343c26eda8c25810eae60b2900..v0.11.2) - 2025-12-09
 #### Bug Fixes
 - python packages can't handle python 3.14 yet - ([be1f3be](https://github.com/yoctoyotta1024/superdrops-in-action/commit/be1f3be01ae91f7c08aa6a712521026c71fbf76e)) - clara.bayley
