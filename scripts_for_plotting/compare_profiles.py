@@ -62,6 +62,18 @@ alpha = 0.5
 assert args.cleo_path2build.is_dir(), f"cleo_path2build: {args.cleo_path2build}"
 assert args.path4figs.is_dir(), f"path4figs: {args.path4figs}"
 
+# %% font sizes for beautifying plots
+SMALL_SIZE = 15
+MEDIUM_SIZE = 16
+BIG_SIZE = 18.5
+
+plt.rc("font", size=MEDIUM_SIZE)  # controls default text sizes
+plt.rc("axes", titlesize=BIG_SIZE)  # fontsize of the axes title
+plt.rc("axes", labelsize=BIG_SIZE)  # fontsize of the x and y labels
+plt.rc("xtick", labelsize=MEDIUM_SIZE)  # fontsize of the tick labels
+plt.rc("ytick", labelsize=MEDIUM_SIZE)  # fontsize of the tick labels
+plt.rc("legend", fontsize=BIG_SIZE)  # legend fontsize
+plt.rc("figure", titlesize=BIG_SIZE)  # fontsize of the figure title
 
 # %%
 cleo_config, cleo_consts, cleo_gbxs, cleo_time = led.get_cleo_consts_gbxs_time(
@@ -126,7 +138,7 @@ fullscheme_datasets = retrieve_different_profile_datasets(
     fullscheme_datasets, "fullscheme"
 )
 # %% Plot Hill figure 4 (top 2 rows only)
-fig, axes = plt.subplots(nrows=2, ncols=2, figsize=(9, 5), width_ratios=[3, 2])
+fig, axes = plt.subplots(nrows=2, ncols=2, figsize=(11, 7), width_ratios=[5, 3.7])
 gs = axes[0, -1].get_gridspec()
 axes[0, -1].remove()
 stdax = axes[1, -1]
@@ -172,7 +184,7 @@ simtypes = {  # simtype: datasets for profiles
 
 label_for_simtype = {  # simtype: label for legend
     "condevap_only": "no precip",
-    "fullscheme": "with $E_{coal}$",
+    "fullscheme": "with $E_{coll}$",
 }
 
 label_for_profile = {  # profile: label for legend
@@ -272,6 +284,8 @@ labels = [label_for_profile[k] for k in profile_as_value.keys()]
 stdax.set_xticklabels(labels)
 stdax.set_xlabel("")
 
+fig.tight_layout()
+
 plt.savefig(args.path4figs / "fig4_profiles.pdf", format="pdf", bbox_inches="tight")
 plt.show()
 
@@ -357,10 +371,10 @@ def add_surfprecip_cumulative_to_plot(
 
 
 fullscheme_plot_kwargs = {  # fullscheme_datasets : plot_kwargs
-    "hydrostatic": {"color": "black", "linestyle": "-", "fmt": "+"},
-    "approx_drhod_dz": {"color": "black", "linestyle": ":", "fmt": "+"},
-    "exner_novapour": {"color": "black", "linestyle": "--", "fmt": "+"},
-    "exner_novapour_constrho": {"color": "black", "linestyle": "-.", "fmt": "+"},
+    # "hydrostatic": {"color": "purple", "linestyle": "-", "fmt": "+"},
+    "approx_drhod_dz": {"color": "purple", "linestyle": ":", "fmt": "+"},
+    "exner_novapour": {"color": "purple", "linestyle": "--", "fmt": "+"},
+    "exner_novapour_constrho": {"color": "purple", "linestyle": "-.", "fmt": "+"},
 }
 
 cleo_datasets_plot_kwargs = {
@@ -415,15 +429,15 @@ pysdm_datasets_plot_kwargs = {
 }
 
 fullscheme_note = {  # profile: label for legend
-    "hydrostatic": None,
+    # "hydrostatic": None,
     "approx_drhod_dz": "H$_{no-vapour}$",
     "exner_novapour": "$\u03A0$",
-    "exner_novapour_constrho": "$\u03A0_{constant-density}$",
+    "exner_novapour_constrho": "CLEO with $E_{coll}$\n$\u03A0_{constant-density}$",
 }
 
 cleo_datasets_note = {
     "is_precipTrue_numconc50p000_nsupers256_alpha0p000_fixedeffFalse": None,
-    "is_precipTrue_numconc50p000_nsupers256_alpha0p500_fixedeffFalse": "CLEO, with $E_{coal}$, various \u03B1",
+    "is_precipTrue_numconc50p000_nsupers256_alpha0p500_fixedeffFalse": "CLEO with $E_{coll}$,\nvarious \u03B1",
     "is_precipTrue_numconc50p000_nsupers256_alpha1p000_fixedeffFalse": None,
     "is_precipTrue_numconc50p000_nsupers256_alpha0p000_fixedeffTrue": None,
     "is_precipTrue_numconc50p000_nsupers256_alpha0p500_fixedeffTrue": "CLEO, various \u03B1",
@@ -436,7 +450,7 @@ pysdm_datasets_note = {
     "is_precipTrue_numconc50p000_nsupers256_alpha1p000_fixedeffTrue": None,
 }
 
-fig, axs = plt.subplots(nrows=1, ncols=2, width_ratios=[24, 1], figsize=(7, 4))
+fig, axs = plt.subplots(nrows=1, ncols=2, width_ratios=[24, 1], figsize=(10, 7))
 
 for key, ds in fullscheme_datasets.items():
     if key in fullscheme_plot_kwargs:
@@ -540,7 +554,7 @@ nsupers_datasets_nsupers = {
     "is_precipTrue_numconc50p000_nsupers4096_alpha0p500_fixedeffFalse": 4096,
 }
 
-fig, axs = plt.subplots(nrows=1, ncols=2, width_ratios=[6, 4])
+fig, axs = plt.subplots(nrows=1, ncols=2, width_ratios=[6, 4], figsize=(10, 7))
 
 for key, ds in nsupers_datasets.items():
     if key in nsupers_datasets_plot_kwargs:
