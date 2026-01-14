@@ -112,8 +112,12 @@ print("-------------------------------- ")
 # %%
 fig, axs = plt.subplots(nrows=10, ncols=1, figsize=(8, 20))
 # cds = cleo_datasets[f"is_precip{precip_str}_numconc{numconc_cleo}p000_nsupers256_alpha0p500_fixedeffFalse"]
-cds = cleo_datasets[f"is_precip{precip_str}_numconc{numconc_cleo}p000_nsupers256_alpha0p500_fixedeffTrue"]
-pds = pysdm_datasets[f"is_precip{precip_str}_numconc{numconc_pysdm}p000_nsupers256_alpha0p500_fixedeffTrue"]
+cds = cleo_datasets[
+    f"is_precip{precip_str}_numconc{numconc_cleo}p000_nsupers256_alpha0p500_fixedeffTrue"
+]
+pds = pysdm_datasets[
+    f"is_precip{precip_str}_numconc{numconc_pysdm}p000_nsupers256_alpha0p500_fixedeffTrue"
+]
 
 fig.suptitle("CLEO - PySDM")
 
@@ -191,14 +195,23 @@ axs[9].set_title("lwp /kg/m$^3$")
 axs[9].spines[["right", "top"]].set_visible(False)
 
 fig.tight_layout()
-plt.savefig(args.path4figs / f"precip{precip_str}_noprecip_cleo{numconc_cleo}_pysdm{numconc_pysdm}.png")
+plt.savefig(
+    args.path4figs
+    / f"precip{precip_str}_noprecip_cleo{numconc_cleo}_pysdm{numconc_pysdm}.png"
+)
 plt.show()
 # %%
 fig, axs = plt.subplots(nrows=6, ncols=2, figsize=(8, 16))
-cds1 = cleo_datasets[f"is_precip{precip_str}_numconc{numconc_cleo}p000_nsupers256_alpha0p500_fixedeffFalse"]
+cds1 = cleo_datasets[
+    f"is_precip{precip_str}_numconc{numconc_cleo}p000_nsupers256_alpha0p500_fixedeffFalse"
+]
 # cds1 = cleo_datasets[f"is_precip{precip_str}_numconc{numconc_cleo}p000_nsupers256_alpha0p500_fixedeffTrue"]
-cds2 = cleo_datasets[f"is_precip{precip_str}_numconc{numconc_cleo}p000_nsupers256_alpha0p500_fixedeffTrue"]
-pds = pysdm_datasets[f"is_precip{precip_str}_numconc{numconc_pysdm}p000_nsupers256_alpha0p500_fixedeffTrue"]
+cds2 = cleo_datasets[
+    f"is_precip{precip_str}_numconc{numconc_cleo}p000_nsupers256_alpha0p500_fixedeffTrue"
+]
+pds = pysdm_datasets[
+    f"is_precip{precip_str}_numconc{numconc_pysdm}p000_nsupers256_alpha0p500_fixedeffTrue"
+]
 
 fig.suptitle("Reference is CLEO with fixed CoalEff, Ec=1")
 
@@ -233,7 +246,10 @@ diff(cds2.surfprecip_rate, pds.surfprecip_rate).plot(ax=axs[5, 1])
 axs[5, 0].set_title("precip /mm h$^-1$")
 
 fig.tight_layout()
-plt.savefig(args.path4figs / f"precip{precip_str}_withprecip_cleo{numconc_cleo}_pysdm{numconc_pysdm}.png")
+plt.savefig(
+    args.path4figs
+    / f"precip{precip_str}_withprecip_cleo{numconc_cleo}_pysdm{numconc_pysdm}.png"
+)
 plt.show()
 
 # %% relative humidity from CLEO thermo
@@ -562,7 +578,10 @@ plt.ylim(bottom=0.0)
 
 plt.ylim(bottom=0.0)
 plt.tight_layout()
-plt.savefig(args.path4figs / f"numconc_precip{precip_str}_cleo{numconc_cleo}_pysdm{numconc_pysdm}.png")
+plt.savefig(
+    args.path4figs
+    / f"numconc_precip{precip_str}_cleo{numconc_cleo}_pysdm{numconc_pysdm}.png"
+)
 plt.show()
 
 
