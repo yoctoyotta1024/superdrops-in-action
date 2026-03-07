@@ -29,6 +29,7 @@ import numpy as np
 import xarray as xr
 import matplotlib.pyplot as plt
 from pathlib import Path
+from matplotlib.gridspec import GridSpec
 
 parser = argparse.ArgumentParser()
 parser.add_argument(
@@ -265,6 +266,8 @@ consts = pysetuptxt.get_consts(setupfiles[0], isprint=False)
 gbxs = pygbxsdat.get_gridboxes(args.grid_filename, consts["COORD0"], isprint=False)
 time = pyzarr.get_time(datasets[0])
 
+precip_rolling_window = 100  # [number of timesteps, 1 timestep~1.25s]
+
 
 # %%
 def drop_superdroplets(ds):
@@ -347,6 +350,18 @@ arr = xr.DataArray(
 )
 ds = ds.assign(**{arr.name: arr})
 
+arr = xr.DataArray(
+    ds.surfprecip_rate.rolling(time=precip_rolling_window, center=True).mean(),
+    name="surfprecip_rolling",
+    dims=["ensemble", "time"],
+    attrs={
+        "units": "mm hr^-1",
+        "long_name": "rolling mean of surface precipitation rate",
+    },
+)
+ds = ds.assign(**{arr.name: arr})
+
+
 ds
 
 # %%
@@ -371,12 +386,27 @@ ds
 
 # %%
 def plot_hill_figure4(ds):
-    fig, axs = plt.subplots(nrows=5, ncols=1, figsize=(5, 10), sharex=True)
+    fig = plt.figure(figsize=(10, 5))
+    gs = GridSpec(
+        2,
+        6,
+        figure=fig,
+        hspace=0.3,
+        wspace=0.9,
+    )
+
+    axs = [
+        fig.add_subplot(gs[0, 0:2]),
+        fig.add_subplot(gs[0, 2:4]),
+        fig.add_subplot(gs[0, 4:6]),
+        fig.add_subplot(gs[1, 1:3]),
+        fig.add_subplot(gs[1, 3:5]),
+    ]
 
     cloudbase = 700  # height of cloud base [m]
 
-    nc0 = ds.numconc.sel(time=0, method="nearest").mean().values
-    fig.suptitle("Fig. 4, N$_a$ = {:.0f} ".format(nc0) + "cm$^{-3}$")
+    # nc0 = ds.numconc.sel(time=0, method="nearest").mean().values
+    # fig.suptitle("Fig. 4, N$_a$ = {:.0f} ".format(nc0) + "cm$^{-3}$")
 
     mean, err1, err2 = mean_stddev(ds.lwp, dim="ensemble")
     plot_horizontal_error_shading(
@@ -385,8 +415,8 @@ def plot_hill_figure4(ds):
         mean,
         err1,
         err2,
-        shading_kwargs={"alpha": 0.3, "color": "green"},
-        mean_kwargs={"color": "green"},
+        shading_kwargs={"alpha": 0.3, "color": "blue"},
+        mean_kwargs={"color": "blue"},
         plot_mean=True,
     )
     axs[0].set_ylabel("LWP / kg m$^{-2}$")
@@ -400,12 +430,12 @@ def plot_hill_figure4(ds):
         mean,
         err1,
         err2,
-        shading_kwargs={"alpha": 0.3, "color": "green"},
-        mean_kwargs={"color": "green"},
+        shading_kwargs={"alpha": 0.3, "color": "blue"},
+        mean_kwargs={"color": "blue", "linewidth": 0.3},
         plot_mean=True,
     )
     axs[1].set_ylabel(f"surface precip / mm hr$^{-1}$")
-    axs[1].set_ylim(bottom=0)
+    axs[1].set_ylim(bottom=0, top=6.5)
 
     mean_numconc_d = ds.numconc_d.mean(dim="height")
     mean, err1, err2 = mean_stddev(mean_numconc_d, dim="ensemble")
@@ -415,8 +445,8 @@ def plot_hill_figure4(ds):
         mean,
         err1,
         err2,
-        shading_kwargs={"alpha": 0.3, "color": "green"},
-        mean_kwargs={"color": "green"},
+        shading_kwargs={"alpha": 0.3, "color": "blue"},
+        mean_kwargs={"color": "blue"},
         plot_mean=True,
     )
     axs[2].set_ylabel("mean N$_d$ / cm$^{-3}$")
@@ -430,8 +460,8 @@ def plot_hill_figure4(ds):
         mean,
         err1,
         err2,
-        shading_kwargs={"alpha": 0.3, "color": "green"},
-        mean_kwargs={"color": "green"},
+        shading_kwargs={"alpha": 0.3, "color": "blue"},
+        mean_kwargs={"color": "blue"},
         plot_mean=True,
     )
     axs[3].set_ylabel("D$_{vol}$ / \u03BCm")
@@ -446,8 +476,8 @@ def plot_hill_figure4(ds):
         mean,
         err1,
         err2,
-        shading_kwargs={"alpha": 0.3, "color": "green"},
-        mean_kwargs={"color": "green"},
+        shading_kwargs={"alpha": 0.3, "color": "blue"},
+        mean_kwargs={"color": "blue"},
         plot_mean=True,
     )
     axs[4].set_ylabel("\u03C3 / \u03BCm")
@@ -457,10 +487,18 @@ def plot_hill_figure4(ds):
     axs[0].set_xlim([60, 3600])
     axs[-1].set_xlabel("time / s")
 
-    fig.tight_layout()
+    for ax in axs:
+        ax.spines[["top", "right"]].set_visible(False)
+
+    return fig
 
 
-plot_hill_figure4(ds)
+fig = plot_hill_figure4(ds)
+
+if args.figpath.is_dir():
+    savename = args.figpath / "hill_figure4_ensembles.pdf"
+    fig.savefig(savename, dpi=800, bbox_inches="tight", facecolor="w")
+else:
+    print("not saving figure, no existing directory provided")
+
 plt.show()
-
-# %%
