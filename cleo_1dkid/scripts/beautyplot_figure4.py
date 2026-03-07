@@ -88,8 +88,8 @@ def incloud_numconc(ds, xi, radius, assign_to_dataset=False):
     numconc_d = {}
     for e in ds.ensemble.values:
         mask_incloud_lwc = (ds.sel(ensemble=e).lwc / 1000 > 1e-5).values
-        v = ak.where(mask_incloud_lwc[:, :, None], xi[e], 0.0)
-        xi_incloud = ak.where(radius[e] > 1, v, 0.0)
+        v = ak.where(mask_incloud_lwc[:, :, None], xi[e], np.nan)
+        xi_incloud = ak.where(radius[e] > 1, v, np.nan)
 
         sum_xi_incloud = ak.to_numpy(ak.sum(xi_incloud, axis=2), allow_missing=False)
         numconc_d[e] = sum_xi_incloud / ds.volume.values[None, :] / 1e6
