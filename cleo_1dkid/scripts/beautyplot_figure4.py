@@ -35,19 +35,19 @@ parser = argparse.ArgumentParser()
 parser.add_argument(
     "--binpath",
     type=Path,
-    default="/work/mh0731/m300950/superdrops-in-action/cleo_1dkid_paper2_backup/superdrops-in-action_results/bin/fullscheme",
+    default="/work/bm1183/m300950/superdrops-in-action/cleo_1dkid/build/bin/fullscheme",
     help="path to CLEO output .zarr and .txt datasets of ensemble",
 )
 parser.add_argument(
     "--grid_filename",
     type=Path,
-    default="/work/mh0731/m300950/superdrops-in-action/cleo_1dkid_paper2_backup/superdrops-in-action_results/share/dimlessGBxboundaries.dat",
+    default="/work/bm1183/m300950/superdrops-in-action/cleo_1dkid/build/share/dimlessGBxboundaries.dat",
     help="path to gridbox boundaries binary file",
 )
 parser.add_argument(
     "--figpath",
     type=Path,
-    default="/home/m/m300950/superdrops-in-action/plots2",
+    default="/home/m/m300950/superdrops-in-action/plots",
     help="path to save figures in",
 )
 parser.add_argument(
