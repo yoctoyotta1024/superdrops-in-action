@@ -273,7 +273,7 @@ fig.tight_layout()
 
 
 if args.figpath.is_dir():
-    savename = args.figpath / "qcond_ensembles_comparison.png"
+    savename = args.figpath / "qcond_ensembles_comparison.pdf"
     fig.savefig(savename, dpi=800, bbox_inches="tight", facecolor="w")
 else:
     print("not saving figure, no existing directory provided")
