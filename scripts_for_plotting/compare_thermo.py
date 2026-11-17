@@ -56,6 +56,12 @@ is_precip = False
 # is_precip = True
 precip_rolling_window = 100  # [number of timesteps, 1 timestep~1.25s]
 
+numconc_cleo = 50
+numconc_pysdm = 50
+
+precip_str = "False"
+if is_precip:
+    precip_str = "True"
 # %% Check directories containing datasets exist
 assert args.cleo_path2build.is_dir(), f"cleo_path2build: {args.cleo_path2build}"
 assert args.pysdm_path2build.is_dir(), f"pysdm_path2build: {args.pysdm_path2build}"
@@ -63,8 +69,8 @@ assert args.path4figs.is_dir(), f"path4figs: {args.path4figs}"
 
 # %% Load CLEO ensembles
 setups = {  # (numconc, fixed_coaleffs) : (nsupers_per_gbxs, alphas)
-    # (50, False): ([256], [0.5]),
-    (50, True): ([256], [0.5]),
+    # (numconc_cleo, False): ([256], [0.5]),
+    (numconc_cleo, True): ([256], [0.5]),
 }
 
 cleo_datasets = led.fetch_cleo_datasets(
@@ -82,7 +88,7 @@ print("-------------------------------- ")
 
 # %% Load PySDM ensembles
 setups = {  # (numconc, fixed_coaleffs) : (nsupers_per_gbxs, alphas)
-    (50.0, True): ([256], [0.5]),
+    (float(numconc_pysdm), True): ([256], [0.5]),
 }
 
 pysdm_datasets = led.fetch_pysdm_datasets(
@@ -105,11 +111,13 @@ print("-------------------------------- ")
 
 # %%
 fig, axs = plt.subplots(nrows=10, ncols=1, figsize=(8, 20))
-cds = cleo_datasets["is_precipFalse_numconc50p000_nsupers256_alpha0p500_fixedeffTrue"]
-pds = pysdm_datasets["is_precipFalse_numconc50p000_nsupers256_alpha0p500_fixedeffTrue"]
-# cds = cleo_datasets["is_precipTrue_numconc50p000_nsupers256_alpha0p500_fixedeffFalse"]
-# cds = cleo_datasets["is_precipTrue_numconc50p000_nsupers256_alpha0p500_fixedeffTrue"]
-# pds = pysdm_datasets["is_precipTrue_numconc50p000_nsupers256_alpha0p500_fixedeffTrue"]
+# cds = cleo_datasets[f"is_precip{precip_str}_numconc{numconc_cleo}p000_nsupers256_alpha0p500_fixedeffFalse"]
+cds = cleo_datasets[
+    f"is_precip{precip_str}_numconc{numconc_cleo}p000_nsupers256_alpha0p500_fixedeffTrue"
+]
+pds = pysdm_datasets[
+    f"is_precip{precip_str}_numconc{numconc_pysdm}p000_nsupers256_alpha0p500_fixedeffTrue"
+]
 
 fig.suptitle("CLEO - PySDM")
 
@@ -187,12 +195,23 @@ axs[9].set_title("lwp /kg/m$^3$")
 axs[9].spines[["right", "top"]].set_visible(False)
 
 fig.tight_layout()
+plt.savefig(
+    args.path4figs
+    / f"precip{precip_str}_noprecip_cleo{numconc_cleo}_pysdm{numconc_pysdm}.png"
+)
 plt.show()
 # %%
 fig, axs = plt.subplots(nrows=6, ncols=2, figsize=(8, 16))
-cds1 = cleo_datasets["is_precipTrue_numconc50p000_nsupers256_alpha0p500_fixedeffFalse"]
-cds2 = cleo_datasets["is_precipTrue_numconc50p000_nsupers256_alpha0p500_fixedeffTrue"]
-pds = pysdm_datasets["is_precipTrue_numconc50p000_nsupers256_alpha0p500_fixedeffTrue"]
+cds1 = cleo_datasets[
+    f"is_precip{precip_str}_numconc{numconc_cleo}p000_nsupers256_alpha0p500_fixedeffFalse"
+]
+# cds1 = cleo_datasets[f"is_precip{precip_str}_numconc{numconc_cleo}p000_nsupers256_alpha0p500_fixedeffTrue"]
+cds2 = cleo_datasets[
+    f"is_precip{precip_str}_numconc{numconc_cleo}p000_nsupers256_alpha0p500_fixedeffTrue"
+]
+pds = pysdm_datasets[
+    f"is_precip{precip_str}_numconc{numconc_pysdm}p000_nsupers256_alpha0p500_fixedeffTrue"
+]
 
 fig.suptitle("Reference is CLEO with fixed CoalEff, Ec=1")
 
@@ -227,6 +246,10 @@ diff(cds2.surfprecip_rate, pds.surfprecip_rate).plot(ax=axs[5, 1])
 axs[5, 0].set_title("precip /mm h$^-1$")
 
 fig.tight_layout()
+plt.savefig(
+    args.path4figs
+    / f"precip{precip_str}_withprecip_cleo{numconc_cleo}_pysdm{numconc_pysdm}.png"
+)
 plt.show()
 
 # %% relative humidity from CLEO thermo
@@ -555,6 +578,10 @@ plt.ylim(bottom=0.0)
 
 plt.ylim(bottom=0.0)
 plt.tight_layout()
+plt.savefig(
+    args.path4figs
+    / f"numconc_precip{precip_str}_cleo{numconc_cleo}_pysdm{numconc_pysdm}.png"
+)
 plt.show()
 
 

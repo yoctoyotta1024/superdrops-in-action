@@ -60,7 +60,18 @@ precip_rolling_window = 100  # [number of timesteps, 1 timestep~1.25s]
 assert args.cleo_path2build.is_dir(), f"cleo_path2build: {args.cleo_path2build}"
 assert args.pysdm_path2build.is_dir(), f"pysdm_path2build: {args.pysdm_path2build}"
 assert args.path4figs.is_dir(), f"path4figs: {args.path4figs}"
+# %% font sizes for beautifying plots
+SMALL_SIZE = 15
+MEDIUM_SIZE = 16
+BIG_SIZE = 18.5
 
+plt.rc("font", size=SMALL_SIZE)  # controls default text sizes
+plt.rc("axes", titlesize=BIG_SIZE)  # fontsize of the axes title
+plt.rc("axes", labelsize=BIG_SIZE)  # fontsize of the x and y labels
+plt.rc("xtick", labelsize=MEDIUM_SIZE)  # fontsize of the tick labels
+plt.rc("ytick", labelsize=MEDIUM_SIZE)  # fontsize of the tick labels
+plt.rc("legend", fontsize=BIG_SIZE)  # legend fontsize
+plt.rc("figure", titlesize=BIG_SIZE)  # fontsize of the figure title
 # %% Load CLEO ensembles
 setups = {  # (numconc, fixed_coaleffs) : (nsupers_per_gbxs, alphas)
     (50, False): ([8, 32, 64, 128, 256, 1024, 4096], [0.5]),
@@ -102,7 +113,7 @@ for key, value in cleo_datasets.items():
     print(key, f"members={value.ensemble.size}")
 print("-------------------------------- ")
 # %% Plot Hill figure 4 (top 2 rows only)
-fig, axes = plt.subplots(nrows=2, ncols=2, figsize=(9, 5), width_ratios=[3, 2])
+fig, axes = plt.subplots(nrows=2, ncols=2, figsize=(11, 7), width_ratios=[5, 3.7])
 gs = axes[0, -1].get_gridspec()
 axes[0, -1].remove()
 stdax = axes[1, -1]
@@ -142,9 +153,10 @@ def get_style(model, fixed_coaleff, nsupers):
         mdl = "PySDM"
     elif model == "cleo":
         mdl = "CLEO"
-    lbl = f"{mdl}" + ", N$_{SD}$" + f"={nsupers}"
     if not fixed_coaleff:
-        lbl += ", with $E_{coal}$"
+        lbl = f"{mdl}" + " with $E_{coll}$, N$_{SD}$" + f"={nsupers}"
+    else:
+        lbl = f"{mdl}" + ", N$_{SD}$" + f"={nsupers}"
 
     return {"color": c, "linestyle": line, "label": lbl}
 
@@ -248,6 +260,8 @@ for ax in axes[1, :]:
 stdax.set_ylabel("<P> / mm h$^{-1}$")
 stdax.spines[["right", "top"]].set_visible(False)
 stdax.set_xlabel("log$_{2}$|N$_{SD}$|")
+
+fig.tight_layout()
 
 plt.savefig(args.path4figs / "fig4_nsupers.pdf", format="pdf", bbox_inches="tight")
 plt.show()

@@ -61,6 +61,18 @@ assert args.cleo_path2build.is_dir(), f"cleo_path2build: {args.cleo_path2build}"
 assert args.pysdm_path2build.is_dir(), f"pysdm_path2build: {args.pysdm_path2build}"
 assert args.path4figs.is_dir(), f"path4figs: {args.path4figs}"
 
+# %% font sizes for beautifying plots
+SMALL_SIZE = 15
+MEDIUM_SIZE = 16
+BIG_SIZE = 18.5
+
+plt.rc("font", size=SMALL_SIZE)  # controls default text sizes
+plt.rc("axes", titlesize=BIG_SIZE)  # fontsize of the axes title
+plt.rc("axes", labelsize=BIG_SIZE)  # fontsize of the x and y labels
+plt.rc("xtick", labelsize=MEDIUM_SIZE)  # fontsize of the tick labels
+plt.rc("ytick", labelsize=MEDIUM_SIZE)  # fontsize of the tick labels
+plt.rc("legend", fontsize=BIG_SIZE)  # legend fontsize
+plt.rc("figure", titlesize=BIG_SIZE)  # fontsize of the figure title
 
 # %% Load CLEO ensembles
 setups = {  # (numconc, fixed_coaleffs) : (nsupers_per_gbxs, alphas)
@@ -111,7 +123,7 @@ for key, value in cleo_datasets.items():
     print(key, f"members={value.ensemble.size}")
 print("-------------------------------- ")
 # %% Plot Hill figure 4 (top 2 rows only)
-fig, axes = plt.subplots(nrows=2, ncols=4, figsize=(16, 5), width_ratios=[5, 5, 5, 4])
+fig, axes = plt.subplots(nrows=2, ncols=4, figsize=(21, 5), width_ratios=[5, 5, 5, 4])
 gs = axes[0, -1].get_gridspec()
 for ax in axes[:, -1]:
     ax.remove()
@@ -143,9 +155,10 @@ def get_style(model, fixed_coaleff, alpha):
         mdl = "PySDM"
     elif model == "cleo":
         mdl = "CLEO"
-    lbl = f"{mdl}, \u03B1={alpha}"
     if not fixed_coaleff:
-        lbl += ", with $E_{coal}$"
+        lbl = f"{mdl}" + " with $E_{coll}$, " + f"\u03B1={alpha}"
+    else:
+        lbl = f"{mdl}, \u03B1={alpha}"
 
     return {"color": c, "linestyle": line, "label": lbl}
 
@@ -247,5 +260,131 @@ for ax in axes[1, :]:
 
 plt.savefig(args.path4figs / "fig4_alphas.pdf", format="pdf", bbox_inches="tight")
 plt.show()
+
+# %% Plot different version of Hill figure 4 (top 2 rows only)
+fig, axes = plt.subplots(
+    nrows=5, ncols=2, figsize=(10, 10), height_ratios=[5, 5, 1, 5, 5]
+)
+gs = axes[2, 1].get_gridspec()
+axes[2, 0].remove()  # padding axes
+for ax in axes[2:, -1]:
+    ax.remove()  # legend axes
+axes = [[axes[0, 0], axes[1, 0]], [axes[0, 1], axes[1, 1]], [axes[3, 0], axes[4, 0]]]
+legax = fig.add_subplot(gs[2:, -1])
+legax.spines[["right", "top", "left", "bottom"]].set_visible(False)
+legax.set_xticks([])
+legax.set_yticks([])
+
+axes_setups = {
+    0: {
+        "numconc": 50,
+        "nsupers": 256,
+        "alpha": [0.0, 0.5, 1.0],
+        "fixed_coaleff": [True, False],
+    },
+    1: {
+        "numconc": 150,
+        "nsupers": 256,
+        "alpha": [0.0, 0.5, 1.0],
+        "fixed_coaleff": [True, False],
+    },
+    2: {
+        "numconc": 300,
+        "nsupers": 256,
+        "alpha": [0.0, 0.5, 1.0],
+        "fixed_coaleff": [True, False],
+    },
+}
+
+handles, labels = [], []
+for a in range(len(axes_setups)):
+    axs = axes[a]  # axes for given numconc
+    numconc = axes_setups[a]["numconc"]
+    nsupers = axes_setups[a]["nsupers"]
+
+    for alpha in axes_setups[a]["alpha"]:
+        for fixed_coaleff in axes_setups[a]["fixed_coaleff"]:
+            label = led.get_label(is_precip, fixed_coaleff, numconc, nsupers, alpha)
+            if label not in pysdm_datasets.keys():
+                print(f"skipping PySDM {label}")
+            else:
+                # print(f"{label} found for PySDM")
+                ds = pysdm_datasets[label]
+                style = get_style("pysdm", fixed_coaleff, alpha)
+                axs[0].plot(ds.time, ds.lwp.mean(dim="ensemble"), **style)
+                axs[1].plot(
+                    ds.time, ds.surfprecip_rolling.mean(dim="ensemble"), **style
+                )
+
+                style["label"] = None
+                style["alpha"] = 0.15
+                lower, upper = calcs.mean_pm_stddev(ds.lwp, dim="ensemble")
+                axs[0].fill_between(ds.time, lower, upper, **style)
+                lower, upper = calcs.mean_pm_stddev_surfprecip_rolling(
+                    ds, precip_rolling_window, dim="ensemble"
+                )
+                axs[1].fill_between(ds.time, lower, upper, **style)
+
+            if label not in cleo_datasets.keys():
+                print(f"skipping CLEO {label}")
+            else:
+                # print(f"{label} found for CLEO")
+                ds = cleo_datasets[label]
+                style = get_style("cleo", fixed_coaleff, alpha)
+                axs[0].plot(ds.time, ds.lwp.mean(dim="ensemble"), **style)
+                axs[1].plot(
+                    ds.time, ds.surfprecip_rolling.mean(dim="ensemble"), **style
+                )
+
+                style["label"] = None
+                style["alpha"] = 0.15
+                lower, upper = calcs.mean_pm_stddev(ds.lwp, dim="ensemble")
+                axs[0].fill_between(ds.time, lower, upper, **style)
+                lower, upper = calcs.mean_pm_stddev_surfprecip_rolling(
+                    ds, precip_rolling_window, dim="ensemble"
+                )
+                axs[1].fill_between(ds.time, lower, upper, **style)
+
+    hands, labs = axs[0].get_legend_handles_labels()
+    for lab in labs:
+        if lab not in labels:
+            labels.append(lab)
+            handles.append(hands[labs.index(lab)])
+
+legax.legend(handles, labels, loc="lower center")
+
+for axs in axes:
+    for ax in axs:
+        ax.spines[["right", "top"]].set_visible(False)
+        ax.set_xlim([0, 3000])
+
+for ax in [axes[0][1], axes[1][1], axes[2][1]]:
+    ax.set_xlabel("time [s]")
+
+ylims1 = [0.0, 1.6]
+yticks1 = np.arange(ylims1[0], ylims1[1] + 0.5, 0.5)
+for ax in [axes[0][0], axes[1][0], axes[2][0]]:
+    ax.set_ylabel("LWP / kg m$^{-2}$")
+    ax.set_yticks(yticks1)
+    ax.set_ylim(ylims1)
+
+ylims2 = [0.0, 3.25]
+yticks2 = np.arange(ylims2[0], ylims2[1] + 1.0, 1.0)
+for ax in [axes[0][1], axes[1][1], axes[2][1]]:
+    ax.set_ylabel("P / mm $h^{-1}$")
+    ax.set_yticks(yticks2)
+    ax.set_ylim(ylims2)
+
+panels = ["a)", "b)", "c)"]
+for a in range(len(axes_setups)):
+    numconc = axes_setups[a]["numconc"]
+    axes[a][0].set_title(f"{panels[a]}" + "  N$_c$ = " + f"{numconc}" + " cm$^{{-3}}$")
+
+fig.tight_layout()
+plt.subplots_adjust(hspace=0.5)
+
+plt.savefig(args.path4figs / "fig4_alphas_v2.pdf", format="pdf", bbox_inches="tight")
+plt.show()
+
 
 # %%

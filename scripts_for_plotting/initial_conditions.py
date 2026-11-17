@@ -54,6 +54,19 @@ args = parser.parse_known_args()[0]
 is_precip = True
 precip_rolling_window = 100  # [number of timesteps, 1 timestep~1.25s]
 
+# %% font sizes for beautifying plots
+SMALL_SIZE = 15
+MEDIUM_SIZE = 16
+BIG_SIZE = 18
+
+plt.rc("font", size=SMALL_SIZE)  # controls default text sizes
+plt.rc("axes", titlesize=BIG_SIZE)  # fontsize of the axes title
+plt.rc("axes", labelsize=BIG_SIZE)  # fontsize of the x and y labels
+plt.rc("xtick", labelsize=SMALL_SIZE)  # fontsize of the tick labels
+plt.rc("ytick", labelsize=SMALL_SIZE)  # fontsize of the tick labels
+plt.rc("legend", fontsize=MEDIUM_SIZE)  # legend fontsize
+plt.rc("figure", titlesize=BIG_SIZE)  # fontsize of the figure title
+
 # %% Check directories containing datasets exist
 assert args.cleo_path2build.is_dir(), f"cleo_path2build: {args.cleo_path2build}"
 assert args.pysdm_path2build.is_dir(), f"pysdm_path2build: {args.pysdm_path2build}"
@@ -165,7 +178,7 @@ plt.show()
 
 
 # %% nice plot of intitial conditions
-fig, axes = plt.subplots(nrows=2, ncols=3, figsize=(8.5, 5.5))
+fig, axes = plt.subplots(nrows=2, ncols=3, figsize=(10, 7))
 
 
 def at_time(ds, var, time2plot):
@@ -212,7 +225,7 @@ for h in [3000, 1500, 0]:
     )
 axes[0, 2].set_xlabel("time / s")
 axes[0, 2].set_xlim([0.0, 1000])
-axes[0, 2].legend()
+axes[0, 2].legend(loc=(0.55, 0.5))
 axes[0, 2].set_ylabel("$w$ / m s$^{-1}$")
 
 axes[0, 0].set_ylabel("height / m")
@@ -246,7 +259,7 @@ from importlib import reload
 
 reload(distribs)
 
-fig, axs = plt.subplots(nrows=1, ncols=3, figsize=(9, 5), sharex=True)
+fig, axs = plt.subplots(nrows=1, ncols=3, figsize=(10.5, 7), sharex=True)
 
 t2plts = [0.0]
 nbins = 40
@@ -260,9 +273,9 @@ volume = (
 ).values
 
 alpha_color = {
-    0.0: "orange",
-    0.5: "violet",
-    1.0: "turquoise",
+    0.0: "lightseagreen",
+    0.5: "mediumblue",
+    1.0: "maroon",
 }
 for alpha, csds in alpha_csds.items():
     plot_kwargs = {"c": alpha_color[alpha], "label": f"\u03B1 = {alpha}"}
@@ -312,7 +325,7 @@ for alpha, csds in alpha_csds.items():
 
 for ax in axs:
     ax.spines[["right", "top"]].set_visible(False)
-axs[1].legend(loc="upper right")
+axs[0].legend(loc=(0.05, 0.98))
 
 fig.tight_layout()
 
