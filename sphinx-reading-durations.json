@@ -1,10 +1,10 @@
 {
-    "cleo_1dkid/cleo_1dkid": 0.014,
-    "index": 0.005,
-    "references": 0.002,
+    "cleo_1dkid/cleo_1dkid": 0.011,
+    "index": 0.004,
+    "references": 0.001,
     "usage/contact": 0.002,
     "usage/contributing": 0.001,
-    "usage/getstart": 0.004,
-    "usage/ourdocs": 0.003,
-    "usage/requirements": 0.005
+    "usage/getstart": 0.003,
+    "usage/ourdocs": 0.002,
+    "usage/requirements": 0.004
 }
